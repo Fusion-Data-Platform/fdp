@@ -1,0 +1,263 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jun 18 10:38:40 2015
+@author: ktritz
+"""
+
+import xml.etree.ElementTree as ET
+import sys
+import os
+import importlib
+import numpy as np
+import fdp_globals
+
+FDP_DIR = fdp_globals.FDP_DIR
+
+_tree_dict = {}
+
+
+def Factory(module_branch, Container, root=None, shot=None, parent=None):
+    global _tree_dict
+
+    """
+    Factory method
+    """
+
+    try:
+        module_branch = module_branch.lower()
+        module_list = module_branch.split('.')
+        module = module_list[-1]
+        branch_str = ''.join([word.capitalize() for word in module_list])
+        if module_branch not in _tree_dict:
+            module_path = os.path.join(FDP_DIR, 'modules', root._name,
+                                       *module_list)
+            parse_tree = ET.parse(os.path.join(module_path,
+                                               ''.join([module, '.xml'])))
+            module_tree = parse_tree.getroot()
+            _tree_dict[module_branch] = module_tree
+        ContainerClassName = ''.join(['Container', branch_str])
+        if ContainerClassName not in Container._classes:
+            ContainerClass = type(ContainerClassName, (Container,), {})
+            init_class(ContainerClass, _tree_dict[module_branch], root=root,
+                       container=module, classparent=parent.__class__)
+            Container._classes[ContainerClassName] = ContainerClass
+        else:
+            ContainerClass = Container._classes[ContainerClassName]
+
+        return ContainerClass(_tree_dict[module_branch], shot=shot,
+                              parent=parent, top=True)
+
+    except None:
+        print("{} not found in modules directory".format(module))
+        raise
+
+
+def iterable(obj):
+    try:
+        iter(obj)
+        if type(obj) is str:
+            return False
+        return True
+    except TypeError:
+        return False
+
+
+def init_class(cls, module_tree, **kwargs):
+    cls._name = module_tree.get('name')
+    if cls not in cls._instances:
+        cls._instances[cls] = {}
+
+    for read_only in ['root', 'container', 'classparent']:
+        try:
+            setattr(cls, '_'+read_only, kwargs[read_only])
+            # print(cls._name, read_only, kwargs.get(read_only, 'Not there'))
+        except:
+            pass
+
+    for item in ['mdstree', 'mdspath', 'units']:
+        getitem = module_tree.get(item)
+        if getitem is not None:
+            setattr(cls, '_'+item, getitem)
+
+    cls._base_items = set(cls.__dict__.keys())
+    parse_method(cls)
+
+
+def parse_method(obj, level=None):
+    if level is not None:
+        if level is 'top':
+            method_path = FDP_DIR
+            module = 'methods'
+        else:
+            method_path = os.path.join(FDP_DIR, 'methods')
+            module = obj._name
+    else:
+        branch = obj._get_branch()
+        branch_list = branch.split('.')
+        module = branch_list.pop()
+        method_path = os.path.join(FDP_DIR, 'methods', obj._root._name,
+                                   *branch_list)
+    sys.path.insert(0, method_path)
+    try:
+        method_object = importlib.import_module(module)
+        if not hasattr(method_object, '__all__'):
+            return
+        for method in method_object.__all__:
+            method_from_object = getattr(method_object, method)
+            setattr(obj, method, method_from_object)
+    except:
+        pass
+    sys.path.pop(0)
+
+
+def base_container(container):
+    parent_container = container
+    while type(parent_container._parent) is not Shot:
+        parent_container = parent_container._parent
+    return parent_container
+
+
+def parse_defaults(element):
+    keys = element.keys()
+    method_defaults = '_{}_defaults'.format(element.get('method'))
+    keys.remove('method')
+    defaults_dict = {key: element.get(key) for key in keys}
+    return method_defaults, defaults_dict
+
+
+def parse_signal(obj, element):
+    units = parse_units(obj, element)
+    axes, transpose = parse_axes(obj, element)
+    number_range = element.get('range')
+    if number_range is None:
+        name = element.get('name')
+        title = element.get('title')
+        desc = element.get('desc')
+        mdspath, dim_of = parse_mdspath(obj, element)
+        mdstree = parse_mdstree(obj, element)
+        error = parse_error(obj, element)
+        signal_dict = [{'_name': name, 'units': units, 'axes': axes,
+                        '_mdsnode': mdspath, '_mdstree': mdstree,
+                        '_dim_of': dim_of, '_error': error, '_parent': obj,
+                        '_transpose': transpose, '_title': title,
+                        '_desc': desc}]
+    else:
+        number_list = number_range.split(',')
+        if len(number_list) == 1:
+            start = 0
+            end = int(number_list[0])
+        else:
+            start = int(number_list[0])
+            end = int(number_list[1])+1
+        signal_dict = []
+        digits = int(np.ceil(np.log10(end-1)))
+        for index in range(start, end):
+            name = element.get('name').format(str(index).zfill(digits))
+            title = None
+            if element.get('title'):
+                title = element.get('title').format(str(index).zfill(digits))
+            desc = None
+            if element.get('desc'):
+                desc = element.get('desc').format(str(index).zfill(digits))
+            mdspath, dim_of = parse_mdspath(obj, element)
+            mdspath = mdspath.format(str(index).zfill(digits))
+            mdstree = parse_mdstree(obj, element)
+            error = parse_error(obj, element)
+            signal_dict.append({'_name': name, 'units': units, 'axes': axes,
+                                '_mdsnode': mdspath, '_mdstree': mdstree,
+                                '_dim_of': dim_of, '_error': error,
+                                '_parent': obj, '_transpose': transpose,
+                                '_title': title, '_desc': desc})
+    return signal_dict
+
+
+def parse_axes(obj, element):
+    axes = []
+    transpose = None
+    time_ind = 0
+    try:
+        axes = [axis.strip() for axis in element.get('axes').split(',')]
+        if 'time' in axes:
+            time_ind = axes.index('time')
+            if time_ind is not 0:
+                transpose = list(range(len(axes)))
+                transpose.pop(time_ind)
+                transpose.insert(0, time_ind)
+                axes.pop(time_ind)
+                axes.insert(0, 'time')
+    except:
+        pass
+
+    return axes, transpose
+
+
+def parse_refs(obj, element, transpose=None):
+    refs = None
+    try:
+        refs = [ref.strip() for ref in element.get('axes_refs').split(',')]
+        if transpose is not None:
+            refs = [refs[index] for index in transpose]
+    except:
+        pass
+
+    return refs
+
+
+def parse_units(obj, element):
+    units = element.get('units')
+    if units is None:
+        try:
+            units = obj.units
+        except:
+            pass
+    return units
+
+
+def parse_error(obj, element):
+    error = element.get('error')
+    if error is not None:
+        mdspath = element.get('mdspath')
+        if mdspath is None:
+            try:
+                mdspath = obj._mdspath
+                error = '.'.join([mdspath, error])
+            except:
+                pass
+        else:
+            error = '.'.join([mdspath, error])
+    return error
+
+
+_path_dict = {}
+
+
+def parse_mdspath(obj, element):
+    global _path_dict
+
+    key = (type(obj), element)
+    try:
+        return _path_dict[key]
+    except KeyError:
+        mdspath = element.get('mdspath')
+        try:
+            dim_of = int(element.get('dim_of'))
+        except:
+            dim_of = None
+        if mdspath is None:
+            try:
+                mdspath = obj._mdspath
+            except:
+                pass
+        if mdspath is not None:
+            mdspath = '.'.join([mdspath, element.get('mdsnode')])
+        else:
+            mdspath = element.get('mdsnode')
+        _path_dict[key] = (mdspath, dim_of)
+        return mdspath, dim_of
+
+
+def parse_mdstree(obj, element):
+    mdstree = element.get('mdstree')
+    if mdstree is None and hasattr(obj, '_mdstree'):
+        mdstree = obj._mdstree
+    return mdstree

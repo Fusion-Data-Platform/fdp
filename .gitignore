@@ -1,0 +1,6 @@
+docs/build
+*.pyc
+*.ipynb
+*~
+.spyderproject
+anaconda

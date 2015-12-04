@@ -1,0 +1,13 @@
+<?xml version='1.0'?>
+<container name='filterscopes' mdstree='passivespec'>
+    <axis name='time' axis_ref='time1' units='s' mdsnode='dim_of(\bayg_dalpha_eies)'></axis>
+    <signal name='bayg_dalpha_eies' units='AU' axes='time' axis_ref='time1' mdsnode='\bayg_dalpha_eies' desc='midplane tangential'></signal>
+    <axis name='time' axis_ref='time2' units='s' mdsnode='dim_of(\bayi_opipe_dalpha)'></axis>
+    <signal name='bayi_opipe_dalpha' units='AU' axes='time' axis_ref='time2' mdsnode='\bayi_opipe_dalpha' desc='inner divertor'></signal>
+    <axis name='time' axis_ref='time3' units='s' mdsnode='dim_of(\baye_dalf_haifa)'></axis>
+    <signal name='baye_dalf_haifa' units='AU' axes='time' axis_ref='time3' mdsnode='\baye_dalf_haifa' desc='upper divertor'></signal>
+    <axis name='time' axis_ref='time4' units='s' mdsnode='dim_of(\bayd_dalpha_haifa)'></axis>
+    <signal name='bayd_dalpha_haifa' units='AU' axes='time' axis_ref='time4' mdsnode='\bayd_dalpha_haifa' desc='lower divertor'></signal>
+    <axis name='time' axis_ref='time5' units='s' mdsnode='dim_of(\bayi_dalpha_eies)'></axis>
+    <signal name='bayi_dalpha_eies' units='AU' axes='time' axis_ref='time5' mdsnode='\bayi_dalpha_eies' desc='midplane radial'></signal>
+</container>

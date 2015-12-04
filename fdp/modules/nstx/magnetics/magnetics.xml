@@ -1,0 +1,16 @@
+<?xml version='1.0'?>
+<container name='magnetics' mdstree='ops_pc'>
+    <axis name='time' units='s' mdsnode='dim_of(\bdot_l1dmivvhf1_raw)'></axis>
+    <signal name='highf' units='V' axes='time' mdsnode='\bdot_l1dmivvhf1_raw'></signal>
+    <container name='filtered' mdstree='operations'>
+        <axis name='time' units='s' mdsnode='dim_of(\mhd_oddn_lowf)'></axis>
+        <signal name='lowf_oddn' units='G' axes='time' mdsnode='\mhd_oddn_lowf'></signal>
+        <signal name='lowf_evenn' units='G' axes='time' mdsnode='\mhd_evenn_lowf'></signal>
+        <signal name='midf_oddn' units='G' axes='time' mdsnode='\mhd_oddn_midf'></signal>
+        <signal name='midf_evenn' units='G' axes='time' mdsnode='\mhd_evenn_midf'></signal>
+    </container>
+    <container name='highn' mdstree='ops_pc'>
+        <axis name='time' units='s' mdsnode='dim_of(\bdot_l1dmivvhn1_raw)'></axis>
+        <signal name='highn_{}' units='V' axes='time' mdsnode='\bdot_l1dmivvhn{}_raw' range='1,16,1'></signal>
+    </container>
+</container>

@@ -1,0 +1,6 @@
+<?xml version='1.0'?>
+<container name='ip' mdspath='\top.wf' mdstree='nstx' >
+    <signal name='time' units='ms'  mdsnode='ip' dim_of='0'></signal>
+    <signal name='data' units='kA' axes='time' mdsnode='ip'></signal>
+    <method name='plot'></method>
+</container>
