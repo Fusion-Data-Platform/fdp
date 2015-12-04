@@ -69,8 +69,10 @@ def plot(signal, **kwargs):
         point_axes_index = np.where(np.array(axes_sizes) == 1)[0]
         point_axes = np.array(signal.axes)[point_axes_index]
         axes_vals = [getattr(signal, axis) for axis in point_axes]
-        dim_title = ', '.join(['{} = {}'.format(axis, val) for axis, val
-                                in zip(point_axes, axes_vals)])
+        # axes_units = [axis.units for axis in axes_vals]
+        dim_title = ', '.join(['{} = {:.3f}'.format(axis, val)
+                               for axis, val
+                               in zip(point_axes, axes_vals)])
         signal = signal.squeeze()
     dims = signal.ndim
     if kwargs.get('overplot', None) is None:
