@@ -169,15 +169,10 @@ class Machine(MutableMapping):
         except:
             pass
         data = data.value_of().value
-        try:
-            if signal._transpose is not None:
-                data = data.transpose(signal._transpose)
-        except:
-            pass
-        try:
+        if signal._transpose is not None:
+            data = data.transpose(signal._transpose)
+        if hasattr(signal, '_postprocess'):
             data = signal._postprocess(data)
-        except:
-            pass
         return data
 
     def _get_modules(self):
