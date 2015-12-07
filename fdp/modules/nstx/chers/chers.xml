@@ -3,15 +3,15 @@
     <node name='valid' mdsnode='valid'></node>
     <axis name='radius' units='cm' mdsnode='radius'></axis>
     <axis name='time' units='s' mdsnode='time'></axis>
-    <signal name='ti' units='keV' error='dti' axes='time,radius' mdsnode='ti'></signal>
-    <signal name='vt' units='km/s' error='dvt' axes='time,radius' mdsnode='vt'></signal>
-    <signal name='ft' units='Hz' error='dft' axes='time,radius' mdsnode='ft'></signal>
-    <signal name='nc' units='1e13/cm^3' error='dnc' axes='time,radius' mdsnode='nc'></signal>
+    <signal name='ti' units='keV' error='dti' axes='time,radius' title='Ion Temperature' mdsnode='ti'></signal>
+    <signal name='vt' units='km/s' error='dvt' axes='time,radius' title='Toroidal Velocity' mdsnode='vt'></signal>
+    <signal name='ft' units='kHz' error='dft' axes='time,radius' title='Toroidal Frequency' mdsnode='ft'></signal>
+    <signal name='nc' units='1e13/cm^3' error='dnc' axes='time,radius' title='Carbon Density' mdsnode='nc'></signal>
     <container name='derived'>
         <node name='valid' mdsnode='valid'></node>
-        <signal name='zeff' units='' error='dzeff' axes='time,radius' mdsnode='zeff'></signal>
-        <signal name='nd' units='1e13/cm^3' error='dnd' axes='time,radius' mdsnode='nd'></signal>
-        <signal name='pi' units='kPa' error='dpi' axes='time,radius' mdsnode='pi'></signal>
+        <signal name='zeff' units='' error='dzeff' axes='time,radius' title='Z Effective' mdsnode='zeff'></signal>
+        <signal name='nd' units='1e13/cm^3' error='dnd' axes='time,radius' title='Deuteron Density' mdsnode='nd'></signal>
+        <signal name='pi' units='kPa' error='dpi' axes='time,radius' title='Ion Pressure' mdsnode='pi'></signal>
     </container>
     <container name='spline'>
         <node name='valid' mdsnode='svalid'></node>
