@@ -23,7 +23,8 @@ def plot2d(data, xaxis, yaxis, **kwargs):
     plot_func = getattr(plt, plot_type)
     plot_range = set_range(data, default_min, default_max)
     levels = np.linspace(plot_range[0], plot_range[1], nlevels)
-    plot_func(np.array(xaxis), np.array(yaxis), np.array(data), levels=levels, **kwargs)
+    plot_func(np.array(xaxis), np.array(yaxis), np.array(data), levels=levels,
+              **kwargs)
     plt.ylabel('{} ({})'.format(yaxis._name, yaxis.units))
     plt.xlabel('{} ({})'.format(xaxis._name, xaxis.units))
 
@@ -84,7 +85,8 @@ def plot(signal, **kwargs):
     if multi_axis in signal.axes and dims > 1:
         plot_multi(signal, **defaults)
         return
-    axes = [getattr(signal, axis).squeeze() for axis in set(signal.axes).difference(point_axes)]
+    axes = [getattr(signal, axis) for axis in
+            set(signal.axes).difference(point_axes)]
     plot_methods[dims](signal, *axes, **defaults)
     plt.title(signal._name, fontsize=20)
     plt.suptitle('Shot #{} {}'.format(signal.shot, dim_title), x=0.5, y=1.00,
