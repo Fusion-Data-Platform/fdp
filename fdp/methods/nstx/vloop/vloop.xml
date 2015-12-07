@@ -1,6 +1,0 @@
-<?xml version='1.0'?>
-<container name='vloop' mdspath='\top.wf' mdstree='nstx' >
-    <signal name='time' units='ms'  mdsnode='vloop' dim_of='0'></signal>
-    <signal name='data' units='V' axes='time' mdsnode='vloop'></signal>
-    <method name='plot'></method>
-</container>
