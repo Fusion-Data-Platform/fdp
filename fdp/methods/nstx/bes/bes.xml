@@ -1,6 +1,0 @@
-<?xml version='1.0'?>
-<container name='bes' mdstree='activesp_raw'>
-    <axis name='time' units='s' mdsnode='dim_of(\TOP.BES.RAWDATA:BE_DT32_01:INPUT_01)'></axis>
-    <signal name='ch{}' units='V' axes='time' mdsnode='\TOP.BES.RAWDATA:BE_DT32_01:INPUT_{}' range='1, 32'>
-    </signal>
-</container>
