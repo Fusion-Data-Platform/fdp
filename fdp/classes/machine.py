@@ -5,7 +5,7 @@ Created on Wed Nov 25 12:05:14 2015
 @author: ktritz
 """
 import fdp_globals
-from collections import MutableMapping
+from collections import MutableMapping, deque
 from logbook import Logbook
 from shot import Shot
 import MDSplus as mds
@@ -254,3 +254,37 @@ class Machine(MutableMapping):
             data = data[4:]
             return shot_number, ''.join(map(chr, data))
         return data
+
+    def find(self, tag, obj=None):
+        root = getattr(self, '_root', self)
+        find_list = set([])
+        for module in root.s0._modules:
+            module_obj = getattr(root.s0, module)
+            container_queue = deque([module_obj])
+            while True:
+                try:
+                    container = container_queue.popleft()
+                    container._get_dynamic_containers()
+                    container_queue.extend(container._containers.values())
+                    if obj is None or obj.lower() == 'signal':
+                        for signal in container._signals.values():
+                            if signal._contains(tag):
+                                branch_str = '.'.join([signal._get_branch(),
+                                                      signal._name])
+                                find_list.add(branch_str)
+                    if obj is None or obj.lower() == 'axis':
+                        for signal in container._signals.values():
+                            for axis_str in signal.axes:
+                                axis = getattr(signal, axis_str)
+                                if axis._contains(tag):
+                                    branch_str = '.'.join([signal._get_branch(),
+                                                     signal._name, axis._name])
+                                    find_list.add(branch_str)
+                    if obj is None or obj.lower() == 'container':
+                        if container._contains(tag):
+                            find_list.add(container._get_branch())
+                except IndexError:
+                    break
+        find_list = list(find_list)
+        find_list.sort()
+        return find_list

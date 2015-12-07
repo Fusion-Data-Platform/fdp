@@ -12,6 +12,7 @@ import types
 import os
 import fdp_globals
 FDP_DIR = fdp_globals.FDP_DIR
+import numpy as np
 
 
 class Container(object):
@@ -26,9 +27,10 @@ class Container(object):
         cls = self.__class__
 
         self._signals = {}
+        self._axes = {}
         self._containers = {}
-        self._subcontainers = {}
-
+        self._dynamic_containers = {}
+        self._tags = []
         self._title = module_tree.get('title')
         self._desc = module_tree.get('desc')
 
@@ -48,7 +50,7 @@ class Container(object):
                 cls._instances[cls][self.shot] = [self]
 
         if top:
-            self._get_subcontainers()
+            self._get_dynamic_containers()
 
         for node in module_tree.findall('node'):
             branch_str = self._get_branchstr()
@@ -133,13 +135,13 @@ class Container(object):
     def __getattr__(self, attribute):
 
         try:
-            if self._subcontainers[attribute] is None:
+            if self._dynamic_containers[attribute] is None:
                 branch_path = '.'.join([self._get_branch(), attribute])
-                self._subcontainers[attribute] = \
+                self._dynamic_containers[attribute] = \
                     factory.Factory(branch_path, root=self._root,
                                     shot=self.shot, parent=self)
 
-            return self._subcontainers[attribute]
+            return self._dynamic_containers[attribute]
         except KeyError:
             pass
 
@@ -158,13 +160,13 @@ class Container(object):
         else:
             return attr
 
-    def _get_subcontainers(self):
-        if len(self._subcontainers) is 0:
+    def _get_dynamic_containers(self):
+        if len(self._dynamic_containers) is 0:
             container_dir = self._get_path()
             if not os.path.isdir(container_dir):
                 return
             files = os.listdir(container_dir)
-            self._subcontainers = {container: None for container in
+            self._dynamic_containers = {container: None for container in
                                    files if os.path.isdir(
                                    os.path.join(container_dir, container)) and
                                    container[0] is not '_'}
@@ -184,14 +186,14 @@ class Container(object):
         items = self.__dict__.keys()
         items.extend(self.__class__.__dict__.keys())
         if Signal not in self.__class__.mro():
-            items.extend(self._subcontainers.keys())
+            items.extend(self._dynamic_containers.keys())
         return [item for item in set(items).difference(self._base_items)
                 if item[0] is not '_']
 
     def __iter__(self):
         if not len(self._signals):
             items = self._containers.values()
-            # items.extend(self._subcontainers.values())
+            # items.extend(self._dynamic_containers.values())
         else:
             items = self._signals.values()
         return iter(items)
@@ -211,3 +213,28 @@ class Container(object):
     def _get_branchstr(cls):
         branch = cls._get_branch()
         return ''.join([sub.capitalize() for sub in branch.split('.')])
+
+    @classmethod
+    def _is_container(cls):
+        return 'Container' in str(cls)
+
+    @classmethod
+    def _is_signal(cls):
+        return 'Signal' in str(cls)
+
+    @classmethod
+    def _is_axis(cls):
+        return 'Axis' in str(cls)
+
+    @classmethod
+    def _is_type(cls, obj_type):
+        method_name = '_is_{}'.format(obj_type.lower())
+        try:
+            return getattr(cls, method_name)()
+        except:
+            return False
+
+    def _contains(self, string):
+        word_list = [s for s in [self._name, self._title] if s]
+        word_list.extend(self._tags)
+        return np.any([string.lower() in word.lower() for word in word_list])

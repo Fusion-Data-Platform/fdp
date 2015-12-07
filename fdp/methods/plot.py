@@ -57,6 +57,9 @@ plot_methods = [None, plot1d, plot2d, plot3d, plot4d]
 
 
 def plot(signal, **kwargs):
+    if signal._is_container():
+        plot_container(signal, **kwargs)
+        return
     defaults = getattr(signal, '_plot_defaults', {})
     defaults.update(kwargs)
 
@@ -116,6 +119,8 @@ def plot_multi(signal, **kwargs):
     if legend:
         plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
         plt.subplots_adjust(right=0.65)
-    #$ plt.ylim(plot_range[0], plot_range[1])
-    # plt.ylim(signal.min(), signal.max())
     plt.show()
+
+
+def plot_container(container, **kwargs):
+    [signal.plot() for signal in container._signals.values()]

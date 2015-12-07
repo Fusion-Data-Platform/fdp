@@ -112,6 +112,8 @@ class Shot(MutableMapping):
         trees = ['efit{}'.format(str(index).zfill(2)) for index in range(1, 7)]
         trees.extend(['lrdfit{}'.format(str(index).zfill(2))
                       for index in range(1, 13)])
+        if self.shot == 0:
+            return trees
         tree_exists = []
         for tree in trees:
             data = None
