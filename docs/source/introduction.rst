@@ -6,15 +6,7 @@ Introduction
 *****************************************
 
 
-About FDP
-===============
-
-
-.. include:: html_preamble.rst
-
-
-
-
+.. include:: README.rst
 
 License
 ===============
