@@ -1,46 +1,27 @@
 .. Restructured Text (RST) Syntax Primer: http://sphinx-doc.org/rest.html
 
-==============================
 Fusion Data Platform
 ==============================
 
 
 Fusion Data Platform (FDP) is a data framework in Python for magnetic fusion experiments.  FDP streamlines data discovery, access, management, and visualization.
 
-Resources
-===========
-
 * Github repository: https://github.com/Fusion-Data-Platform/fdp
 * Documentation: http://fusion-data-platform.readthedocs.org/
 * Google Group: https://groups.google.com/forum/#!forum/fusion-data-platform
 
-Example
+Examples
 ==========
-::
 
-    In [1]: import fdp
+Plot electron temperature data from Thomson scattering for shot 140000 on NSTX::
+
+    >>> import fdp
+    >>> nstx = fdp.nstx
+    >>> nstx.s140000.mpts.te.plot()
+
+View logbook entries for NSTX shot 140000::
     
-    In [2]: dir(fdp.nstx.s140000)
-    Precaching MDS server connections...
-    Finished.
-    Out[2]: 
-    ['bes',
-     'chers',
-     'equilibria',
-     'filterscopes',
-     'ip',
-     'magnetics',
-     'mpts',
-     'mse',
-     'usxr',
-     'vloop']
-    
-    In [3]: dir(fdp.nstx.s140000.mpts)
-    Out[3]: ['comment', 'ne', 'shot', 'spline', 'te', 'valid']
-    
-    In [4]: fdp.nstx.s140000.mpts.te.plot()
-    
-    In [5]: fdp.nstx.s140000.logbook()
+    >>> nstx.s140000.logbook()
     
     Logbook entries for 140000
     ************************************
@@ -51,8 +32,19 @@ Example
     Good.
     ************************************
 
-Created by
-============
+List diagnostic containers for NSTX::
+
+    >>> dir(nstx.s140000)
+    ['bes', 'chers', 'equilibria', 'filterscopes', 'magnetics', 'mpts', 'mse', 'usxr']
+
+Plot ion temperature data from charge-exchange spectroscopy for all shots in XP 1013 on NSTX::
+
+    >>> nstx.addxp(1013)
+    >>> for s in nstx:
+    ...     s.chers.ti.plot()
+
+Lead Developers
+==================
 
 * John Schmitt, Princeton Plasma Physics Lab
 * David R. Smith, U. Wisconsin-Madison

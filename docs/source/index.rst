@@ -9,6 +9,9 @@ Fusion Data Platform
     
     .. include:: html_preamble.rst
 
+Table of Contents
+======================
+
 .. toctree::
     :maxdepth: 2
     
@@ -17,9 +20,6 @@ Fusion Data Platform
     usage_examples.rst
     package_reference.rst
     project_documents.rst
-
-.. only:: html
-
     * :ref:`genindex`
 
 
