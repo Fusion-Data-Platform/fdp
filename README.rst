@@ -1,12 +1,15 @@
 .. Restructured Text (RST) Syntax Primer: http://sphinx-doc.org/rest.html
 
+==============================
+Fusion Data Platform
+==============================
 
-Fusion Data Platform (FDP) is a data access, management, and visualization framework for magnetic fusion experiments.
 
-* `GitHub repository <https://github.com/Fusion-Data-Platform/fdp>`_
-* `Documentation <http://fusion-data-platform.github.io/fdp/>`_
-* `Submit bugs or feature requests <https://github.com/Fusion-Data-Platform/fdp/issues>`_
-* `Google Group <https://groups.google.com/forum/#!forum/fusion-data-platform>`_
+Fusion Data Platform (FDP) is a data framework for magnetic fusion experiments.
+
+* Github repository: https://github.com/Fusion-Data-Platform/fdp
+* Documentation: http://fusion-data-platform.readthedocs.org/
+* Google Group: https://groups.google.com/forum/#!forum/fusion-data-platform
 
 Created by:
 
