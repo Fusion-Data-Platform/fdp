@@ -6,9 +6,9 @@
 Usage Examples
 *****************************************
 
-First, import the FDF module::
+First, import the FDP module::
 
-    >>> import fdf
+    >>> import fdp
 
 
 Initiate a machine instance
@@ -16,15 +16,15 @@ Initiate a machine instance
 
 **Define** a NSTX machine instance::
 
-    >>> nstx = fdf.Machine('nstx')
+    >>> nstx = fdp.Machine('nstx')
 
 or pre-load a shotlist::
 
-    >>> nstx = fdf.Machine('nstx', [140000, 140001])
+    >>> nstx = fdp.Machine('nstx', [140000, 140001])
 
 or pre-load an XP::
 
-    >>> nstx = fdf.Machine('nstx', xp=1013)
+    >>> nstx = fdp.Machine('nstx', xp=1013)
 
 
 Load shots and XPs

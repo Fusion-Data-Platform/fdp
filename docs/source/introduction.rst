@@ -6,18 +6,17 @@ Introduction
 *****************************************
 
 
-**About FDF**
-
-.. a======================================
-
-.. include:: README.rst
+About FDP
+===============
 
 
+.. include:: html_preamble.rst
 
 
 
-**License**
 
-.. a======================================
+
+License
+===============
 
 .. include:: LICENSE.rst
