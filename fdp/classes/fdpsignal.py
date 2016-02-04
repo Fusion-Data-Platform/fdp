@@ -15,19 +15,20 @@ import numpy as np
 import inspect
 import types
 import fdp_globals
+#from functools import wraps
 
 MDS_SERVERS = fdp_globals.MDS_SERVERS
-# implemented MDS_SERVERS from fdf_globals in place of hard-coded MDS server - DRS 10/18/15
+# implemented MDS_SERVERS from fdp_globals in place of hard-coded MDS server - DRS 10/18/15
 FdpError = fdp_globals.FdpError
 
 
-# commented out and replaced with FdfError - DRS 10/18/15
+# commented out and replaced with FdpError - DRS 10/18/15
 #class MdsError(Exception):
 #    pass
 
 class Signal(np.ndarray):
     """
-    sig=fdf.Signal(signal_ndarray, units='m/s', axes=['radius','time'], axes_values=[ax1_1Darray, ax2_1Darray], axes_units=['s','cm']
+    sig=fdp.Signal(signal_ndarray, units='m/s', axes=['radius','time'], axes_values=[ax1_1Darray, ax2_1Darray], axes_units=['s','cm']
 
     e.g.:
     mds.Signal(np.arange((20*10)).reshape((10,20)), units='keV', axes=['radius','time'], axes_values=[100+np.arange(10)*5, np.arange(20)*0.1], axes_units=['s','cm'])
@@ -35,7 +36,7 @@ class Signal(np.ndarray):
     or an empty signal:
     s=mds.Signal()
     default axes order=[time, space]
-    sig=fdf.Signal(units='m/s', axes=['radius','time'], axes_values=[radiusSignal, timeSignal])
+    sig=fdp.Signal(units='m/s', axes=['radius','time'], axes_values=[radiusSignal, timeSignal])
     """
     def __init__(self, **kwargs):
         pass
@@ -67,7 +68,7 @@ class Signal(np.ndarray):
         #obj._root = root
         #obj._dim_of = dim_of
         obj._verbose = verbose
-        obj._slic = None
+        #obj._slic = slice(None)
         obj._empty = True
         #obj._name = name
         #not necessary but can be defined
@@ -118,32 +119,49 @@ class Signal(np.ndarray):
 
         #simple copying over of attributes. Defaults to None so hasattr check skipped
         #if hasattr(obj,'units'):
-        objaxes= getattr(obj, 'axes', None)
+        objaxes= getattr(obj, 'axes',None)
         objdict= getattr(obj, '__dict__', None)
-        
+        _nodeltmpattr=False        
+
         if objdict is not None:
-            for key,val in objdict.items():
-                if key not in objaxes: setattr(self, key, val)
-            
-        """
-        self.units = getattr(obj, 'units', None)
-        #if hasattr(obj,'axes_units'):
-        self.axes_units = getattr(obj, 'axes_units', None)
-        self.axes = getattr(obj, 'axes', None)
-        self._verbose = getattr(obj, '_verbose', False)
-        #self._transpose = getattr(obj, '_transpose', None)
-        self._parent = getattr(obj, '_parent', None)
-        self._empty = getattr(obj, '_empty', None)
-        #import pdb; pdb.set_trace()
-        #print(obj.__dict__)
-        """
+            #print(type(objdict))
+            #print(type(objaxes))
+            if objaxes is not None:
+                for key,val in objdict.items():
+                    if key not in objaxes: setattr(self, key, val)
+            else:
+                for key,val in objdict.items(): setattr(self, key, val) 
+                    
+            if objdict.has_key('_verbose'):
+                if objdict['_verbose']:
+                    try:
+                        print("__array_finalize__:Function name {}".format(obj._fname))
+                    except AttributeError:
+                        pass
+                    try:
+                        print("__array_finalize__:Function args {}".format(obj._fargs))
+                    except AttributeError:
+                        pass
+                    try:
+                        print("__array_finalize__:Function kwargs {}".format(obj._fkwargs))
+                    except AttributeError:
+                        pass
+
+            if objdict.has_key('_fname'):
+                if objdict['_fname'] == 'transpose':
+                    if objaxes is not None:
+                        self.axes = [obj.axes[i] for i in objdict['_fargs'][0]] if objdict.has_key('_fargs') else obj.axes[::-1]
+        
+            if objdict.has_key('_debug'):
+                if objdict['_debug']: _nodeltmpattr=True
+
         if objaxes is not None:
             for axis in objaxes:
-                if hasattr(obj,'_slic'):
-                    if self._verbose:
-                        print('__array_finalize__: type(obj._slic) is  ', type(obj._slic))
-                        print('__array_finalize__: obj._slic is  ',obj._slic)
-
+                if hasattr(obj,'_slic'): #slice axis according to _slic
+                    if objdict.has_key('_verbose'):
+                        if objdict['_verbose']:
+                            print('__array_finalize__: type(obj._slic) is  ', type(obj._slic))
+                            print('__array_finalize__: obj._slic is  ',obj._slic)
                     try:
                         #1-D
                         if type(obj._slic) is slice or type(obj._slic) is list:
@@ -162,28 +180,69 @@ class Signal(np.ndarray):
                             #if isinstance(_slicaxis[0], (int, long, float, np.generic)):
                             #    self.axes=self.axes+[self.axes.pop(self.axes.index(axis))]
                             setattr(self,axis,getattr(obj, axis)[_slicaxis])
+                            if objdict.has_key('_verbose'):
+                                if objdict['_verbose']:
+                                    print('__array_finalize__: Fixing {0} axes'.format(axis))
+                            for axisaxis in getattr(obj, axis).axes:
+                                if isinstance(obj._slic[obj.axes.index(axisaxis)], (int, long, float, np.generic)):
+                                    if objdict.has_key('_verbose'):
+                                        if objdict['_verbose']:
+                                            print('__array_finalize__: Removing {0} axis from {1}'.format(axisaxis,axis))
+                                    self.axis.axes.remove(axisaxis)
+                                else:
+                                    if objdict.has_key('_verbose'):
+                                        if objdict['_verbose']:
+                                            print('__array_finalize__: {0} is not primitive'.
+                                                  format(type(obj._slic[obj.axes.index(axisaxis)])))
                         else:
-                            if self._verbose:
-                                print('_slic is neither slice, list, nor tuple type for ',axis)
-
+                            if objdict.has_key('_verbose'):
+                                if objdict['_verbose']:
+                                    print('_slic is neither slice, list, nor tuple type for ',axis)
                     except: #must not have a len(), e.g. int type
-                        if self._verbose:
-                            print('Exception: Axes parsing for ',axis,' failed')
-                        pass
-                else:
+                            if objdict.has_key('_verbose'):
+                                if objdict['_verbose']:
+                                    print('Exception: Axes parsing for ',axis,' failed')
+                    pass
+                else: #no slicing, copy each axis as is
                     setattr(self,axis,getattr(obj, axis, None))
 
-        if hasattr(self,'_slic'): setattr(self,'_slic',None)
-
-
+        #clean-up temp attributes
+        def delattrtry(ob,at):
+            try:
+                delattr(ob,at)
+            except:
+                pass
+            return
+        
+        if _nodeltmpattr:
+            pass
+        else:
+                delattrtry(self,'_slic')
+                delattrtry(self,'_fname')
+                delattrtry(self,'_fargs')
+                delattrtry(self,'_fkwargs')
+                delattrtry(obj,'_slic')
+                delattrtry(obj,'_fname')
+                delattrtry(obj,'_fargs')
+                delattrtry(obj,'_fkwargs')
+                
     def __array_wrap__(self, out_arr, context=None):
         if self._verbose:
             print('Called __array_wrap__:')
             print('__array_wrap__: self is %s' % type(self))
             print('__array_wrap__:  arr is %s' % type(out_arr))
             # then just call the parent
-            print(context)
+            print('__array_wrap__: context is %s' % context)
         return np.ndarray.__array_wrap__(self, out_arr, context)
+
+    def __array_prepare__(self, out_arr, context=None):
+        if self._verbose:
+            print('Called __array_prepare__:')
+            print('__array_prepare__: self is %s' % type(self))
+            print('__array_prepare__:  arr is %s' % type(out_arr))
+            # then just call the parent
+            print('__array_prepare__: context is %s' % context)
+        return np.ndarray.__array_prepare__(self, out_arr, context)
 
 
     def __getitem__(self,index):
@@ -311,3 +370,24 @@ class Signal(np.ndarray):
 
     def __nonzero__(self):
         return True
+
+    def sigwrapper(f):
+        def inner(*args, **kwargs):
+            #print("getarg decorator: Function {} arguments were: {}, {}".format(f.__name__,args, kwargs))
+            args[0]._fname=f.__name__
+            if len(args)>1: args[0]._fargs=args[1:]
+            args[0]._fkwargs=kwargs
+            return f(*args, **kwargs)
+        return inner
+
+    @sigwrapper
+    def amin(self, *args, **kwargs):
+        args[0]._fname=f.__name__
+        args[0]._fkwargs=kwargs
+        return super(Signal,self).amin(*args, **kwargs)
+    
+    @sigwrapper
+    def transpose(self, *args, **kwargs):
+        return super(Signal,self).transpose(*args, **kwargs)
+    
+    
