@@ -1,10 +1,11 @@
 <?xml version='1.0'?>
 <container name='mpts' mdstree='activespec' mdspath='\top.mpts.output_data.best' title='Multipoint Thomson Scattering' desc='test'>
     <node name='comment' mdsnode='comment'></node>
-    <node name='valid' mdsnode='valid'></node>
     <axis name='radius' units='cm' error='fit_r_width' mdsnode='fit_radii'></axis>
     <axis name='time' units='s' mdsnode='ts_times'></axis>
     <defaults method='plot' type='contourf'></defaults>
+    <signal name='valid' units='' axes='radius, time' mdsnode='valid' title='Valid flag'>
+    </signal>
     <signal name='te' units='keV' axes='radius, time' error='fit_te_err' mdsnode='fit_te' title='Electron Temperature'>
         <defaults method='plot' maxrange='0.95'></defaults>
     </signal>
@@ -12,6 +13,8 @@
     </signal>
     <container name='spline'>
         <axis name='radius' units='cm' mdsnode='spline_radii'></axis>
+        <signal name='svalid' units='' axes='radius, time' mdsnode='svalid' title='Valid flag'>
+        </signal>
         <signal name='te' units='keV' axes='radius, time' mdsnode='spline_te'>
         </signal>
         <signal name='ne' units='cm^-3' axes='radius, time' mdsnode='spline_ne'>

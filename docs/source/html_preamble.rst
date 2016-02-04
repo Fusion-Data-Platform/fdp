@@ -1,8 +1,8 @@
 .. Restructured Text (RST) Syntax Primer: http://sphinx-doc.org/rest.html
 
 
-Fusion Data Framework (FDF) is a data access, management, and visualization framework for magnetic fusion experiments.
+Fusion Data Platform (FDP) is a data framework for magnetic fusion experiments.  FDP streamlines data discovery, access, management, and visualization.
 
-Code repository: https://github.com/Fusion-Data-Framework/fdf
-
-`PDF Documentation <http://fusion-data-framework.github.io/fdf/_static/FusionDataFramework.pdf>`_ is also available.
+* Github repository: https://github.com/Fusion-Data-Platform/fdp
+* Documentation: http://fusion-data-platform.readthedocs.org/
+* Google Group: https://groups.google.com/forum/#!forum/fusion-data-platform

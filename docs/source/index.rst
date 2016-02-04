@@ -2,7 +2,7 @@
 
 
 #####################################
-Fusion Data Framework
+Fusion Data Platform
 #####################################
 
 .. only:: html

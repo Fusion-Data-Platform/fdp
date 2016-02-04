@@ -6,45 +6,34 @@ Package Reference
 *****************************************
 
 
-.. automodule:: fdf.__init__
-
-
-Module factory.py
+Class Fdp
 ====================================
-.. automodule:: factory
-
-
-Class factory.Machine
-====================================
-.. autoclass:: factory.Machine
+.. autoclass:: classes.fdp.Fdp
     :members:
 
-
-Class factory.Shot
+Class Machine
 ====================================
-.. autoclass:: factory.Shot
+.. autoclass:: classes.machine.Machine
     :members:
 
-
-Class factory.Logbook
+Class Shot
 ====================================
-.. autoclass:: factory.Logbook
+.. autoclass:: classes.shot.Shot
     :members:
 
-
-Module fdf_signal.py
+Class Container
 ====================================
-.. automodule:: fdf_signal
-
-
-Class fdf_signal.Signal
-====================================
-.. autoclass:: fdf_signal.Signal
+.. autoclass:: classes.container.Container
     :members:
 
-
-Module fdf_globals.py
+Class Signal
 ====================================
-.. automodule:: fdf_globals
+.. autoclass:: classes.fdpsignal.Signal
+    :members:
+
+Class Logbook
+====================================
+.. autoclass:: classes.logbook.Logbook
+    :members:
 
 
