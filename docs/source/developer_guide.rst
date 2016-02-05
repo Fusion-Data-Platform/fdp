@@ -181,27 +181,27 @@ Class Fdp
 
 Class Machine
 -----------------------
-.. autoclass:: classes.machine.Machine
+.. autoclass:: fdp.classes.machine.Machine
     :members:
 
 Class Shot
 -----------------------
-.. autoclass:: classes.shot.Shot
+.. autoclass:: fdp.classes.shot.Shot
     :members:
 
 Class Container
 -----------------------
-.. autoclass:: classes.container.Container
+.. autoclass:: fdp.classes.container.Container
     :members:
 
 Class Signal
 -----------------------
-.. autoclass:: classes.fdpsignal.Signal
+.. autoclass:: fdp.classes.fdpsignal.Signal
     :members:
 
 Class Logbook
 -----------------------
-.. autoclass:: classes.logbook.Logbook
+.. autoclass:: fdp.classes.logbook.Logbook
     :members:
 
 
