@@ -176,7 +176,7 @@ Package reference
 
 FDP Package
 -----------------------
-.. automodule:: fdf
+.. automodule:: fdf.__init__.py
 
 Class Fdp
 -----------------------
