@@ -176,7 +176,7 @@ Package reference
 
 Class Fdp
 -----------------------
-.. autoclass:: classes.fdp.Fdp
+.. autoclass:: fdp.classes.fdp.Fdp
     :members:
 
 Class Machine
