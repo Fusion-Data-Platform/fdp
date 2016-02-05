@@ -30,7 +30,7 @@ class Machine(MutableMapping):
     **Usage**::
 
         >>> import fdf
-        >>> nstx = fdf.Machine('nstx')
+        >>> nstx = fdf.nstx
         >>> nstx.s140000.logbook()
         >>> nstx.addshots(xp=1048)
         >>> nstx.s140000.mpts.plot()
@@ -42,14 +42,6 @@ class Machine(MutableMapping):
 
         >>> nstx.s141398
         >>> nstx.s141399
-
-    Alternatively, a list of shot #'s may be provided during initialization::
-
-        >>> nstx = Machine(name='nstx', shotlist=[141398, 141399])
-
-    Or added later using the method addshot()::
-
-        >>> nstx.addshot([141398, 141399])
 
     """
 
