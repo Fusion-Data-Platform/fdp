@@ -7,7 +7,13 @@ Fusion Data Platform
 
 .. only:: html
     
-    .. include:: html_preamble_above_toc.rst
+    .. comment .. include:: html_preamble_above_toc.rst
+    Fusion Data Platform (FDP) is a data framework for magnetic fusion experiments.  FDP streamlines data discovery, operations, and visualization.
+    
+    * Github repository: https://github.com/Fusion-Data-Platform/fdp
+    * Documentation: http://fusion-data-platform.readthedocs.org/
+    * Google Group: https://groups.google.com/forum/#!forum/fusion-data-platform
+
 
 Table of Contents
 ======================
