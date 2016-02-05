@@ -3,24 +3,28 @@
 Fusion Data Platform
 ==============================
 
-
-Fusion Data Platform (FDP) is a data framework in Python for magnetic fusion experiments.  FDP streamlines data discovery, access, management, and visualization.
+Fusion Data Platform (FDP) is a data framework in Python for magnetic fusion experiments.  FDP streamlines data discovery, operations, and visualization.
 
 * Github repository: https://github.com/Fusion-Data-Platform/fdp
 * Documentation: http://fusion-data-platform.readthedocs.org/
 * Google Group: https://groups.google.com/forum/#!forum/fusion-data-platform
 
-Examples
-==========
+Quick start
+================
 
-Plot electron temperature data from Thomson scattering for shot 140000 on NSTX::
+On the PPPL computing cluster, load the FDP module and start Python::
+
+    $ module load nstx/fdp
+    $ python
+
+Plot electron temperature from Thomson scattering for NSTX shot 140000::
 
     >>> import fdp
-    >>> nstx = fdp.nstx
-    >>> nstx.s140000.mpts.te.plot()
+    >>> fdp.nstx.s140000.mpts.te.plot()
 
 View logbook entries for NSTX shot 140000::
     
+    >>> nstx = fdp.nstx
     >>> nstx.s140000.logbook()
     
     Logbook entries for 140000
@@ -34,14 +38,27 @@ View logbook entries for NSTX shot 140000::
 
 List diagnostic containers for NSTX::
 
-    >>> dir(nstx.s140000)
+    >>> myshot = nstx.s140000
+    >>> dir(myshot)
     ['bes', 'chers', 'equilibria', 'filterscopes', 'magnetics', 'mpts', 'mse', 'usxr']
 
-Plot ion temperature data from charge-exchange spectroscopy for all shots in XP 1013 on NSTX::
+    >>> dir(myshot.equilibria)
+    ['efit01', 'efit02', 'shot']
 
-    >>> nstx.addxp(1013)
-    >>> for s in nstx:
-    ...     s.chers.ti.plot()
+    >>> dir(myshot.equilibria.efit02)
+    ['psirz', 'qpsi', 'shot', 'userid', 'wmhd']
+
+For all shots in XP 1013 on NSTX, plot ion temperature from charge-exchange spectroscopy::
+
+    >>> xp1013 = nstx.filter_shots(xp=1013)
+    >>> for shot in xp1013:
+    ...     shot.chers.ti.plot()
+
+For all NSTX shots on 8/17/2010, plot the low-f, odd-n magnetics signal::
+
+    >>> myday = nstx.filter_shots(date=20100817)
+    >>> for shot in myday:
+    ...     shot.magnetics.filtered.lowf_oddn.plot()
 
 Lead Developers
 ==================
