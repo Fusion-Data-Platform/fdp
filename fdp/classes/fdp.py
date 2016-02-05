@@ -10,6 +10,19 @@ import factory
 
 
 class Fdp(object):
+    """
+    Top-level FDP object that contains machines.
+    
+    Exposed by re-mapping 'fdp' module in fdp.__init__.py.
+    
+    **Usage**::
+    
+        >>> import fdp
+        >>> dir(fdp)
+        ['cmod', 'diiid', 'nstx']
+        >>> nstx = fdp.nstx
+        
+    """
     def __getattr__(self, attribute):
         machine_name = fdp_globals.machineAlias(attribute)
         if machine_name in fdp_globals.MACHINES:
