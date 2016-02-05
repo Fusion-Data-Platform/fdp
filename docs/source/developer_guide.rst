@@ -170,7 +170,7 @@ Finally, on the GitHub website, in the devbranch area, submit a *pull request* t
 
 
 
-Package Reference
+Package reference
 =============================
 
 

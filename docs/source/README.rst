@@ -60,7 +60,7 @@ For all NSTX shots on 8/17/2010, plot the low-f, odd-n magnetics signal::
     >>> for shot in myday:
     ...     shot.magnetics.filtered.lowf_oddn.plot()
 
-Lead Developers
+Lead developers
 ==================
 
 * John Schmitt, Princeton Plasma Physics Lab

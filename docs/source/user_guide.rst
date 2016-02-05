@@ -41,7 +41,7 @@ Finally, you can launch python and import the FDP package::
 
 See Usage Examples to learn about the capabilities of FDP.
 
-Usage Examples
+Usage examples
 =====================
 
 First, import the FDP module::
