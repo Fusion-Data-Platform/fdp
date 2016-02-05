@@ -7,7 +7,7 @@ Fusion Data Platform
 
 .. only:: html
     
-    .. include:: html_preamble.rst
+    .. include:: html_preamble_above_toc.rst
 
 Table of Contents
 ======================
@@ -16,9 +16,8 @@ Table of Contents
     :maxdepth: 2
     
     introduction.rst
-    getting_started.rst
-    usage_examples.rst
-    package_reference.rst
+    user_guide.rst
+    developer_guide.rst
     project_documents.rst
     * :ref:`genindex`
 
