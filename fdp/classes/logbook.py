@@ -4,11 +4,11 @@ Created on Wed Nov 25 12:19:00 2015
 
 @author: ktritz
 """
-import numpy as np
-import fdp_globals
-import pymssql
-from factory import iterable
 import datetime
+import numpy as np
+import pymssql
+from . import fdp_globals
+from .factory import iterable
 
 FdpError = fdp_globals.FdpError
 LOGBOOK_CREDENTIALS = fdp_globals.LOGBOOK_CREDENTIALS

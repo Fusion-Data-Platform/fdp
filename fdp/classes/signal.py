@@ -14,7 +14,7 @@ Created on Tue Jun 23 2015
 import numpy as np
 import inspect
 import types
-import fdp_globals
+from . import fdp_globals
 
 MDS_SERVERS = fdp_globals.MDS_SERVERS
 # implemented MDS_SERVERS from fdf_globals in place of hard-coded MDS server - DRS 10/18/15

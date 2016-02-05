@@ -174,6 +174,10 @@ Package reference
 =============================
 
 
+FDP Package
+-----------------------
+.. automodule:: fdf
+
 Class Fdp
 -----------------------
 .. autoclass:: fdp.classes.fdp.Fdp

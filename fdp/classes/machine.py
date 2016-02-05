@@ -4,14 +4,14 @@ Created on Wed Nov 25 12:05:14 2015
 
 @author: ktritz
 """
-import fdp_globals
 from collections import Mapping, MutableMapping, deque
-from logbook import Logbook
-from shot import Shot
-import MDSplus as mds
 import os
 import numpy as np
-from factory import iterable
+import MDSplus as mds
+from . import fdp_globals
+from .logbook import Logbook
+from .shot import Shot
+from .factory import iterable
 
 FDP_DIR = fdp_globals.FDP_DIR
 MDS_SERVERS = fdp_globals.MDS_SERVERS
