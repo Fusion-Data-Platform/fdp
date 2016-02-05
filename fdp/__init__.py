@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-FDP is a data framework for magnetic fusion experiments
+FDP is a data framework package for magnetic fusion experiments.
 
-The 'fdp' module name is remapped to classes.fdp.Fdp()
+The 'fdp' package name is remapped to classes.fdp.Fdp().
 
 **Usage**::
 
@@ -22,8 +22,8 @@ Created on Wed Nov 25 19:34:56 2015
 import sys
 from .classes.fdp import Fdp
 
-# Change fdp module mapping from fdp.__init__.py module to fdp.Fdp() object
-# This change enables:
+# The 'fdp' package is remapping from fdp.__init__.py module to fdp.Fdp() object.
+# The remapping provides this functionality:
 # >>> import fdp
 # >>> nstx = fdp.nstx
 sys.modules[__name__] = Fdp()
