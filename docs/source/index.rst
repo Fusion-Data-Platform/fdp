@@ -18,7 +18,7 @@ Table of Contents
 ======================
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 3
     
     introduction.rst
     user_guide.rst

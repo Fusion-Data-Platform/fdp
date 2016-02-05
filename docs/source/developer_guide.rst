@@ -169,14 +169,15 @@ Finally, on the GitHub website, in the devbranch area, submit a *pull request* t
 
 
 
-
 Package reference
 =============================
 
 
-FDP package
+
+Sub-package Classes
 -----------------------
-.. automodule:: fdp
+.. automodule:: fdp.classes
+    :members:
 
 Class Fdp
 -----------------------
@@ -186,6 +187,11 @@ Class Fdp
 Class Machine
 -----------------------
 .. autoclass:: fdp.classes.machine.Machine
+    :members:
+
+Class Logbook
+-----------------------
+.. autoclass:: fdp.classes.logbook.Logbook
     :members:
 
 Class Shot
@@ -203,15 +209,25 @@ Class Signal
 .. autoclass:: fdp.classes.fdpsignal.Signal
     :members:
 
-Class Logbook
+Class Node
 -----------------------
-.. autoclass:: fdp.classes.logbook.Logbook
+.. autoclass:: fdp.classes.node.Node
     :members:
 
+Module fdp_globals
+-------------------------
+.. automodule:: fdp.classes.fdp_globals.py
+    :members:
 
+Module factory
+-------------------------
+.. automodule:: fdp.classes.factory.py
+    :members:
 
-
-
+Sub-package Methods
+-----------------------
+.. automodule:: fdp.methods
+    :members:
 
 
 
