@@ -1,24 +1,24 @@
 <?xml version='1.0'?>
 <container name='chers' mdstree='activespec' mdspath='\chers_best'>
-    <node name='valid' mdsnode='valid'></node>
     <axis name='radius' units='cm' mdsnode='radius'></axis>
     <axis name='time' units='s' mdsnode='time'></axis>
+    <signal name='valid' units='' axes='time,radius' title='Valid flag' mdsnode='valid'></signal>
     <signal name='ti' units='keV' error='dti' axes='time,radius' title='Ion Temperature' mdsnode='ti'></signal>
     <signal name='vt' units='km/s' error='dvt' axes='time,radius' title='Toroidal Velocity' mdsnode='vt'></signal>
     <signal name='ft' units='kHz' error='dft' axes='time,radius' title='Toroidal Frequency' mdsnode='ft'></signal>
     <signal name='nc' units='1e13/cm^3' error='dnc' axes='time,radius' title='Carbon Density' mdsnode='nc'></signal>
     <container name='derived'>
-        <node name='valid' mdsnode='valid'></node>
+        <signal name='valid' units='' axes='time,radius' title='Valid flag' mdsnode='valid'></signal>
         <signal name='zeff' units='' error='dzeff' axes='time,radius' title='Z Effective' mdsnode='zeff'></signal>
         <signal name='nd' units='1e13/cm^3' error='dnd' axes='time,radius' title='Deuteron Density' mdsnode='nd'></signal>
         <signal name='pi' units='kPa' error='dpi' axes='time,radius' title='Ion Pressure' mdsnode='pi'></signal>
     </container>
     <container name='spline'>
-        <node name='valid' mdsnode='svalid'></node>
         <axis name='radius' units='cm' mdsnode='rs'></axis>
-        <signal name='tis' units='keV' axes='time,radius' mdsnode='tis'></signal>
-        <signal name='vts' units='km/s' axes='time,radius' mdsnode='vts'></signal>
-        <signal name='zeffs' units='' axes='time,radius' mdsnode='zeffs'></signal>
-        <signal name='ncs' units='1e13/cm^3' axes='time,radius' mdsnode='ncs'></signal>
+        <signal name='valid' units='' axes='time,radius' mdsnode='svalid' title='Spline valid flag'></signal>
+        <signal name='tis' units='keV' axes='time,radius' mdsnode='tis' title='Ion Temperature (spline fit)'></signal>
+        <signal name='vts' units='km/s' axes='time,radius' mdsnode='vts' title='Toroidal Velocity (spline fit)'></signal>
+        <signal name='zeffs' units='' axes='time,radius' mdsnode='zeffs' title='Z Effective (spline fit)'></signal>
+        <signal name='ncs' units='1e13/cm^3' axes='time,radius' mdsnode='ncs' title='Carbon Density (spline fit)'></signal>
     </container>
 </container>
