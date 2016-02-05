@@ -9,5 +9,6 @@ all:
 	### rebuild docs
 	rm -rf $(DOCDIR)/build
 	$(MAKE) -C $(DOCDIR) html
+	git add -A
 	git commit -am "rebuilt docs"
 
