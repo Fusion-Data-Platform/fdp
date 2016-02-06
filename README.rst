@@ -23,7 +23,7 @@ Project objectives
 
 * Reduce barriers to entry for new students and scientists
 
-  * Access data without needing to learn site-specific or database-specific connection/configuration details
+  * Time is precious for short-term students and visiting collaborators.  Eliminating the need to learn site-specific or database-specific connection protocols saves valuable time.
 
 * Boost data usage and maximize return-on-investment
 
