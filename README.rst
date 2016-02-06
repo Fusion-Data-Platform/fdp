@@ -16,9 +16,11 @@ Project objectives
 
   * Streamline data access from multiple facilities, diagnostics, and databases
   * Organize data and analysis methods in an intuitive object-oriented framework
-  * Users can extend FDP with new capabilities
 
 * Promote collaborative code development and reduce inefficient code duplication
+
+  * Users can easily extend FDP with new capabilities and contribute to the code base
+
 * Reduce barriers to entry for new students and scientists
 
   * Access data without needing to learn site-specific or database-specific connection/configuration details
