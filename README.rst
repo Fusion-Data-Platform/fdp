@@ -14,8 +14,9 @@ Project objectives
 
 * Integrate data sources, data, and analysis methods in an extensible platform
 
-  * Data from multiple facilities, diagnostics, and databases
+  * Streamline data access from multiple facilities, diagnostics, and databases
   * Organize data and analysis methods in an intuitive object-oriented framework
+  * Users can extend FDP with new capabilities
 
 * Promote collaborative code development and reduce inefficient code duplication
 * Reduce barriers to entry for new students and scientists
@@ -26,9 +27,10 @@ Project objectives
 
   * Obtaining data is expensive - let's make the most of it
 
-* Build a framework using free and ubiquitous components
+* Use free and ubiquitous components
 
   * Python, Numpy, Github, etc.
+  * Platform-independent: desktop Mac/PC, Linux cluster
 
 Quick start
 ================
