@@ -12,18 +12,18 @@ Fusion Data Platform (FDP) is a data framework written in Python for magnetic fu
 Project objectives
 ---------------------------------
 
-* Integrate data sources, data, and analysis methods in an extensible platform
+* Integrate data sources, data, and analysis methods in an extensible framework
 
   * Streamline data access from multiple facilities, diagnostics, and databases
   * Organize data and analysis methods in an intuitive object-oriented framework
 
 * Promote collaborative code development and reduce inefficient code duplication
 
-  * Users can easily extend FDP with new capabilities and contribute to the code base
+  * Users can extend FDP with new capabilities and contribute to the code base
 
 * Reduce barriers to entry for new students and scientists
 
-  * Eliminate the need to learn data access protocols (time is valuable for short-term students and visiting collaborators)
+  * Eliminate the need to learn data access protocols - especially helpful for short-term students and visiting collaborators
 
 * Boost data usage and maximize return-on-investment
 
@@ -33,6 +33,15 @@ Project objectives
 
   * Python, Numpy, Matplotlib, Github, etc.
   * Platform-independent: desktop Mac/PC, Linux cluster
+
+Lead developers
+---------------------------------
+
+* John Schmitt, Princeton Plasma Physics Lab
+* David R. Smith, U. Wisconsin-Madison
+* Kevin Tritz, The Johns Hopkins U.
+* Howard Yuh, Nova Photonics
+
 
 Quick start
 ================
@@ -85,10 +94,3 @@ For all NSTX shots on 8/17/2010, plot the low-f, odd-n magnetics signal::
     >>> for shot in myday:
     ...     shot.magnetics.filtered.lowf_oddn.plot()
 
-Lead developers
-==================
-
-* John Schmitt, Princeton Plasma Physics Lab
-* David R. Smith, U. Wisconsin-Madison
-* Kevin Tritz, The Johns Hopkins U.
-* Howard Yuh, Nova Photonics
