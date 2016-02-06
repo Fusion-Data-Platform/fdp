@@ -25,13 +25,13 @@ Project objectives
 
   * Access data without needing to learn site-specific or database-specific connection/configuration details
 
-* Promote data usage and maximize utility
+* Boost data usage and maximize return-on-investment
 
   * Obtaining data is expensive - let's make the most of it
 
 * Use free and ubiquitous components
 
-  * Python, Numpy, Github, etc.
+  * Python, Numpy, Matplotlib, Github, etc.
   * Platform-independent: desktop Mac/PC, Linux cluster
 
 Quick start
