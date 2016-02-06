@@ -11,9 +11,10 @@ from .factory import parse_method
 
 class Fdp(object):
     """
-    Top-level container for machines.
+    The primary data object in FDP and the top-level container for machines.
     
-    An Fdp instance is mapped to 'fdp' module in fdp.__init__.py.
+    An instance of ``fdp.classes.fdp.Fdp`` is mapped to the top-level ``fdp``
+    package in ``fdp.__init__.py``.
     
     **Usage**::
     

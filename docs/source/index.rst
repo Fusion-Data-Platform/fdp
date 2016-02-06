@@ -24,7 +24,7 @@ Table of Contents
     user_guide.rst
     developer_guide.rst
     project_documents.rst
-    * :ref:`genindex`
+
 
 
 

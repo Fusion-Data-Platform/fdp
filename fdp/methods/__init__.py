@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Sub-package with default methods (global, machine-specific, and diagnostic-specific).
+``fdp.methods`` contains methods for FDP objects (e.g. a plot method, ``>>> mpts.te.plot()``).  Methods can be specified at different levels: global, machine-specific, or diagnostic-specific.
 """
 
 """
