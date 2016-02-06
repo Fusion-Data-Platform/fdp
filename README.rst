@@ -25,7 +25,7 @@ Project objectives
 
   * Eliminate the need to learn data access protocols - especially helpful for short-term students and visiting collaborators
 
-* Boost data usage and maximize return-on-investment
+* Boost data usage and increase the scientific return-on-investment
 
   * Obtaining data is expensive - let's make the most of it
 
