@@ -60,7 +60,7 @@ class FdpError(Exception):
 
     **Usage**::
 
-    raise FdfError('my error message')
+        raise FdfError('my error message')
 
     """
     def __init__(self, message=''):

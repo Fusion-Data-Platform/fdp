@@ -11,10 +11,10 @@ Created on Tue Jun 23 2015
 @author: hyuh
 """
 
-import numpy as np
 import inspect
 import types
-import fdp_globals
+import numpy as np
+from . import fdp_globals
 #from functools import wraps
 
 MDS_SERVERS = fdp_globals.MDS_SERVERS

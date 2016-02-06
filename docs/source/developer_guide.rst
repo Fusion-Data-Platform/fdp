@@ -1,13 +1,23 @@
 .. Restructured Text (RST) Syntax Primer: http://sphinx-doc.org/rest.html
 
 
+
+########################
+Developer Guide
+########################
+
+***************************
+Getting started
+***************************
+
 This guide is for developers who want to contribute to the FDP project, and this guide describes the development workflow on the PPPL Linux cluster.  If you simply want to use FDP on the PPPL Linux cluster, see the user guide.
 
 The FDP code repository is hosted on GitHub: https://github.com/Fusion-Data-Platform/FDP
 
 To participate in the FDP project as a developer, you must create a GitHub account.  The FDP project uses GitHub and Git for collaborative development and version control.
 
-**Configure Git**
+Configure Git
+====================================
 
 On the PPPL Linux cluster, load the module git/1.8.0.2 (on Red Hat 6 systems, use git/2.4.2)::
 
@@ -35,7 +45,8 @@ Also, you may want to set a default editor (e.g. vi, emacs, nedit) for Git comme
 
 You can inspect your Git configuration in the file ~/.gitconfig.  For more information about Git configuration, see https://help.github.com/articles/set-up-git/ or https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup
 
-**Clone the FDP repository**
+Clone the FDP repository
+====================================
 
 Git clones repositories into a new directory in your current directory.  In the right column of the FDP repo page (https://github.com/Fusion-Data-Framework/FDP), you can find the HTTPS URL (https://github.com/Fusion-Data-Framework/FDP.git) to clone FDP to your local directory ::
 
@@ -64,7 +75,8 @@ Finally, add your new FDP directory to the ``PYTHONPATH`` environment variable::
 You may want to add this action to your shell start-up files, as described above.  In bash, use the export command to set ``PYTHONPATH``.
 
 
-**Git workflow for FDP development**
+Git workflow for FDP development
+--------------------------------------
 
 \(1) Create a development branch (here, we call it devbranch) and checkout the new branch::
 
@@ -157,9 +169,66 @@ Next, push your local devbranch to devbranch on GitHub::
 Finally, on the GitHub website, in the devbranch area, submit a *pull request* to pull devbranch into master.
 
 
+***************************
+Package reference
+***************************
 
 
 
+Subpackage ``fdp.classes``
+====================================
+.. automodule:: fdp.classes
+    :members:
+
+Subpackage ``fdp.methods``
+====================================
+.. automodule:: fdp.methods
+    :members:
+
+Class ``Fdp``
+====================================
+.. autoclass:: fdp.classes.fdp.Fdp
+    :members:
+
+Class ``Machine``
+====================================
+.. autoclass:: fdp.classes.machine.Machine
+    :members:
+
+Class ``Logbook``
+====================================
+.. autoclass:: fdp.classes.logbook.Logbook
+    :members:
+
+Class ``Shot``
+====================================
+.. autoclass:: fdp.classes.shot.Shot
+    :members:
+
+Class ``Container``
+====================================
+.. autoclass:: fdp.classes.container.Container
+    :members:
+
+Class ``Signal``
+====================================
+.. autoclass:: fdp.classes.fdpsignal.Signal
+    :members:
+
+Class ``Node``
+====================================
+.. autoclass:: fdp.classes.node.Node
+    :members:
+
+Module ``fdp.classes.fdp_globals``
+====================================
+.. automodule:: fdp.classes.fdp_globals
+    :members:
+
+Module ``fdp.classes.factory``
+====================================
+.. automodule:: fdp.classes.factory
+    :members:
 
 
 

@@ -4,12 +4,12 @@ Created on Wed Nov 25 12:14:03 2015
 
 @author: ktritz
 """
-from collections import MutableMapping
 import inspect
 import types
-import factory
-from container import Container
 import numpy as np
+from collections import MutableMapping
+from . import factory
+from .container import Container
 
 
 class Shot(MutableMapping):

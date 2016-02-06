@@ -4,9 +4,9 @@ Created on Wed Nov 25 19:27:21 2015
 
 @author: ktritz
 """
-import factory
 import inspect
 import types
+from . import factory
 
 
 class Node(object):

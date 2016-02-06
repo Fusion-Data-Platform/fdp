@@ -6,9 +6,9 @@ Introduction
 *****************************************
 
 
-.. include:: README.rst
+.. include:: ../../README.rst
 
 License
 ===============
 
-.. include:: LICENSE.rst
+.. include:: ../../LICENSE.rst

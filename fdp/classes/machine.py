@@ -4,14 +4,14 @@ Created on Wed Nov 25 12:05:14 2015
 
 @author: ktritz
 """
-import fdp_globals
-from collections import MutableMapping, deque
-from logbook import Logbook
-from shot import Shot
-import MDSplus as mds
+from collections import Mapping, MutableMapping, deque
 import os
 import numpy as np
-from factory import iterable
+import MDSplus as mds
+from . import fdp_globals
+from .logbook import Logbook
+from .shot import Shot
+from .factory import iterable
 
 FDP_DIR = fdp_globals.FDP_DIR
 MDS_SERVERS = fdp_globals.MDS_SERVERS
@@ -30,7 +30,7 @@ class Machine(MutableMapping):
     **Usage**::
 
         >>> import fdf
-        >>> nstx = fdf.Machine('nstx')
+        >>> nstx = fdf.nstx
         >>> nstx.s140000.logbook()
         >>> nstx.addshots(xp=1048)
         >>> nstx.s140000.mpts.plot()
@@ -42,14 +42,6 @@ class Machine(MutableMapping):
 
         >>> nstx.s141398
         >>> nstx.s141399
-
-    Alternatively, a list of shot #'s may be provided during initialization::
-
-        >>> nstx = Machine(name='nstx', shotlist=[141398, 141399])
-
-    Or added later using the method addshot()::
-
-        >>> nstx.addshot([141398, 141399])
 
     """
 
@@ -288,3 +280,74 @@ class Machine(MutableMapping):
         find_list = list(find_list)
         find_list.sort()
         return find_list
+
+    def filter_shots(self, date=[], xp=[]):
+        """
+        Get a Machine-like object with an immutable shotlist for XP(s) 
+        or date(s)
+        """
+        self.addshot(xp=xp, date=date)
+        return ImmutableMachine(xp=xp, date=date, parent=self)
+
+
+class ImmutableMachine(Mapping):
+    """
+    An immutable Machine-like class for dates and XPs.
+    
+    The shotlist is auto-loaded based on date or XP, and the shotlist
+    can not be modified.
+    
+    Machine.filter_shots() returns an ImmutableMachine object.
+    
+    **Usage**::
+    
+        >>> xp1013 = fdp.nstx.filter_shots(xp=1013)
+        >>> for shot in xp1013:
+        ...     shot.mpts.te.plot()
+        ... 
+        
+    """
+    
+    def __init__(self, xp=[], date=[], parent=None):
+        self._shots = {}
+        self._parent = parent
+        shotlist = self._parent.get_shotlist(xp=xp, date=date)
+        for shot in shotlist:
+            self._shots[shot] = getattr(self._parent, 's{}'.format(shot))
+
+    def __getattr__(self, name):
+        try:
+            shot = int(name.split('s')[1])
+            return self._shots[shot]
+        except:
+            raise AttributeError("'{}' object has no attribute '{}'".format(
+                type(self), name))
+                
+    def __repr__(self):
+        return '<immutable machine {}>'.format(self._name.upper())
+
+    def __iter__(self):
+        return iter(self._shots.values())
+
+    def __contains__(self, value):
+        return value in self._shots
+
+    def __len__(self):
+        return len(self._shots.keys())
+
+    def __getitem__(self, item):
+        pass
+
+    def __dir__(self):
+        return ['s{}'.format(shot) for shot in self._shots]
+
+    def logbook(self):
+        for shotnum in self._shots:
+            shotObj = self._shots[shotnum]
+            shotObj.logbook()
+            
+    def list_shots(self):
+        for shotnum in self._shots:
+            shotObj = self._shots[shotnum]
+            print('{} in XP {} on {}'.format(
+                shotObj.shot, shotObj.xp, shotObj.date))

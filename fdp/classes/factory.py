@@ -4,12 +4,12 @@ Created on Thu Jun 18 10:38:40 2015
 @author: ktritz
 """
 
-import xml.etree.ElementTree as ET
 import sys
 import os
 import importlib
+import xml.etree.ElementTree as ET
 import numpy as np
-import fdp_globals
+from . import fdp_globals
 
 FDP_DIR = fdp_globals.FDP_DIR
 

@@ -4,16 +4,17 @@ Created on Wed Nov 25 13:58:50 2015
 
 @author: ktritz
 """
-from node import Node
-from fdpsignal import Signal
-import factory
+import os
 import inspect
 import types
-import os
-import fdp_globals
-FDP_DIR = fdp_globals.FDP_DIR
 import numpy as np
+from . import fdp_globals
+from . import factory
+from .node import Node
+from .fdpsignal import Signal
 
+
+FDP_DIR = fdp_globals.FDP_DIR
 
 class Container(object):
     """

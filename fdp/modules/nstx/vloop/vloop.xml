@@ -1,5 +1,0 @@
-<?xml version='1.0'?>
-<container name='vloop' mdstree='nstx' >
-    <axis name='time' units='s'  mdsnode='dim_of(\vloop)'></axis>
-    <signal name='vloop' units='V' axes='time' mdsnode='\vloop'></signal>
-</container>
