@@ -5,5 +5,3 @@ def fft(signal):
     print(dir(signal))
     print('in bes.fft.fft')
 
-def fft2(data):
-    print('in fft2')

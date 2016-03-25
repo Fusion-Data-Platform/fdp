@@ -12,9 +12,9 @@ Fusion Data Platform (FDP) is a data framework written in Python for magnetic fu
 Project objectives
 ---------------------------------
 
-* Integrate data sources, data, and analysis methods in an extensible framework
+* Integrate data sources, data, and analysis methods in a single, extensible data object
 
-  * Streamline data access from multiple facilities, diagnostics, and databases
+  * Streamline data access - multiple facilities, diagnostics, and databases
   * Organize data and analysis methods in an intuitive object-oriented framework
 
 * Promote collaborative code development and reduce inefficient code duplication
@@ -23,16 +23,17 @@ Project objectives
 
 * Reduce barriers to entry for new students and scientists
 
-  * Eliminate the need to learn data access protocols - especially helpful for short-term students and visiting collaborators
+  * Eliminate the need to learn and implement data access protocols - especially helpful for short-term students and visiting collaborators
 
 * Boost data usage and increase the scientific return-on-investment
 
-  * Obtaining data is expensive - let's make the most of it
+  * Producing scientific data is expensive - let's make the most of it
 
 * Use free and ubiquitous components
 
   * Python, Numpy, Matplotlib, Github, etc.
   * Platform-independent: desktop Mac/PC, Linux cluster
+  * Multi-modal: interactive at the Python command prompt or import FDP into your routines
 
 Lead developers
 ---------------------------------
