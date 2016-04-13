@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-def fft(signal):
-    print(type(signal))
-    print(dir(signal))
-    print('in bes.fft.fft')
+import fdp
 
+def fft(signal, power2=None):
+    t = signal.time
+    nt = t.size
+    print(nt)
