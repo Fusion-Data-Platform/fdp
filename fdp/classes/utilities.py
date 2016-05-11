@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from . import factory, fdpsignal
+from . import container, fdpsignal
 
 def isContainer(obj):
-    return issubclass(obj.__class__, factory.Container) and 'Container' in repr(type(obj))
+    return issubclass(obj.__class__, container.Container) and 'Container' in repr(type(obj))
 
 def isSignal(obj):
     return issubclass(obj.__class__, fdpsignal.Signal) and 'Signal' in repr(type(obj))
