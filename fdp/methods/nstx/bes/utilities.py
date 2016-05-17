@@ -8,9 +8,6 @@ Created on Fri Apr 15 15:33:23 2016
 from fdp.classes.fdp_globals import FdpError
 from fdp.classes.utilities import isSignal, isContainer
 
-def get_all_bes_tslice():
-    pass
-
 def get_signals_in_container(container):
     """Return list of attribute names corresponding to valid signals"""
     if not isContainer(container):

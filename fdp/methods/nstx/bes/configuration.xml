@@ -34,21 +34,21 @@
         <channel name='d1ch30' row='4' column='6'/>
         <channel name='d1ch31' row='4' column='7'/>
         <channel name='d1ch32' row='4' column='8'/>
-        <channel name='d2ch01' row='5' column='2'/>
-        <channel name='d2ch02' row='5' column='3'/>
-        <channel name='d2ch03' row='5' column='4'/>
-        <channel name='d2ch04' row='5' column='5'/>
-        <channel name='d2ch05' row='5' column='6'/>
-        <channel name='d2ch06' row='5' column='7'/>
-        <channel name='d2ch07' row='5' column='8'/>
-        <channel name='d2ch08' row='6' column='3'/>
+        <channel name='d2ch01' row='6' column='3'/>
+        <channel name='d2ch02' row='5' column='2'/>
+        <channel name='d2ch03' row='5' column='3'/>
+        <channel name='d2ch04' row='5' column='4'/>
+        <channel name='d2ch05' row='5' column='5'/>
+        <channel name='d2ch06' row='5' column='6'/>
+        <channel name='d2ch07' row='5' column='7'/>
+        <channel name='d2ch08' row='5' column='8'/>
+        <channel name='d2ch12' row='7' column='5'/>
+        <channel name='d2ch10' row='7' column='6'/>
+        <channel name='d2ch11' row='7' column='7'/>
         <channel name='d2ch09' row='6' column='4'/>
-        <channel name='d2ch10' row='6' column='5'/>
-        <channel name='d2ch11' row='6' column='6'/>
-        <channel name='d2ch12' row='6' column='7'/>
-        <channel name='d2ch13' row='6' column='8'/>
-        <channel name='d2ch14' row='7' column='5'/>
-        <channel name='d2ch15' row='7' column='6'/>
-        <channel name='d2ch16' row='7' column='7'/>
+        <channel name='d2ch13' row='6' column='5'/>
+        <channel name='d2ch14' row='6' column='6'/>
+        <channel name='d2ch15' row='6' column='7'/>
+        <channel name='d2ch16' row='6' column='8'/>
     </config>
 </configuration>

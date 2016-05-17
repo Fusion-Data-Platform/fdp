@@ -8,7 +8,7 @@ BES detector channels **do not** correspond to permanent measurement locations. 
 """
 
 from .fft import fft, plotfft
-from .plot2d import plot2d
+from .animation import animate
 from .configuration import loadConfig
 
-__all__ = ['fft', 'plotfft', 'plot2d', 'loadConfig']
+__all__ = ['fft', 'plotfft', 'animate', 'loadConfig']
