@@ -3,7 +3,7 @@
 Fusion Data Platform
 ==============================
 
-Fusion Data Platform (FDP) is a data framework written in Python for magnetic fusion experiments.  FDP streamlines data discovery, operations, and visualization.
+Fusion Data Platform (FDP) is a data framework in Python for magnetic fusion experiments.  FDP streamlines data discovery, analysis methods, and visualization.
 
 * Github repository: https://github.com/Fusion-Data-Platform/fdp
 * Documentation: http://Fusion-Data-Platform.github.io/
@@ -55,11 +55,11 @@ On the PPPL computing cluster, load the FDP module and start Python (you may nee
 Plot electron temperature from Thomson scattering for NSTX shot 140000::
 
     >>> import fdp
-    >>> fdp.nstx.s140000.mpts.te.plot()
+    >>> nstx = fdp.nstx
+    >>> nstx.s140000.mpts.te.plot()
 
 View logbook entries for NSTX shot 140000::
     
-    >>> nstx = fdp.nstx
     >>> nstx.s140000.logbook()
     
     Logbook entries for 140000

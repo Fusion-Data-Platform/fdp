@@ -10,23 +10,23 @@ Getting started
 
 This guide is for people who want to use FDP on the PPPL Linux cluster.  If you wish to contribute to the FDP project as a developer, see the developer guide.
 
-To use FDP on the PPPL Linux cluster, load the module nstx/FDP (you may need to unload other nstx modules)::
+To use FDP on the PPPL Linux cluster, load the module nstx/fdp (you may need to unload other nstx modules)::
 
-    [sunfire06:~] % module load nstx/FDP
+    [sunfire06:~] % module load nstx/fdp
 
     [sunfire06:~] % module list
     Currently Loaded Modulefiles:
     1) torque/2.5.2      5) idl/8.2           9) java/v1.6
     2) moab/5.4.0        6) nstx/treedefs    10) nstx/mdsplus5
-    3) ppplcluster/1.1   7) nstx/epics       11) nstx/FDP
+    3) ppplcluster/1.1   7) nstx/epics       11) nstx/fdp
     4) freetds/0.91      8) nstx/idldirs 
 
-Verify that python points to ``/p/FDP/anaconda/bin/python``::
+Verify that python points to ``/p/fdp/anaconda/bin/python``::
 
     [sunfire06:~] % which python
-    /p/FDP/anaconda/bin/python
+    /p/fdp/anaconda/bin/python
 
-If python does not point to ``/p/FDP/anaconda/bin/python``, then PATH contains to a different python distribution.  In this case, you need to modify PATH so ``/p/FDP/anaconda/bin`` is the first python distribution in PATH.
+If python does not point to ``/p/fdp/anaconda/bin/python``, then PATH contains to a different python distribution.  In this case, you need to modify PATH so ``/p/fdp/anaconda/bin`` is the first python distribution in PATH.
 
 Finally, you can launch python and import the FDP package::
 
@@ -36,7 +36,7 @@ Finally, you can launch python and import the FDP package::
     Type "help", "copyright", "credits" or "license" for more information.
     Anaconda is brought to you by Continuum Analytics.
     Please check out: http://continuum.io/thanks and https://anaconda.org
-    >>> import FDP
+    >>> import fdp
     >>>
 
 See Usage Examples to learn about the capabilities of FDP.
@@ -54,19 +54,7 @@ Initiate a machine instance
 
 **Define** a NSTX machine instance::
 
-    >>> nstx = fdp.Machine('nstx')
-
-or pre-load a shotlist::
-
-    >>> nstx = fdp.Machine('nstx', [140000, 140001])
-
-or pre-load an XP::
-
-    >>> nstx = fdp.Machine('nstx', xp=1013)
-
-
-Load shots and XPs
------------------------------------------
+    >>> nstx = fdp.nstx
 
 Shots are added as referenced.  For instance, without previous reference to 139980, you can enter::
 
