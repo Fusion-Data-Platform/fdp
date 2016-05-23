@@ -21,11 +21,13 @@ def fft(obj, *args, **kwargs):
             ffts.append(Fft(signal, *args, **kwargs))
         return ffts
 
-def plotfft(signal, *args, **kwargs):
+def plotfft(signal, fmax=None, *args, **kwargs):
     """Calcualte FFT for signal and plot"""
     if not isSignal(signal):
         warn("Method valid only at signal-level", FdpWarning)
         return
+    if not fmax:
+        fmax = 1e3
     fft = Fft(signal, *args, **kwargs)
     fig = plt.figure()
     ax = fig.add_subplot(1,1,1)
@@ -39,6 +41,7 @@ def plotfft(signal, *args, **kwargs):
     cb.set_label(r'$10\,\log_{10}(|FFT|^2)$ $(V^2/Hz)$')
     ax.set_xlabel('Time (s)')
     ax.set_ylabel('Frequency (kHz)')
+    ax.set_ylim([0,fmax])
     ax.set_title('{} | {} | {}'.format(
                  fft.shot, 
                  fft.parentname.upper(), 

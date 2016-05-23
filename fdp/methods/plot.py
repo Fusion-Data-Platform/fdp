@@ -8,10 +8,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def plot1d(data, xaxis, **kwargs):
+def plot1d(data, xaxis, xlim=None, ylim=None, **kwargs):
     plt.plot(xaxis, data, **kwargs)
     plt.ylabel('{} ({})'.format(data._name, data.units))
     plt.xlabel('{} ({})'.format(xaxis._name, xaxis.units))
+    if xlim:
+        plt.xlim(xlim)
+    if ylim:
+        plt.ylim(ylim)
 
 
 def plot2d(data, xaxis, yaxis, **kwargs):
