@@ -40,7 +40,7 @@ LOGBOOK_CREDENTIALS = {
 def machineAlias(machine):
 
     aliases = {
-        'nstx': ['nstx', 'nstxu', 'nstx-u'],
+        'nstxu': ['nstx', 'nstxu', 'nstx-u'],
         'diiid': ['diiid', 'diii-d', 'd3d'],
         'cmod': ['cmod', 'c-mod']
     }
