@@ -8,24 +8,24 @@ Created on Thu Jun 18 11:18:16 2015
 """
 import os
 
-MACHINES = ['nstx', 'diiid', 'cmod']
+MACHINES = ['nstxu', 'diiid', 'cmod']
 
 FDP_DIR = os.path.dirname(os.path.abspath(__file__))
 FDP_DIR = os.path.join(FDP_DIR, os.path.pardir)
 """Path string: top-level directory for FDF package"""
 
 MDS_SERVERS = {
-    'nstx': 'skylark.pppl.gov:8501'
+    'nstxu': 'skylark.pppl.gov:8501'
 }
 
 EVENT_SERVERS = {
-    'nstx': 'skylark.pppl.gov:8501',
+    'nstxu': 'skylark.pppl.gov:8501',
     'ltx': 'lithos.pppl.gov:8000'
 }
 """Dictionary: machine-name key paired to MDS server"""
 
 LOGBOOK_CREDENTIALS = {
-    'nstx': {
+    'nstxu': {
         'server': 'sql2008.pppl.gov\sql2008',
         'username': os.getenv('USER') or os.getenv('USERNAME'),
         'password': 'pfcworld',

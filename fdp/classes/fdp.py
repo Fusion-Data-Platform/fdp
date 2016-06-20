@@ -20,8 +20,8 @@ class Fdp(object):
     
         >>> import fdp
         >>> dir(fdp)
-        ['cmod', 'diiid', 'nstx']
-        >>> nstx = fdp.nstx
+        ['cmod', 'diiid', 'nstxu']
+        >>> nstxu = fdp.nstxu
         
     """
     def __getattr__(self, attribute):

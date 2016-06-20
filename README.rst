@@ -49,18 +49,18 @@ Quick start
 
 On the PPPL computing cluster, load the FDP module and start Python (you may need to unload conflicting modules)::
 
-    $ module load nstx/fdp
+    $ module load nstxu/fdp
     $ python
 
-Plot electron temperature from Thomson scattering for NSTX shot 140000::
+Plot electron temperature from Thomson scattering for NSTX-U shot 140000::
 
     >>> import fdp
-    >>> nstx = fdp.nstx
-    >>> nstx.s140000.mpts.te.plot()
+    >>> nstxu = fdp.nstxu
+    >>> nstxu.s140000.mpts.te.plot()
 
-View logbook entries for NSTX shot 140000::
+View logbook entries for NSTX-U shot 140000::
     
-    >>> nstx.s140000.logbook()
+    >>> nstxu.s140000.logbook()
     
     Logbook entries for 140000
     ************************************
@@ -71,9 +71,9 @@ View logbook entries for NSTX shot 140000::
     Good.
     ************************************
 
-List diagnostic containers for NSTX::
+List diagnostic containers for NSTX-U::
 
-    >>> myshot = nstx.s140000
+    >>> myshot = nstxu.s140000
     >>> dir(myshot)
     ['bes', 'chers', 'equilibria', 'filterscopes', 'magnetics', 'mpts', 'mse', 'usxr']
 
@@ -83,15 +83,15 @@ List diagnostic containers for NSTX::
     >>> dir(myshot.equilibria.efit02)
     ['psirz', 'qpsi', 'shot', 'userid', 'wmhd']
 
-For all shots in XP 1013 on NSTX, plot ion temperature from charge-exchange spectroscopy::
+For all shots in XP 1013 on NSTX-U, plot ion temperature from charge-exchange spectroscopy::
 
-    >>> xp1013 = nstx.filter_shots(xp=1013)
+    >>> xp1013 = nstxu.filter_shots(xp=1013)
     >>> for shot in xp1013:
     ...     shot.chers.ti.plot()
 
-For all NSTX shots on 8/17/2010, plot the low-f, odd-n magnetics signal::
+For all NSTX-U shots on 8/17/2010, plot the low-f, odd-n magnetics signal::
 
-    >>> myday = nstx.filter_shots(date=20100817)
+    >>> myday = nstxu.filter_shots(date=20100817)
     >>> for shot in myday:
     ...     shot.magnetics.filtered.lowf_oddn.plot()
 

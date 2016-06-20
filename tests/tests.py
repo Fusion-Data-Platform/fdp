@@ -31,8 +31,8 @@ class TestShotFixture(unittest.TestCase):
         """
         Setup method for text cases
         """
-        nstx = machine.Machine('nstx')
-        self.shot = nstx.s141000
+        nstxu = machine.Machine('nstxu')
+        self.shot = nstxu.s141000
 
     def testContainer(self, container=None):
         """

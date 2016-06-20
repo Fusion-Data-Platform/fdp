@@ -54,37 +54,37 @@ Initiate a machine instance
 
 **Define** a NSTX machine instance::
 
-    >>> nstx = fdp.nstx
+    >>> nstxu = fdp.nstxu
 
 Shots are added as referenced.  For instance, without previous reference to 139980, you can enter::
 
-    >>> nstx.s139980.chers.plot()
+    >>> nstxu.s139980.chers.plot()
 
 **Add shots** to the NSTX instance::
 
-    >>> nstx.addshot(140000)
+    >>> nstxu.addshot(140000)
 
 or a shotlist::
 
-    >>> nstx.addshot([141400, 141401, 141402])
+    >>> nstxu.addshot([141400, 141401, 141402])
 
 or by XP::
 
-    >>> nstx.addshot(xp=1048)
+    >>> nstxu.addshot(xp=1048)
 
 or by date (string or int YYYYMMDD)::
 
-    >>> nstx.addshot(date=20100817)
+    >>> nstxu.addshot(date=20100817)
 
 **List shots** presently loaded::
 
-    >>> dir(nstx)
+    >>> dir(nstxu)
 
 or::
 
-    >>> nstx.listshot()
+    >>> nstxu.listshot()
 
 Get a custom **shotlist**::
 
-    >>> my_shotlist = nstx.get_shotlist(xp=1032)  # returns numpy.ndarray
+    >>> my_shotlist = nstxu.get_shotlist(xp=1032)  # returns numpy.ndarray
 
