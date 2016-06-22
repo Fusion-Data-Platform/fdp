@@ -23,7 +23,7 @@ class Fft(object):
         power2: # of points in fft, power-of-2 (>=) enforced
     """
     
-    def __init__(self, signal, power2=None, tmin=0.0, tmax=5.0, 
+    def __init__(self, signal, power2=None, tmin=0.2, tmax=1.0, 
                  hanning=True, offsetminimum=False, offsetdc=False,
                  normalizetodc=False):
         self.signal = signal
