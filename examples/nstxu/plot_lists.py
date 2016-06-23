@@ -11,5 +11,9 @@ if __name__=='__main__':
     f = fdp.Fdp()
     nstx=f.nstxu
     bes = nstx.s204620.bes
-    fft, fig = bes.d1ch01.plotfft(tmin=0.2, tmax=0.45, fmax=200)
-    fig.show()
+    print(bes.listMethods())
+    print(bes.listSignals())
+    print(bes.listAttributes())
+    sig=bes.d1ch01
+    print(sig.listMethods())
+    print(sig.listAttributes())

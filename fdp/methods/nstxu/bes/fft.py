@@ -46,4 +46,4 @@ def plotfft(signal, fmax=None, *args, **kwargs):
                  fft.shot, 
                  fft.parentname.upper(), 
                  fft.signalname.upper()))
-    return fft
+    return fft, fig
