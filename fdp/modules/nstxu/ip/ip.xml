@@ -1,5 +1,0 @@
-<?xml version='1.0'?>
-<container name='ip' mdstree='nstx' >
-    <axis name='time' units='ms'  mdsnode='dim_of(\ip)'></axis>
-    <signal name='data' units='kA' axes='time' mdsnode='\ip'></signal>
-</container>
