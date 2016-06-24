@@ -1,5 +1,6 @@
 <?xml version='1.0'?>
 <container name='usxr' mdstree='usxr' title='USXR'>
+    <defaults method='plot' stack='8,2'></defaults>
     <container name='vtop' title='Vertical Top'>
         <axis name='time' units='s' mdsnode='dim_of(\usxr_vtop_00.raw)'></axis>
         <signal name='vtop{}' title='Vertical Top Channel {}' units='DN' axes='time' mdsnode='\usxr_vtop_{}.raw' range='16'></signal>

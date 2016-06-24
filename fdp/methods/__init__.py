@@ -8,9 +8,8 @@ Created on Thu Oct 29 10:20:43 2015
 
 @author: ktritz
 """
-from .plot import plot
-from .utilities import listSignals, listContainers, \
-    listMethods, listAttributes
 
-__all__ = ['plot', 'listSignals', 'listContainers', 
-           'listMethods', 'listAttributes']
+from plot import plot
+from _netcat import _netcat
+
+__all__ = ['plot', '_netcat']

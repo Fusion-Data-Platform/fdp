@@ -75,7 +75,8 @@ class Shot(MutableMapping):
             self._logbook_entries = self._logbook.get_entries(shot=self.shot)
         xplist = []
         for entry in self._logbook_entries:
-            xplist.append(entry['xp'])
+            if entry['xp']:
+                xplist.append(entry['xp'])
         if len(np.unique(xplist)) == 1:
             xp = xplist.pop(0)
         else:

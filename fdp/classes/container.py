@@ -13,7 +13,6 @@ from . import factory
 from .node import Node
 from .fdpsignal import Signal
 
-
 FDP_DIR = fdp_globals.FDP_DIR
 
 class Container(object):
@@ -154,6 +153,8 @@ class Container(object):
             raise AttributeError("Attribute '{}' not found".format(attribute))
 
         attr = getattr(self._parent, attribute)
+        if 'Shot' in str(type(attr)):
+            raise AttributeError("Attribute '{}' not found".format(attribute))
         if Container in attr.__class__.mro() and attribute[0] is not '_':
             raise AttributeError("Attribute '{}' not found".format(attribute))
         if inspect.ismethod(attr):
@@ -193,10 +194,10 @@ class Container(object):
 
     def __iter__(self):
         if not len(self._signals):
-            items = self._containers.values()
+            items = sorted(self._containers.values(), key= lambda obj: obj._name.lower())
             # items.extend(self._dynamic_containers.values())
         else:
-            items = self._signals.values()
+            items = sorted(self._signals.values(), key= lambda obj: obj._name.lower())
         return iter(items)
 
     @classmethod
