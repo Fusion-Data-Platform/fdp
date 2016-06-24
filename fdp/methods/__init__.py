@@ -14,4 +14,3 @@ from .utilities import listSignals, listContainers, \
 
 __all__ = ['plot', 'listSignals', 'listContainers', 
            'listMethods', 'listAttributes']
-#__all__ = ['plot']
