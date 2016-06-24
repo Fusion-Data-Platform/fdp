@@ -15,7 +15,7 @@ pg.mkQApp()
 
 def plot1d(signal, **kwargs):
     xaxis = getattr(signal, signal.axes[0])
-    _ = kwargs.pop('stack')
+    _ = kwargs.pop('stack', None)
     plt.plot(xaxis, signal, **kwargs)
     plt.ylabel('{} ({})'.format(signal._name, signal.units))
     plt.xlabel('{} ({})'.format(xaxis._name, xaxis.units))
