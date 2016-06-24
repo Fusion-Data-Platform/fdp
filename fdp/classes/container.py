@@ -153,6 +153,8 @@ class Container(object):
             raise AttributeError("Attribute '{}' not found".format(attribute))
 
         attr = getattr(self._parent, attribute)
+        if 'Shot' in str(type(attr)):
+            raise AttributeError("Attribute '{}' not found".format(attribute))
         if Container in attr.__class__.mro() and attribute[0] is not '_':
             raise AttributeError("Attribute '{}' not found".format(attribute))
         if inspect.ismethod(attr):
