@@ -193,10 +193,10 @@ class Container(object):
 
     def __iter__(self):
         if not len(self._signals):
-            items = self._containers.values()
+            items = sorted(self._containers.values(), key= lambda obj: obj._name.lower())
             # items.extend(self._dynamic_containers.values())
         else:
-            items = self._signals.values()
+            items = sorted(self._signals.values(), key= lambda obj: obj._name.lower())
         return iter(items)
 
     @classmethod

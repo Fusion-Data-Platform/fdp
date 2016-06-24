@@ -16,7 +16,7 @@ LOGBOOK_CREDENTIALS = fdp_globals.LOGBOOK_CREDENTIALS
 
 class Logbook(object):
 
-    def __init__(self, name='nstx', root=None):
+    def __init__(self, name='nstxu', root=None):
         self._name = name.lower()
         self._root = root
 

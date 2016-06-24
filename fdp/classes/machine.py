@@ -52,7 +52,7 @@ class Machine(MutableMapping):
     _parent = None
     _modules = None
 
-    def __init__(self, name='nstx', shotlist=[], xp=[], date=[]):
+    def __init__(self, name='nstxu', shotlist=[], xp=[], date=[]):
         self._shots = {}  # shot dictionary with shot number (int) keys
         self._classlist = {}
         self._name = machineAlias(name)
