@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+<container name='mse' mdstree='mse' title='MSE' desc='Motional Stark Effect'>
+    <axis name='radius' units='cm' mdsnode='radius'></axis>
+    <axis name='time' units='s' mdsnode='time'></axis>
+    <signal name='pa' units='degrees' axes='radius, time' mdsnode='pa_corr_er'></signal>
+    <signal name='pa_er_uncorrected' units='degrees' axes='radius, time' mdsnode='pa'></signal>
+
+    <container name='raw'>
+        <axis name='time' units='s' mdsnode='dim_of(\raw01)'></axis>
+        <axis name='time2' units='s' mdsnode='dim_of(\hv01,0)'></axis>
+        <axis name='time3' units='s' mdsnode='dim_of(\temp01,0)'></axis>
+        <axis name='crystal' units='stage' mdsnode='dim_of(\hv01,1)'></axis>
+        <signal name='raw{}' units='V' axes='time' mdsnode='\raw{}' range='1,18'></signal>
+        <signal name='pem1' units='Volts' axes='time' mdsnode='\pem1'></signal>
+        <signal name='pem2' units='Volts' axes='time' mdsnode='\pem2'></signal>
+        <signal name='hv{}' units='V' axes='time, crystal' mdsnode='\hv{}'
+        range='1,18' axes_refs='time2, crystal'></signal>
+        <signal name='temp{}' units='C' axes='time' mdsnode='\temp{}'
+        range='1,18' axes_refs='time3'></signal>
+    </container>
+</container>

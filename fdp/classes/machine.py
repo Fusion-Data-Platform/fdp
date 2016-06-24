@@ -52,7 +52,7 @@ class Machine(MutableMapping):
     _parent = None
     _modules = None
 
-    def __init__(self, name='nstx', shotlist=[], xp=[], date=[]):
+    def __init__(self, name='nstxu', shotlist=[], xp=[], date=[]):
         self._shots = {}  # shot dictionary with shot number (int) keys
         self._classlist = {}
         self._name = machineAlias(name)
@@ -149,7 +149,9 @@ class Machine(MutableMapping):
         except:
             msg = 'MDSplus connection error for tree {} and node {}'.format(
                 signal._mdstree, signal._mdsnode)
-            raise FdpError(msg)
+            print('WARNING: ' + msg)
+            return np.zeros(0)
+            # raise FdpError(msg)
         try:
             if signal._raw_of is not None:
                 data = data.raw_of()
