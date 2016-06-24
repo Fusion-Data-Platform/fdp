@@ -13,9 +13,11 @@ import time
 pg.mkQApp()
 
 
-def plot1d(data, xaxis, **kwargs):
-    plt.plot(xaxis, data, **kwargs)
-    plt.ylabel('{} ({})'.format(data._name, data.units))
+def plot1d(signal, **kwargs):
+    xaxis = getattr(signal, signal.axes[0])
+    _ = kwargs.pop('stack')
+    plt.plot(xaxis, signal, **kwargs)
+    plt.ylabel('{} ({})'.format(signal._name, signal.units))
     plt.xlabel('{} ({})'.format(xaxis._name, xaxis.units))
 
 
@@ -91,7 +93,7 @@ def plot(signal, fig=None, ax=None, **kwargs):
     if fig is None:
         fig = plt.figure()
 
-    if dims > 1:
+    if 1: # dims > 1:
         plot_methods[dims](signal, **defaults)
     else:
         if not len(fig.axes):
@@ -151,10 +153,10 @@ def plot_container(container, **kwargs):
             fig = plt.figure()
             index = 1
         if index == 1:
-            ax = plt.subplot(vstack, hstack, index)
+            plt.subplot(vstack, hstack, index)
         else:
-            ax = plt.subplot(vstack, hstack, index) # , sharex=ax, sharey=ax)
-        signal.plot(fig=fig, ax=ax, **kwargs)
+            plt.subplot(vstack, hstack, index) # , sharex=ax, sharey=ax)
+        signal.plot(fig=fig, ax=None, **kwargs)
 
 
 class PlotAxes(plt.Axes):
@@ -210,6 +212,7 @@ class PlotAxes(plt.Axes):
         ixmax = np.searchsorted(x, xmax*1.1, side='right')
         stride = kwargs.pop('stride', 0)
         ptype = kwargs.pop('type', None)
+        stack = kwargs.pop('stack', None)
         stride_level = 0
         if stride:
             stride_level = int(np.floor(np.log((ixmax-ixmin)/nx)/np.log(stride)))
