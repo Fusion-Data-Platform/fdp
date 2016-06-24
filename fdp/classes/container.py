@@ -13,7 +13,6 @@ from . import factory
 from .node import Node
 from .fdpsignal import Signal
 
-
 FDP_DIR = fdp_globals.FDP_DIR
 
 class Container(object):
