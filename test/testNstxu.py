@@ -19,7 +19,7 @@ class TestSetup(unittest.TestCase):
         self.shot = getattr(self.nstxu, 's'+repr(self.shotnumber))
         
 
-class TestNstxuModule(TestSetup):
+class TestNstxu(TestSetup):
         
     def testMachineClass(self):
         self.assertTrue(issubclass(type(self.nstxu), 
@@ -30,19 +30,6 @@ class TestNstxuModule(TestSetup):
         self.assertTrue(issubclass(type(self.shot),
                                    fdp.classes.shot.Shot))
 
-
-class TestBesModule(TestSetup):
-    
-    def testContainerClass(self):
-        self.assertTrue(hasattr(self.shot, 'bes'))
-        self.assertTrue(issubclass(type(self.shot.bes),
-                                   fdp.classes.container.Container))
-                                   
-    def testSignalClass(self):
-        print(dir(self.shot.bes))
-        self.assertTrue(hasattr(self.shot.bes, 'd1ch01'))
-        self.assertTrue(issubclass(type(self.shot.bes.d1ch01),
-                                   fdp.classes.fdpsignal.Signal))
 
 if __name__ == '__main__':
     unittest.main()
