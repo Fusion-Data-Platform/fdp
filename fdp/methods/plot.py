@@ -9,6 +9,7 @@ import numba as nb
 import matplotlib.pyplot as plt
 import pyqtgraph as pg
 import time
+import fdp
 
 pg.mkQApp()
 
@@ -16,6 +17,9 @@ pg.mkQApp()
 def plot1d(signal, **kwargs):
     xaxis = getattr(signal, signal.axes[0])
     _ = kwargs.pop('stack', None)
+    _ = kwargs.pop('maxrange', None)
+    _ = kwargs.pop('minrange', None)
+    
     plt.plot(xaxis, signal, **kwargs)
     plt.ylabel('{} ({})'.format(signal._name, signal.units))
     plt.xlabel('{} ({})'.format(xaxis._name, xaxis.units))
