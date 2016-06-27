@@ -13,8 +13,8 @@ module_dir = os.path.dirname(os.path.abspath(__file__))
 FDP_DIR = os.path.join(module_dir, os.pardir, os.pardir, os.pardir)
 class_dir = os.path.join(FDP_DIR, 'classes')
 sys.path.insert(0, class_dir)
-import container
-import factory
+from fdp import container
+from fdp import factory
 sys.path.pop(0)
 
 Container = container.Container
