@@ -10,8 +10,6 @@ import os.path
 import unittest
 
 if __name__=='__main__':
-    TEST_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
-                            'test')
-    print('running tests in {}'.format(TEST_DIR))
+    TEST_DIR = os.path.join(os.path.dirname(__file__), 'test')
     loader = unittest.defaultTestLoader.discover(TEST_DIR)
-    unittest.TextTestRunner().run(loader)
+    unittest.TextTestRunner(verbosity=2).run(loader)

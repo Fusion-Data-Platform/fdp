@@ -97,6 +97,7 @@ def parse_method(obj, level=None):
         module = branch_list.pop()
         method_path = os.path.join(FDP_DIR, 'methods', obj._root._name,
                                    *branch_list)
+    print('Inserting path {}.'.format(method_path))
     sys.path.insert(0, method_path)
     try:
         method_object = importlib.import_module(module)
@@ -104,8 +105,9 @@ def parse_method(obj, level=None):
             return
         for method in method_object.__all__:
             method_from_object = getattr(method_object, method)
+            print('Attaching method {}.'.format(method))
             setattr(obj, method, method_from_object)
-    except:
+    except ImportError:
         pass
     sys.path.pop(0)
 
