@@ -8,8 +8,7 @@ Created on Wed Jun 22 15:05:55 2016
 import fdp
 
 if __name__=='__main__':
-    f = fdp.Fdp()
-    nstx=f.nstxu
+    nstx=fdp.nstxu()
     bes = nstx.s204620.bes
     print(bes.listMethods())
     print(bes.listSignals())
