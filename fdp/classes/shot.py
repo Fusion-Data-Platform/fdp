@@ -28,21 +28,23 @@ class Shot(MutableMapping):
 
     def __getattr__(self, attribute):
         # first see if the attribute is in the Machine object
-        try:
-            attr = getattr(self._parent, attribute)
-            if inspect.ismethod(attr):
-                return types.MethodType(attr.im_func, self)
-            else:
-                return attr
-        except:
-            pass  # failed, so check other locations
+        # except:
+        #     raise  # failed, so check other locations
         if attribute in self._modules:
             if self._modules[attribute] is None:
                 self._modules[attribute] = factory.Factory(attribute, Container, root=self._root,
                                                    shot=self.shot, parent=self)
             return self._modules[attribute]
-        raise AttributeError("{} shot: {} has no attribute '{}'".format(
-                                 self._root._name, self.shot, attribute))
+        try:
+            attr = getattr(self._parent, attribute)
+            if inspect.ismethod(attr):
+                return types.MethodType(attr.__func__, self)
+            else:
+                return attr
+        except:
+            raise
+            # raise AttributeError("{} shot: {} has no attribute '{}'".format(
+            #                          self._root._name, self.shot, attribute))
 
     def __repr__(self):
         return '<Shot {}>'.format(self.shot)

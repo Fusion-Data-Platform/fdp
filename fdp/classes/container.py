@@ -158,7 +158,7 @@ class Container(object):
         if Container in attr.__class__.mro() and attribute[0] is not '_':
             raise AttributeError("Attribute '{}' not found".format(attribute))
         if inspect.ismethod(attr):
-            return types.MethodType(attr.im_func, self)
+            return types.MethodType(attr.__func__, self)
         else:
             return attr
 

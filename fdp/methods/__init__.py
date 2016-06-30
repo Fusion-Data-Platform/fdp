@@ -8,7 +8,7 @@ Created on Thu Oct 29 10:20:43 2015
 
 @author: ktritz
 """
-from plot import plot
-from _netcat import _netcat
+from .plot import plot
+from ._netcat import _netcat
 
 __all__ = ['plot', '_netcat']
