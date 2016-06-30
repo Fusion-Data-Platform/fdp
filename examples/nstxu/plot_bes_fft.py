@@ -8,8 +8,6 @@ Created on Wed Jun 22 15:05:55 2016
 import fdp
 
 if __name__=='__main__':
-    f = fdp.Fdp()
-    nstx=f.nstxu
+    nstx=fdp.nstxu()
     bes = nstx.s204620.bes
-    fft, fig = bes.d1ch01.plotfft(tmin=0.2, tmax=0.45, fmax=200)
-    fig.show()
+    fft = bes.d1ch01.plotfft(tmin=0.2, tmax=0.45, fmax=200)
