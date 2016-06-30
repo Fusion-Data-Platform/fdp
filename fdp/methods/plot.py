@@ -34,6 +34,8 @@ def plot2d(signal, **kwargs):
     plot_func = getattr(plt, plot_type)
     xaxis = getattr(signal, signal.axes[1])
     yaxis = getattr(signal, signal.axes[0])
+    xaxis[:]
+    yaxis[:]
     plot_range = set_range(signal, default_min, default_max)
     levels = np.linspace(plot_range[0], plot_range[1], nlevels)
     plot_func(np.array(xaxis), np.array(yaxis), np.array(signal),
