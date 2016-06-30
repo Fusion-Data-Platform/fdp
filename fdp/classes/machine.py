@@ -30,18 +30,18 @@ class Machine(MutableMapping):
     **Usage**::
 
         >>> import fdf
-        >>> nstx = fdf.nstx
-        >>> nstx.s140000.logbook()
-        >>> nstx.addshots(xp=1048)
-        >>> nstx.s140000.mpts.plot()
-        >>> nstx.listshot()
+        >>> nstxu = fdf.nstxu
+        >>> nstxu.s140000.logbook()
+        >>> nstxu.addshots(xp=1048)
+        >>> nstxu.s140000.mpts.plot()
+        >>> nstxu.listshot()
 
-    Machine class contains a model shot object: nstx.s0
+    Machine class contains a model shot object: nstxu.s0
 
     Shot data can be accessed directly through the Machine class::
 
-        >>> nstx.s141398
-        >>> nstx.s141399
+        >>> nstxu.s141398
+        >>> nstxu.s141399
 
     """
 
@@ -184,9 +184,9 @@ class Machine(MutableMapping):
 
         **Usage**
 
-            >>> nstx.addshot([140000 140001])
-            >>> nstx.addshot(xp=1032)
-            >>> nstx.addshot(date=20100817, verbose=True)
+            >>> nstxu.addshot([140000 140001])
+            >>> nstxu.addshot(xp=1032)
+            >>> nstxu.addshot(date=20100817, verbose=True)
 
         Note: You can reference shots even if the shots have not been loaded.
 
@@ -303,7 +303,7 @@ class ImmutableMachine(Mapping):
     
     **Usage**::
     
-        >>> xp1013 = fdp.nstx.filter_shots(xp=1013)
+        >>> xp1013 = fdp.nstxu.filter_shots(xp=1013)
         >>> for shot in xp1013:
         ...     shot.mpts.te.plot()
         ... 

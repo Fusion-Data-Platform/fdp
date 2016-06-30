@@ -60,7 +60,7 @@ class FdpError(Exception):
 
     **Usage**::
 
-        raise FdfError('my error message')
+        raise FdfError('error message')
 
     """
     def __init__(self, message=''):
@@ -68,3 +68,19 @@ class FdpError(Exception):
 
     def __str__(self):
         return self.message
+
+class FdpWarning(Warning):
+    """
+    Warning class for FDF package
+
+    **Usage**::
+
+        raise FdpWarning('warning message')
+
+    """
+    def __init__(self, message=''):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+

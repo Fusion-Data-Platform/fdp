@@ -2,13 +2,34 @@
 <container name='[efit]'>
     <axis name='time' units='s' mdsnode='\gtime'></axis>
     <axis name='atime' units='s' mdsnode='\atime'></axis>
+    <signal name='ipmeas' title='Stored Energy' units='J' axes='time' mdsnode='\ipmeas'></signal>
+    <signal name='ipmhd' title='Stored Energy' units='J' axes='time' mdsnode='\ipmhd'></signal>
+    <signal name='rmaxis' title='Stored Energy' units='J' axes='time' mdsnode='\rmaxis'></signal>
+    <signal name='zmaxis' title='Stored Energy' units='J' axes='time' mdsnode='\zmaxis'></signal>
+    <signal name='bcentr' title='Stored Energy' units='J' axes='time' mdsnode='\bcentr'></signal>
+    <signal name='bt0' title='Stored Energy' units='J' axes='time' mdsnode='\bt0'></signal>
+    <signal name='q0' title='Stored Energy' units='J' axes='time' mdsnode='\q0'></signal>
+    <signal name='q95' title='Stored Energy' units='J' axes='time' mdsnode='\q95'></signal>
+    <signal name='kappa' title='Stored Energy' units='J' axes='time' mdsnode='\kappa'></signal>
+    <signal name='tritop' title='Stored Energy' units='J' axes='time' mdsnode='\tritop'></signal>
+    <signal name='tribot' title='Stored Energy' units='J' axes='time' mdsnode='\tribot'></signal>
+    <signal name='drsep' title='Stored Energy' units='J' axes='time' mdsnode='\drsep'></signal>
+    <signal name='li' title='Stored Energy' units='J' axes='time' mdsnode='\li'></signal>
+    <signal name='rmidin' title='Stored Energy' units='J' axes='time' mdsnode='\rmidin'></signal>
+    <signal name='rmidout' title='Stored Energy' units='J' axes='time' mdsnode='\rmidout'></signal>
+    <signal name='wmhd' title='Stored Energy' units='J' axes='time' mdsnode='\wmhd'></signal>
+    <signal name='wdia' title='Stored Energy' units='J' axes='time' mdsnode='\wdia'></signal>
+    <signal name='wbdot' title='Stored Energy' units='J' axes='time' mdsnode='\wbdot'></signal>
+    <signal name='taumhd' title='Stored Energy' units='J' axes='time' mdsnode='\taumhd'></signal>
+
     <axis name='R' units='m' axes='time' mdsnode='\R'></axis>
     <axis name='z' units='m' axes='time' mdsnode='\z'></axis>
-    <axis name='psin' title='Psi_N' axes='time' mdsnode='\psin'></axis>
-    <signal name='qpsi' title='Q_psi' axes='time, psin' mdsnode='\qpsi'></signal>
-    <signal name='wmhd' title='Stored Energy' units='J' axes='time' mdsnode='\wmhd'></signal>
     <signal name='psirz' title='Psi (R, z)' units='J' axes = 'time, R, z' mdsnode='\psirz'>
         <defaults method='plot' type='contour' nlevels='50'></defaults>
     </signal>
+
+    <axis name='psin' title='Psi_N' axes='time' mdsnode='\psin'></axis>
+    <signal name='qpsi' title='Q_psi' axes='time, psin' mdsnode='\qpsi'></signal>
+
     <node name='userid' mdsnode='\[efit]::userid'></node>
 </container>

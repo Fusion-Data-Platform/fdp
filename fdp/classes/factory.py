@@ -114,7 +114,7 @@ def parse_method(obj, level=None):
 
 def base_container(container):
     parent_container = container
-    while type(parent_container._parent) is not Shot:
+    while hasattr(parent_container, '_parent'):
         parent_container = parent_container._parent
     return parent_container
 
