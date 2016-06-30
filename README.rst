@@ -7,7 +7,6 @@ Fusion Data Platform (FDP) is a data framework in Python for magnetic fusion exp
 
 * Github repository: https://github.com/Fusion-Data-Platform/fdp
 * Documentation: http://Fusion-Data-Platform.github.io/
-* Google Group: https://groups.google.com/forum/#!forum/fusion-data-platform
 
 Project objectives
 ---------------------------------
@@ -19,79 +18,49 @@ Project objectives
 
 * Promote collaborative code development and reduce inefficient code duplication
 
-  * Users can extend FDP with new capabilities and contribute to the code base
-
 * Reduce barriers to entry for new students and scientists
-
-  * Eliminate the need to learn and implement data access protocols - especially helpful for short-term students and visiting collaborators
-
-* Boost data usage and increase the scientific return-on-investment
-
-  * Producing scientific data is expensive - let's make the most of it
 
 * Use free and ubiquitous components
 
   * Python, Numpy, Matplotlib, Github, etc.
   * Platform-independent: desktop Mac/PC, Linux cluster
-  * Multi-modal: interactive at the Python command prompt or import FDP into your routines
+
+Example usage
+==============================
+
+Initiate an FDP session::
+
+    >>> import fdp
+    >>> nstxu = fdp.nstxu()
+
+List diagnostics::
+
+    >>> dir(nstxu.s141000)
+    ['bes', 'chers', 'equilibria', 'filterscopes', 'magnetics', 'mpts', 'mse', 'usxr']
+
+View logbook entries::
+    
+    >>> nstxu.s141000.logbook()
+    
+List signals::
+
+    >>> nstxu.s141000.equilibria.efit02.listSignals()
+    ['psirz', 'qpsi', 'shot', 'userid', 'wmhd']
+
+Plot a signal::
+
+    >>> nstxu.s141000.mpts.te.plot()
+
+List methods for a signal::
+
+    >>> nstx.s141000.bes.d1ch01.listMethods()
+    ['animate', 'fft', 'loadConfig', 'plotfft']
 
 Lead developers
----------------------------------
+==============================
 
-* John Schmitt, Princeton Plasma Physics Lab
 * David R. Smith, U. Wisconsin-Madison
 * Kevin Tritz, The Johns Hopkins U.
 * Howard Yuh, Nova Photonics
 
-
-Quick start
-================
-
-On the PPPL computing cluster, load the FDP module and start Python (you may need to unload conflicting modules)::
-
-    $ module load nstxu/fdp
-    $ python
-
-Plot electron temperature from Thomson scattering for NSTX-U shot 140000::
-
-    >>> import fdp
-    >>> nstxu = fdp.nstxu
-    >>> nstxu.s140000.mpts.te.plot()
-
-View logbook entries for NSTX-U shot 140000::
-    
-    >>> nstxu.s140000.logbook()
-    
-    Logbook entries for 140000
-    ************************************
-    140000 on 2010-08-17 in XP 1048
-    adiallo in topic PHYS OPS
-    
-    Small increase of the SPA current by 50 A.
-    Good.
-    ************************************
-
-List diagnostic containers for NSTX-U::
-
-    >>> myshot = nstxu.s140000
-    >>> dir(myshot)
-    ['bes', 'chers', 'equilibria', 'filterscopes', 'magnetics', 'mpts', 'mse', 'usxr']
-
-    >>> dir(myshot.equilibria)
-    ['efit01', 'efit02', 'shot']
-
-    >>> dir(myshot.equilibria.efit02)
-    ['psirz', 'qpsi', 'shot', 'userid', 'wmhd']
-
-For all shots in XP 1013 on NSTX-U, plot ion temperature from charge-exchange spectroscopy::
-
-    >>> xp1013 = nstxu.filter_shots(xp=1013)
-    >>> for shot in xp1013:
-    ...     shot.chers.ti.plot()
-
-For all NSTX-U shots on 8/17/2010, plot the low-f, odd-n magnetics signal::
-
-    >>> myday = nstxu.filter_shots(date=20100817)
-    >>> for shot in myday:
-    ...     shot.magnetics.filtered.lowf_oddn.plot()
-
+PPPL cluster support from John Schmitt
