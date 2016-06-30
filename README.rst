@@ -13,17 +13,18 @@ Project objectives
 
 * Integrate data sources, data, and analysis methods in a single, extensible data object
 
-  * Streamline data access - multiple facilities, diagnostics, and databases
+  * Streamline data access for multiple facilities, diagnostics, and databases
   * Organize data and analysis methods in an intuitive object-oriented framework
 
 * Promote collaborative code development and reduce inefficient code duplication
 
 * Reduce barriers to entry for new students and scientists
 
-* Use free and ubiquitous components
+* Free components and flexible usage
 
   * Python, Numpy, Matplotlib, Github, etc.
   * Platform-independent: desktop Mac/PC, Linux cluster
+  * Command-line tool or import into code
 
 Example usage
 ==============================
@@ -41,11 +42,13 @@ List diagnostics::
 View logbook entries::
     
     >>> nstxu.s141000.logbook()
-    
+
 List signals::
 
     >>> nstxu.s141000.equilibria.efit02.listSignals()
     ['psirz', 'qpsi', 'shot', 'userid', 'wmhd']
+    >>> nstx.s204620.chers.listSignals()
+    ['ft', 'nc', 'ti', 'valid', 'vt']
 
 Plot a signal::
 
@@ -55,6 +58,17 @@ List methods for a signal::
 
     >>> nstx.s141000.bes.d1ch01.listMethods()
     ['animate', 'fft', 'loadConfig', 'plotfft']
+
+Load shots for an XP::
+
+    >>> xp1013 = nstx.filter_shots(xp=1013)
+    >>> dir(xp1013)
+    ['s141382', 's141383', 's141384', 's141385', 's141386', 's141387', 
+    's141388', 's141389', 's141390', 's141391', 's141392', 's141393', 
+    's141394', 's141395', 's141396', 's141397', 's141398', 's141399', 
+    's141400', 's141401', 's141402', 's141403', 's141404', 's141405', 
+    's141406', 's141407', 's141408', 's141409', 's141410', 's141411', 
+    's141412', 's141413', 's141414']
 
 Lead developers
 ==============================
