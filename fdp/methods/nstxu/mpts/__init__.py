@@ -1,4 +1,3 @@
-from plot import plot
-from change_units import change_units as _postprocess
+from .change_units import change_units as _postprocess
 
 __all__ = ['_postprocess']

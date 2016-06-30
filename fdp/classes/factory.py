@@ -47,7 +47,7 @@ def Factory(module_branch, Container, root=None, shot=None, parent=None):
         return ContainerClass(_tree_dict[module_branch], shot=shot,
                               parent=parent, top=True)
 
-    except None:
+    except:
         print("{} not found in modules directory".format(module))
         raise
 

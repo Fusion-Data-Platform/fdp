@@ -10,6 +10,9 @@ Created on Tue Jun 23 2015
 
 @author: hyuh
 """
+import sys
+if sys.version_info > (3,):
+    long = int
 
 import inspect
 import types
@@ -132,7 +135,7 @@ class Signal(np.ndarray):
             else:
                 for key,val in objdict.items(): setattr(self, key, val) 
                     
-            if objdict.has_key('_verbose'):
+            if '_verbose' in objdict:
                 if objdict['_verbose']:
                     try:
                         print("__array_finalize__:Function name {}".format(obj._fname))
@@ -147,18 +150,18 @@ class Signal(np.ndarray):
                     except AttributeError:
                         pass
 
-            if objdict.has_key('_fname'):
+            if '_fname' in objdict:
                 if objdict['_fname'] == 'transpose':
                     if objaxes is not None:
                         self.axes = [obj.axes[i] for i in objdict['_fargs'][0]] if objdict.has_key('_fargs') else obj.axes[::-1]
         
-            if objdict.has_key('_debug'):
+            if '_debug' in objdict:
                 if objdict['_debug']: _nodeltmpattr=True
 
         if objaxes is not None:
             for axis in objaxes:
-                if hasattr(obj,'_slic'): #slice axis according to _slic
-                    if objdict.has_key('_verbose'):
+                if '_slic' in obj: #slice axis according to _slic
+                    if '_verbose' in objdict:
                         if objdict['_verbose']:
                             print('__array_finalize__: type(obj._slic) is  ', type(obj._slic))
                             print('__array_finalize__: obj._slic is  ',obj._slic)
@@ -180,26 +183,26 @@ class Signal(np.ndarray):
                             #if isinstance(_slicaxis[0], (int, long, float, np.generic)):
                             #    self.axes=self.axes+[self.axes.pop(self.axes.index(axis))]
                             setattr(self,axis,getattr(obj, axis)[_slicaxis])
-                            if objdict.has_key('_verbose'):
+                            if '_verbose' in objdict:
                                 if objdict['_verbose']:
                                     print('__array_finalize__: Fixing {0} axes'.format(axis))
                             for axisaxis in getattr(obj, axis).axes:
                                 if isinstance(obj._slic[obj.axes.index(axisaxis)], (int, long, float, np.generic)):
-                                    if objdict.has_key('_verbose'):
+                                    if '_verbose' in objdict:
                                         if objdict['_verbose']:
                                             print('__array_finalize__: Removing {0} axis from {1}'.format(axisaxis,axis))
                                     self.axis.axes.remove(axisaxis)
                                 else:
-                                    if objdict.has_key('_verbose'):
+                                    if '_verbose' in objdict:
                                         if objdict['_verbose']:
                                             print('__array_finalize__: {0} is not primitive'.
                                                   format(type(obj._slic[obj.axes.index(axisaxis)])))
                         else:
-                            if objdict.has_key('_verbose'):
+                            if '_verbose' in objdict:
                                 if objdict['_verbose']:
                                     print('_slic is neither slice, list, nor tuple type for ',axis)
                     except: #must not have a len(), e.g. int type
-                            if objdict.has_key('_verbose'):
+                            if '_verbose' in objdict:
                                 if objdict['_verbose']:
                                     print('Exception: Axes parsing for ',axis,' failed')
                     pass
@@ -280,10 +283,10 @@ class Signal(np.ndarray):
         #Get the data
         if self._empty is True:
 #            try:
+            self._empty=False
             data = self._root._get_mdsdata(self)
             self.resize(data.shape, refcheck=False)
             self[:] = data
-            self._empty=False
 #            except:
 #                print 'Something went wrong with getting data'
         #Exec userfunc if method defined:
@@ -306,7 +309,7 @@ class Signal(np.ndarray):
                                  type(self), attribute))
         attr = getattr(self._parent, attribute)
         if inspect.ismethod(attr):
-            return types.MethodType(attr.im_func, self)
+            return types.MethodType(attr.__func__, self)
         else:
             return attr
 
