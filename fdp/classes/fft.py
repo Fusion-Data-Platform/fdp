@@ -84,6 +84,7 @@ class Fft(object):
         
     def loadSignal(self):
         self.signal[:]
+        self.signal.time[:]
         # real-valued floating or complex-valued?
         if self.signal.dtype.kind == 'f':
             self.iscomplexsignal = False

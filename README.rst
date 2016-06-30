@@ -7,91 +7,82 @@ Fusion Data Platform (FDP) is a data framework in Python for magnetic fusion exp
 
 * Github repository: https://github.com/Fusion-Data-Platform/fdp
 * Documentation: http://Fusion-Data-Platform.github.io/
-* Google Group: https://groups.google.com/forum/#!forum/fusion-data-platform
 
 Project objectives
----------------------------------
+==============================
 
 * Integrate data sources, data, and analysis methods in a single, extensible data object
 
-  * Streamline data access - multiple facilities, diagnostics, and databases
+  * Streamline data access for multiple facilities, diagnostics, and databases
   * Organize data and analysis methods in an intuitive object-oriented framework
 
 * Promote collaborative code development and reduce inefficient code duplication
 
-  * Users can extend FDP with new capabilities and contribute to the code base
-
 * Reduce barriers to entry for new students and scientists
 
-  * Eliminate the need to learn and implement data access protocols - especially helpful for short-term students and visiting collaborators
-
-* Boost data usage and increase the scientific return-on-investment
-
-  * Producing scientific data is expensive - let's make the most of it
-
-* Use free and ubiquitous components
+* Free components and flexible usage
 
   * Python, Numpy, Matplotlib, Github, etc.
   * Platform-independent: desktop Mac/PC, Linux cluster
-  * Multi-modal: interactive at the Python command prompt or import FDP into your routines
+  * Command-line tool or import into code
+
+Example usage
+==============================
+
+Initiate an FDP session::
+
+    >>> import fdp
+    >>> nstxu = fdp.nstxu()
+
+List diagnostics::
+
+    >>> dir(nstxu.s141000)
+    ['bes', 'chers', 'equilibria', 'filterscopes', 'magnetics', 'mpts', 'mse', 'usxr']
+
+View logbook entries::
+    
+    >>> nstxu.s141000.logbook()
+
+List signals::
+
+    >>> nstxu.s141000.equilibria.efit02.listSignals()
+    ['psirz', 'qpsi', 'shot', 'userid', 'wmhd']
+    >>> nstxu.s204620.chers.listSignals()
+    ['ft', 'nc', 'ti', 'valid', 'vt']
+
+Plot a signal::
+
+    >>> nstxu.s141000.mpts.te.plot()
+
+List methods for a signal::
+
+    >>> nstxu.s141000.bes.d1ch01.listMethods()
+    ['animate', 'fft', 'loadConfig', 'plotfft']
+
+Load shots for an XP::
+
+    >>> xp1013 = nstxu.filter_shots(xp=1013)
+    >>> dir(xp1013)
+    ['s141382', 's141383', 's141384', 's141385', 's141386', 's141387', 
+    's141388', 's141389', 's141390', 's141391', 's141392', 's141393', 
+    's141394', 's141395', 's141396', 's141397', 's141398', 's141399', 
+    's141400', 's141401', 's141402', 's141403', 's141404', 's141405', 
+    's141406', 's141407', 's141408', 's141409', 's141410', 's141411', 
+    's141412', 's141413', 's141414']
+
+As the examples above illustrate, the FDP data object is organized like this::
+
+    <machine>.<shot>.<diagnostic>.<signal>.<method>
+
+or, for diagnostic sub-containers like spline profiles and x-ray arrays::
+
+    <machine>.<shot>.<diagnostic>.<sub-container>.<signal>.<method>
 
 Lead developers
----------------------------------
+==============================
 
-* John Schmitt, Princeton Plasma Physics Lab
 * David R. Smith, U. Wisconsin-Madison
 * Kevin Tritz, The Johns Hopkins U.
 * Howard Yuh, Nova Photonics
 
-
-Quick start
-================
-
-On the PPPL computing cluster, load the FDP module and start Python (you may need to unload conflicting modules)::
-
-    $ module load nstxu/fdp
-    $ python
-
-Plot electron temperature from Thomson scattering for NSTX-U shot 140000::
-
-    >>> import fdp
-    >>> nstxu = fdp.nstxu
-    >>> nstxu.s140000.mpts.te.plot()
-
-View logbook entries for NSTX-U shot 140000::
-    
-    >>> nstxu.s140000.logbook()
-    
-    Logbook entries for 140000
-    ************************************
-    140000 on 2010-08-17 in XP 1048
-    adiallo in topic PHYS OPS
-    
-    Small increase of the SPA current by 50 A.
-    Good.
-    ************************************
-
-List diagnostic containers for NSTX-U::
-
-    >>> myshot = nstxu.s140000
-    >>> dir(myshot)
-    ['bes', 'chers', 'equilibria', 'filterscopes', 'magnetics', 'mpts', 'mse', 'usxr']
-
-    >>> dir(myshot.equilibria)
-    ['efit01', 'efit02', 'shot']
-
-    >>> dir(myshot.equilibria.efit02)
-    ['psirz', 'qpsi', 'shot', 'userid', 'wmhd']
-
-For all shots in XP 1013 on NSTX-U, plot ion temperature from charge-exchange spectroscopy::
-
-    >>> xp1013 = nstxu.filter_shots(xp=1013)
-    >>> for shot in xp1013:
-    ...     shot.chers.ti.plot()
-
-For all NSTX-U shots on 8/17/2010, plot the low-f, odd-n magnetics signal::
-
-    >>> myday = nstxu.filter_shots(date=20100817)
-    >>> for shot in myday:
-    ...     shot.magnetics.filtered.lowf_oddn.plot()
-
+PPPL cluster support from John Schmitt
