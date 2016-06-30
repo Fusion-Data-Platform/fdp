@@ -11,7 +11,6 @@ Fusion Data Platform
     
     * Github repository: https://github.com/Fusion-Data-Platform/fdp
     * Documentation: http://Fusion-Data-Platform.github.io/
-    * Google Group: https://groups.google.com/forum/#!forum/fusion-data-platform
 
 
 Table of Contents
