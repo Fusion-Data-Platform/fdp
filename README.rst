@@ -47,7 +47,7 @@ List signals::
 
     >>> nstxu.s141000.equilibria.efit02.listSignals()
     ['psirz', 'qpsi', 'shot', 'userid', 'wmhd']
-    >>> nstx.s204620.chers.listSignals()
+    >>> nstxu.s204620.chers.listSignals()
     ['ft', 'nc', 'ti', 'valid', 'vt']
 
 Plot a signal::
@@ -56,12 +56,12 @@ Plot a signal::
 
 List methods for a signal::
 
-    >>> nstx.s141000.bes.d1ch01.listMethods()
+    >>> nstxu.s141000.bes.d1ch01.listMethods()
     ['animate', 'fft', 'loadConfig', 'plotfft']
 
 Load shots for an XP::
 
-    >>> xp1013 = nstx.filter_shots(xp=1013)
+    >>> xp1013 = nstxu.filter_shots(xp=1013)
     >>> dir(xp1013)
     ['s141382', 's141383', 's141384', 's141385', 's141386', 's141387', 
     's141388', 's141389', 's141390', 's141391', 's141392', 's141393', 
