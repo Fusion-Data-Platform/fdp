@@ -70,6 +70,14 @@ Load shots for an XP::
     's141406', 's141407', 's141408', 's141409', 's141410', 's141411', 
     's141412', 's141413', 's141414']
 
+As the examples above illustrate, the FDP data object is organized like this::
+
+    <machine>.<shot>.<diagnostic>.<signal>.<method>
+
+or, for diagnostic sub-containers like spline profiles and x-ray arrays::
+
+    <machine>.<shot>.<diagnostic>.<sub-container>.<signal>.<method>
+
 Lead developers
 ==============================
 
