@@ -11,6 +11,6 @@
     </container>
     <container name='highn' mdstree='ops_pc'>
         <axis name='time' units='s' mdsnode='dim_of(\bdot_l1dmivvhn1_raw)'></axis>
-        <signal name='highn_{}' units='V' axes='time' mdsnode='\bdot_l1dmivvhn{}_raw' range='1,16'></signal>
+        <signal name='highn_{}' units='V' axes='time' mdsnode='\bdot_l1dmivvhn{}_raw' range='1,16,1'></signal>
     </container>
 </container>

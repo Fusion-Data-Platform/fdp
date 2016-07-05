@@ -163,7 +163,10 @@ def parse_signal(obj, element):
             namestart = int(name_list[0])
             nameend = int(name_list[1])+1
         signal_dict = []
-        digits = int(np.ceil(np.log10(end-1)))
+        if len(name_list)==3:
+            digits = int(name_list[2])
+        else:
+            digits = int(np.ceil(np.log10(end-1)))
         for i, index in enumerate(range(start, end)):
             nrange = range(namestart, nameend)
             name = element.get('name').format(str(nrange[i]).zfill(digits))

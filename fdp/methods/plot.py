@@ -4,12 +4,16 @@ Created on Thu Oct 29 10:20:43 2015
 
 @author: ktritz
 """
+
+from warnings import warn
+import time
+
 import numpy as np
 import numba as nb
 import matplotlib.pyplot as plt
 import pyqtgraph as pg
-import time
-import fdp
+
+from fdp.classes.fdp_globals import FdpWarning
 
 pg.mkQApp()
 
@@ -83,8 +87,12 @@ def plot(signal, fig=None, ax=None, **kwargs):
         dim_title = signal._name.upper()
         plot_container(signal, **defaults)
         return
-    signal[:]
 
+    signal[:]
+    if signal.size==0:
+        warn("Empty signal, returning", FdpWarning)
+        return
+    
     dims = signal.ndim
     multi_axis = defaults.get('multi', None)
     if multi_axis is 'shot':
@@ -111,7 +119,10 @@ def plot(signal, fig=None, ax=None, **kwargs):
         ax.plot(signal, **defaults)
         fig.canvas.draw()
         fig.canvas.mpl_connect('resize_event', ax._update_all_plots)
-    plt.title(signal._name, fontsize=20)
+    plt.title('{} -- {} -- {}'.format(signal._parent._name.upper(), 
+                                signal._name, 
+                                signal.shot), 
+              fontsize=20)
     # return fig
 
 

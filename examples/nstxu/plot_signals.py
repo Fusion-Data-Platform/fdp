@@ -9,14 +9,15 @@ import fdp
     
 nstxu = fdp.nstxu()
 
-for shot in [nstxu.s141000, nstxu.s204620]:
+for shot in [nstxu.s140000, nstxu.s141000, nstxu.s141001, nstxu.s204620]:
+    print('SHOT {}'.format(shot.shot))
     shot.bes.ch01.plot()
     shot.mpts.ne.plot()
-    shot.mpts.te.plot()
-    shot.mpts.plot()
+    #shot.mpts.te.plot()
+    #shot.mpts.plot()
     shot.chers.ti.plot()
-    shot.chers.spline.tis.plot()
+    #shot.chers.spline.tis.plot()
     shot.usxr.hdown.hdown01.plot()
-    shot.usxr.hdown.plot()
+    #shot.usxr.hdown.plot()
     shot.magnetics.highf.plot()
-    #shot.magnetics.highn.highn_01.plot()
+    shot.magnetics.highn.highn_1.plot()
