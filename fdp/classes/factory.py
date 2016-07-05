@@ -145,16 +145,31 @@ def parse_signal(obj, element):
                         '_desc': desc}]
     else:
         number_list = number_range.split(',')
+        name_range = element.get('namerange')
+        if name_range is None:
+            name_list = number_list
+        else:
+            name_list = name_range.split(',')
+            if len(name_list) != len(number_list):
+                name_list = number_list
         if len(number_list) == 1:
             start = 0
             end = int(number_list[0])
+            namestart = 0
+            nameend = int(name_list[0])
         else:
             start = int(number_list[0])
             end = int(number_list[1])+1
+            namestart = int(name_list[0])
+            nameend = int(name_list[1])+1
         signal_dict = []
-        digits = int(np.ceil(np.log10(end-1)))
-        for index in range(start, end):
-            name = element.get('name').format(str(index).zfill(digits))
+        if len(name_list)==3:
+            digits = int(name_list[2])
+        else:
+            digits = int(np.ceil(np.log10(end-1)))
+        for i, index in enumerate(range(start, end)):
+            nrange = range(namestart, nameend)
+            name = element.get('name').format(str(nrange[i]).zfill(digits))
             title = None
             if element.get('title'):
                 title = element.get('title').format(str(index).zfill(digits))

@@ -160,7 +160,8 @@ class Signal(np.ndarray):
 
         if objaxes is not None:
             for axis in objaxes:
-                if '_slic' in obj: #slice axis according to _slic
+                if hasattr(obj,'_slic'): #slice axis according to _slic
+                    # reverted to hasattr() to avoid FutureWarning
                     if '_verbose' in objdict:
                         if objdict['_verbose']:
                             print('__array_finalize__: type(obj._slic) is  ', type(obj._slic))
