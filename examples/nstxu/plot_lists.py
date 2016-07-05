@@ -9,10 +9,15 @@ import fdp
 
 if __name__=='__main__':
     nstx=fdp.nstxu()
+    
     bes = nstx.s204620.bes
     print(bes.listMethods())
     print(bes.listSignals())
     print(bes.listAttributes())
-    sig=bes.d1ch01
+    
+    sig=bes.ch01
     print(sig.listMethods())
     print(sig.listAttributes())
+    
+    chers=nstx.s204620.chers
+    print(chers.listContainers())

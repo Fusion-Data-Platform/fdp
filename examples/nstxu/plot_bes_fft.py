@@ -10,4 +10,4 @@ import fdp
 if __name__=='__main__':
     nstx=fdp.nstxu()
     bes = nstx.s204620.bes
-    fft = bes.d1ch01.plotfft(tmin=0.2, tmax=0.45, fmax=200)
+    fft = bes.ch01.plotfft(tmin=0.2, tmax=0.45, fmax=200)
