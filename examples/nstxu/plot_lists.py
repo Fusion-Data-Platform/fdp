@@ -7,17 +7,16 @@ Created on Wed Jun 22 15:05:55 2016
 
 import fdp
 
-if __name__=='__main__':
-    nstx=fdp.nstxu()
-    
-    bes = nstx.s204620.bes
-    print(bes.listMethods())
-    print(bes.listSignals())
-    print(bes.listAttributes())
-    
-    sig=bes.ch01
-    print(sig.listMethods())
-    print(sig.listAttributes())
-    
-    chers=nstx.s204620.chers
-    print(chers.listContainers())
+nstx=fdp.nstxu()
+
+bes = nstx.s204620.bes
+print(bes.listMethods())
+print(bes.listSignals())
+print(bes.listAttributes())
+
+sig=bes.ch01
+print(sig.listMethods())
+print(sig.listAttributes())
+
+chers=nstx.s204620.chers
+print(chers.listContainers())
