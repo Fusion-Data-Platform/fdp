@@ -2,6 +2,7 @@
 
 from warnings import warn
 
+import numpy as np
 import matplotlib.pyplot as plt
 
 from fdp.classes.utilities import isSignal, isContainer
@@ -9,8 +10,28 @@ from fdp.classes.fdp_globals import FdpWarning
 from fdp.classes.fft import Fft
 from . import utilities as UT
 
+def powerspectrum(signal, fmax=None, *args, **kwargs):
+    """
+    Calcualte bin-averaged power spectrum
+    """
+    if not isSignal(signal):
+        warn("Method valid only at signal-level", FdpWarning)
+        return
+    if 'tmin' not in kwargs:
+        kwargs['tmin'] = 0.25
+    if 'tmax' not in kwargs:
+        kwargs['tmax'] = 0.26
+    if not fmax:
+        fmax = 250
+    fft = Fft(signal, *args, **kwargs)
+    psd = np.zeros(fft.freq.size, dtype=fft.psd.dtype)
+    
+
 def fft(obj, *args, **kwargs):
-    """Calculate FFT(s) for signal or container"""
+    """
+    Calculate FFT(s) for signal or container.
+    Return Fft instance from classes/fft.py
+    """
     if isSignal(obj):
         return Fft(obj, *args, **kwargs)
     elif isContainer(obj):
@@ -22,12 +43,12 @@ def fft(obj, *args, **kwargs):
         return ffts
 
 def plotfft(signal, fmax=None, *args, **kwargs):
-    """Calcualte FFT for signal and plot"""
+    """
+    Plot spectrogram
+    """
     if not isSignal(signal):
         warn("Method valid only at signal-level", FdpWarning)
         return
-    if not fmax:
-        fmax = 1e3
     fft = Fft(signal, *args, **kwargs)
     fig = plt.figure()
     ax = fig.add_subplot(1,1,1)
