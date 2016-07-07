@@ -148,10 +148,10 @@ class Fft(object):
         # if real-valued input, convert to single-sided FFT
         if not self.iscomplexsignal:
             # complex-valued, single-sided FFT
-            ssfft = self.fft[:,0:self.power2/2+1]
+            ssfft = self.fft[:,0:self.power2/2+1].copy()
             ssfft[:,1:self.power2/2] *= np.sqrt(2.0)
             self.fft = ssfft
-            self.freq = self.freq[0:self.power2/2+1]
+            self.freq = self.freq[0:self.power2/2+1].copy()
             self.freq[self.power2/2] = -self.freq[self.power2/2]
             # check integrated power (bin-wise)
             self.checkIntegratedPower()
@@ -168,11 +168,6 @@ class Fft(object):
         intpowercheck = np.sum(np.square(np.absolute(self.fft)),
                                axis=1)/self.power2
         if not np.allclose(self.intpower, intpowercheck):
-            # print info for failed bins
-            #for i in range(self.nbins):
-            #    if not np.isclose(self.intpower[i], intpowercheck[i]):
-            #        print(i, self.intpower[i], intpowercheck[i], 
-            #              (self.intpower[i]-intpowercheck[i])/self.intpower[i])
             raise FdpError('Integrated power mismatch')
         
 
