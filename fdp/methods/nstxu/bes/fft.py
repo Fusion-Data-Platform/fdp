@@ -24,7 +24,22 @@ def powerspectrum(signal, fmax=None, *args, **kwargs):
     if not fmax:
         fmax = 250
     fft = Fft(signal, *args, **kwargs)
-    psd = np.zeros(fft.freq.size, dtype=fft.psd.dtype)
+    psd = np.square(np.absolute(fft.fft))
+    # bin-averaged PSD, in dB
+    bapsd = 10*np.log10(np.mean(psd, axis=0))
+    fig=plt.figure()
+    ax=fig.add_subplot(1,1,1)
+    ax.plot(fft.freq, bapsd)
+    ax.set_ylabel(r'$10\,\log_{10}(|FFT|^2)$ $(V^2/Hz)$')
+    ax.set_xlim([0,fmax])
+    ax.set_xlabel('Frequency (kHz)')
+    ax.set_title('{} | {} | {} | {}-{} s'.format(
+                 fft.shot, 
+                 fft.parentname.upper(), 
+                 fft.signalname.upper(),
+                 kwargs['tmin'],
+                 kwargs['tmax']))
+    return bapsd
     
 
 def fft(obj, *args, **kwargs):
