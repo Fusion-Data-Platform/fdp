@@ -19,5 +19,5 @@ shot=nstx.s141000
 shot.chers.ti.info()
 shot.chers.info()
 
-shot.info()
+shot.info(short=True)
 
