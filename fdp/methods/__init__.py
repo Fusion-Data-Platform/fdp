@@ -11,6 +11,7 @@ Created on Thu Oct 29 10:20:43 2015
 from .plot import plot
 from ._netcat import _netcat
 from .utilities import listSignals, listMethods, listContainers, listAttributes
+from .info import info
 
 __all__ = ['plot', '_netcat', 'listSignals', 'listMethods', 
-           'listContainers', 'listAttributes']
+           'listContainers', 'listAttributes', 'info']

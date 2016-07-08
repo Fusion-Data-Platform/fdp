@@ -1,0 +1,33 @@
+<?xml version='1.0'?>
+<container name='nbi' mdstree='nbi'>
+    <axis name='time' axis_ref='time1' units='s' mdsnode='dim_of(\NB_P_INJ)'></axis>
+    <signal name='total_power' units='MW' axes='time' axis_ref='time1' mdsnode='\NB_P_INJ'></signal>
+    <axis name='time' axis_ref='time2' units='s' mdsnode='dim_of(\P_INJ_BL1)'></axis>
+    <signal name='bl1_power' units='MW' axes='time' axis_ref='time2' mdsnode='\P_INJ_BL1'></signal>
+    <axis name='time' axis_ref='time3' units='s' mdsnode='dim_of(\P_INJ_BL2)'></axis>
+    <signal name='bl2_power' units='MW' axes='time' axis_ref='time3' mdsnode='\P_INJ_BL2'></signal>
+    <axis name='time' axis_ref='time4' units='s' mdsnode='dim_of(\N1A_POWER)'></axis>
+    <signal name='n1a_power' units='MW' axes='time' axis_ref='time4' mdsnode='\N1A_POWER'></signal>
+    <axis name='time' axis_ref='time5' units='s' mdsnode='dim_of(\N1B_POWER)'></axis>
+    <signal name='n1b_power' units='MW' axes='time' axis_ref='time5' mdsnode='\N1B_POWER'></signal>
+    <axis name='time' axis_ref='time6' units='s' mdsnode='dim_of(\N1C_POWER)'></axis>
+    <signal name='n1c_power' units='MW' axes='time' axis_ref='time6' mdsnode='\N1C_POWER'></signal>
+    <axis name='time' axis_ref='time7' units='s' mdsnode='dim_of(\N2A_POWER)'></axis>
+    <signal name='n2a_power' units='MW' axes='time' axis_ref='time7' mdsnode='\N2A_POWER'></signal>
+    <axis name='time' axis_ref='time8' units='s' mdsnode='dim_of(\N2B_POWER)'></axis>
+    <signal name='n2b_power' units='MW' axes='time' axis_ref='time8' mdsnode='\N2B_POWER'></signal>
+    <axis name='time' axis_ref='time9' units='s' mdsnode='dim_of(\N2C_POWER)'></axis>
+    <signal name='n2c_power' units='MW' axes='time' axis_ref='time9' mdsnode='\N2C_POWER'></signal>
+    <axis name='time' axis_ref='time10' units='s' mdsnode='dim_of(\N1A_POWER)'></axis>
+    <signal name='n1a_vaccel' units='kV' axes='time' axis_ref='time10' mdsnode='\N1A_POWER'></signal>
+    <axis name='time' axis_ref='time11' units='s' mdsnode='dim_of(\N1B_VACCEL)'></axis>
+    <signal name='n1b_vaccel' units='kV' axes='time' axis_ref='time11' mdsnode='\N1B_VACCEL'></signal>
+    <axis name='time' axis_ref='time12' units='s' mdsnode='dim_of(\N1C_VACCEL)'></axis>
+    <signal name='n1c_vaccel' units='kV' axes='time' axis_ref='time12' mdsnode='\N1C_VACCEL'></signal>
+    <axis name='time' axis_ref='time13' units='s' mdsnode='dim_of(\N2A_VACCEL)'></axis>
+    <signal name='n2a_vaccel' units='kV' axes='time' axis_ref='time13' mdsnode='\N2A_VACCEL'></signal>
+    <axis name='time' axis_ref='time14' units='s' mdsnode='dim_of(\N2B_VACCEL)'></axis>
+    <signal name='n2b_vaccel' units='kV' axes='time' axis_ref='time14' mdsnode='\N2B_VACCEL'></signal>
+    <axis name='time' axis_ref='time15' units='s' mdsnode='dim_of(\N2C_VACCEL)'></axis>
+    <signal name='n2c_vaccel' units='kV' axes='time' axis_ref='time15' mdsnode='\N2C_VACCEL'></signal>
+</container>
