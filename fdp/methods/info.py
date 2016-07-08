@@ -16,6 +16,7 @@ def info(obj, *args, **kwargs):
     
 def infoSignal(obj, short=False, *args, **kwargs):
     obj[:]
+    if obj.size==0: return
     print('Name:  {}'.format(dottedPath(obj)))
     if short: return
     print('  Shot:  {}'.format(obj.shot))
