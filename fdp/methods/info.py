@@ -7,17 +7,17 @@ Created on Thu Jul  7 19:10:56 2016
 
 from fdp.classes.utilities import isSignal, isContainer, isAxis, isShot
 
-def info(obj):
+def info(obj, *args, **kswargs):
     if isSignal(obj):
-        infoSignal(obj)
+        infoSignal(obj, *args, **kswargs)
     elif isContainer(obj) or isShot(obj):
-        infoContainer(obj)
+        infoContainer(obj, *args, **kswargs)
     return
     
-def infoSignal(obj):
+def infoSignal(obj, short=False, *args, **kswargs):
     obj[:]
-    print('Name:  {}'.format(obj._name))
-    print('  Parents:  {}'.format(dottedParents(obj)))
+    print('Name:  {}'.format(dottedPath(obj)))
+    if short: return
     print('  Shot:  {}'.format(obj.shot))
     print('  Description:  {}'.format(obj._desc))
     print('  Title:  {}'.format(obj._title))
@@ -31,7 +31,7 @@ def infoSignal(obj):
         else:
             print('  {}:  {}'.format(attrname, attr))
 
-def infoContainer(obj):
+def infoContainer(obj, *args, **kswargs):
     signalnames = obj.listSignals()
     for signalname in signalnames:
         signal = getattr(obj, signalname)
@@ -41,14 +41,13 @@ def infoContainer(obj):
         container = getattr(obj, containername)
         container.info()
         
-def dottedParents(obj):
-    parents = []
+def dottedPath(obj):
+    path = [obj._name]
     current_obj = obj
     while hasattr(current_obj, '_parent'):
-        if current_obj._parent is None:
-            break
-        parents.append(current_obj._parent._name)
+        if current_obj._parent is None: break
+        path.append(current_obj._parent._name)
         current_obj = current_obj._parent
-    parents.reverse()
-    dotted_parents = '.'.join(parents)
-    return dotted_parents
+    path.reverse()
+    dotted_path = '.'.join(path)
+    return dotted_path
