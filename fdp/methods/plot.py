@@ -90,7 +90,8 @@ def plot(signal, fig=None, ax=None, **kwargs):
 
     signal[:]
     if signal.size==0:
-        warn("Empty signal, returning", FdpWarning)
+        warn("Empty signal {}, returning".format(signal._mdsnode), 
+             FdpWarning)
         return
     
     dims = signal.ndim

@@ -7,6 +7,7 @@ Created on Wed Nov 25 12:05:14 2015
 from collections import Mapping, MutableMapping, deque
 import os
 import numpy as np
+from warnings import warn
 import MDSplus as mds
 from . import fdp_globals
 from .logbook import Logbook
@@ -17,6 +18,7 @@ FDP_DIR = fdp_globals.FDP_DIR
 MDS_SERVERS = fdp_globals.MDS_SERVERS
 EVENT_SERVERS = fdp_globals.EVENT_SERVERS
 FdpError = fdp_globals.FdpError
+FdpWarning = fdp_globals.FdpWarning
 machineAlias = fdp_globals.machineAlias
 
 
@@ -149,9 +151,8 @@ class Machine(MutableMapping):
         except:
             msg = 'MDSplus connection error for tree {} and node {}'.format(
                 signal._mdstree, signal._mdsnode)
-            print('WARNING: ' + msg)
+            warn(msg, FdpWarning)
             return np.zeros(0)
-            # raise FdpError(msg)
         try:
             if signal._raw_of is not None:
                 data = data.raw_of()
