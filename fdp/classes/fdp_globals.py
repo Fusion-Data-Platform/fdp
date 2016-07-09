@@ -75,7 +75,7 @@ class FdpWarning(Warning):
 
     **Usage**::
 
-        raise FdpWarning('warning message')
+        warnings.warn("message", FdpWarning)
 
     """
     def __init__(self, message=''):
