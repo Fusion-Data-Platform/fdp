@@ -7,26 +7,16 @@ Created on Sat Jun 25 14:12:13 2016
 
 import unittest
 import fdp
+from .setup import SetupNstxu
 
 print('running tests in {}'.format(__file__))
 
-
-class TestSetup(unittest.TestCase):
-    """
-    Unit test set-up code with nstxu object and shot attribute
-    """
-    
-    def setUp(self, shotnumber=204620):
-        self.nstxu = fdp.nstx()
-        self.shotnumber = shotnumber
-        self.shot = getattr(self.nstxu, 's'+repr(self.shotnumber))
+class TestNstxu(SetupNstxu):
         
-class TestNstxu(TestSetup):
-        
-    def testNstxuClass(self):
+    def testNstxuMachine(self):
         """
-        Ensure that fdp has 'nstx' and 'nstxu' attributes.
-        Ensure that fdp.nstxu is subclass of Machine.
+        Assert fdp has 'nstx' and 'nstxu' attributes.
+        Assert fdp.nstxu is subclass of Machine.
         """
         self.assertTrue(hasattr(fdp, 'nstxu'))
         self.assertTrue(hasattr(fdp, 'nstx'))
@@ -35,27 +25,22 @@ class TestNstxu(TestSetup):
                                    
     def testS0Attribute(self):
         """
-        Test if nstxu has 's0' attribute
+        Assert nstxu has 's0' attribute
         """
         self.assertTrue(hasattr(self.nstxu, 's0'))
-                                   
-class TestNstxuShot(TestSetup):
+        
+    def testLogbookConnection(self):
+        """
+        Assert Logbook object
+        Assert logbook connection is not none
+        """
+        pass
     
-    def testShotClass(self):
-        self.assertTrue(hasattr(self.nstxu, 's'+repr(self.shotnumber)))
-        self.assertTrue(issubclass(type(self.shot),
-                                   fdp.classes.shot.Shot))
+    def testMdsConnection(self):
+        """
+        Assert that self._connections is list of mds.Connection objects
+        """
+        pass
                                    
-    def testDiagnsticContainers(self):
-        """
-        Ensure that all shot attributes are containers
-        """
-        diagnostics = dir(self.shot)
-        for diagnostic in diagnostics:
-            diag = getattr(self.shot, diagnostic)
-            self.assertTrue(issubclass(type(diag),
-                                       fdp.classes.container.Container))
-
-
 if __name__ == '__main__':
     unittest.main()

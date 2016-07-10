@@ -26,24 +26,12 @@ class Machine(MutableMapping):
     """
     Factory root class that contains shot objects and MDS access methods.
 
-    Note that fdf.factory.Machine is exposed in fdf.__init__, so fdf.Machine
-    is valid.
-
     **Usage**::
 
         >>> import fdf
-        >>> nstxu = fdf.nstxu
+        >>> nstxu = fdf.nstxu()
         >>> nstxu.s140000.logbook()
-        >>> nstxu.addshots(xp=1048)
         >>> nstxu.s140000.mpts.plot()
-        >>> nstxu.listshot()
-
-    Machine class contains a model shot object: nstxu.s0
-
-    Shot data can be accessed directly through the Machine class::
-
-        >>> nstxu.s141398
-        >>> nstxu.s141399
 
     """
 
@@ -68,9 +56,6 @@ class Machine(MutableMapping):
                 try:
                     connection = mds.Connection(MDS_SERVERS[self._name])
                     connection.tree = None
-                    # print(type(connection))
-                    # print(dir(connection))
-                    # print(mds.Connection)
                     self._connections.append(connection)
                 except:
                     msg = 'MDSplus connection to {} failed'.format(
