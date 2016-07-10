@@ -7,7 +7,7 @@ Created on Sat Jul  9 19:50:42 2016
 
 import unittest
 import fdp
-from .setup import SetupNstxu
+from setup import SetupNstxu
 
 print('running tests in {}'.format(__file__))
 

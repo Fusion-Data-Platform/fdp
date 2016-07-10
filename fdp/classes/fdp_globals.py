@@ -8,6 +8,8 @@ Created on Thu Jun 18 11:18:16 2015
 """
 import os
 
+VERBOSE = False
+
 MACHINES = ['nstxu', 'diiid', 'cmod']
 
 FDP_DIR = os.path.dirname(os.path.abspath(__file__))

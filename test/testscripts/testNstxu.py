@@ -6,8 +6,10 @@ Created on Sat Jun 25 14:12:13 2016
 """
 
 import unittest
+import MDSplus as mds
+import pymssql
 import fdp
-from .setup import SetupNstxu
+from setup import SetupNstxu
 
 print('running tests in {}'.format(__file__))
 
@@ -20,8 +22,7 @@ class TestNstxu(SetupNstxu):
         """
         self.assertTrue(hasattr(fdp, 'nstxu'))
         self.assertTrue(hasattr(fdp, 'nstx'))
-        self.assertTrue(issubclass(type(self.nstxu), 
-                                   fdp.classes.machine.Machine))
+        self.assertTrue(isinstance(self.nstxu, fdp.classes.machine.Machine))
                                    
     def testS0Attribute(self):
         """
@@ -34,13 +35,19 @@ class TestNstxu(SetupNstxu):
         Assert Logbook object
         Assert logbook connection is not none
         """
-        pass
+        logbook = self.nstxu._logbook
+        self.assertTrue(isinstance(logbook, fdp.classes.logbook.Logbook))
+        logbook._make_logbook_connection()
+        self.assertIsNotNone(logbook._logbook_connection)
+        self.assertTrue(isinstance(logbook._logbook_connection, pymssql.Connection))
     
     def testMdsConnection(self):
         """
         Assert that self._connections is list of mds.Connection objects
         """
-        pass
+        self.assertTrue(isinstance(self.nstxu._connections[0], mds.Connection))
+        self.assertIsNotNone(self.nstxu._connections[0].socket)
+        self.assertIsNotNone(self.nstxu._connections[0].hostspec)
                                    
 if __name__ == '__main__':
     unittest.main()

@@ -7,7 +7,7 @@ Created on Sun Jul 10 00:29:32 2016
 
 import unittest
 import fdp
-from .setup import SetupNstxu
+from setup import SetupNstxu
 
 print('running tests in {}'.format(__file__))
 
@@ -20,7 +20,7 @@ class TestNstxuShot(SetupNstxu):
                                    
     def testDiagnsticContainers(self):
         """
-        Ensure that all shot attributes are containers
+        Assert all shot attributes are containers
         """
         diagnostics = dir(self.shot)
         for diagnostic in diagnostics:
@@ -36,7 +36,7 @@ class TestNstxuShot(SetupNstxu):
     
     def testTestShot(self):
         """
-        Test shot with <6 digits
+        Assert test shot with <6 digits
         """
         pass
 

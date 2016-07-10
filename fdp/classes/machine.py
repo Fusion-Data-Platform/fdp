@@ -20,6 +20,7 @@ EVENT_SERVERS = fdp_globals.EVENT_SERVERS
 FdpError = fdp_globals.FdpError
 FdpWarning = fdp_globals.FdpWarning
 machineAlias = fdp_globals.machineAlias
+VERBOSE = fdp_globals.VERBOSE
 
 
 class Machine(MutableMapping):
@@ -51,7 +52,7 @@ class Machine(MutableMapping):
         self._eventConnection = mds.Connection(EVENT_SERVERS[self._name])
 
         if len(self._connections) is 0:
-            print('Precaching MDS server connections...')
+            if VERBOSE: print('Precaching MDS server connections...')
             for _ in range(2):
                 try:
                     connection = mds.Connection(MDS_SERVERS[self._name])
@@ -61,7 +62,7 @@ class Machine(MutableMapping):
                     msg = 'MDSplus connection to {} failed'.format(
                         MDS_SERVERS[self._name])
                     raise FdpError(msg)
-            print('Finished.')
+            if VERBOSE: print('Finished.')
 
         if shotlist or xp or date:
             self.addshot(shotlist=shotlist, xp=xp, date=date)
