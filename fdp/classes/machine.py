@@ -7,6 +7,7 @@ Created on Wed Nov 25 12:05:14 2015
 from collections import Mapping, MutableMapping, deque
 import os
 import numpy as np
+from warnings import warn
 import MDSplus as mds
 from . import fdp_globals
 from .logbook import Logbook
@@ -17,31 +18,21 @@ FDP_DIR = fdp_globals.FDP_DIR
 MDS_SERVERS = fdp_globals.MDS_SERVERS
 EVENT_SERVERS = fdp_globals.EVENT_SERVERS
 FdpError = fdp_globals.FdpError
+FdpWarning = fdp_globals.FdpWarning
 machineAlias = fdp_globals.machineAlias
+VERBOSE = fdp_globals.VERBOSE
 
 
 class Machine(MutableMapping):
     """
     Factory root class that contains shot objects and MDS access methods.
 
-    Note that fdf.factory.Machine is exposed in fdf.__init__, so fdf.Machine
-    is valid.
-
     **Usage**::
 
         >>> import fdf
-        >>> nstxu = fdf.nstxu
+        >>> nstxu = fdf.nstxu()
         >>> nstxu.s140000.logbook()
-        >>> nstxu.addshots(xp=1048)
         >>> nstxu.s140000.mpts.plot()
-        >>> nstxu.listshot()
-
-    Machine class contains a model shot object: nstxu.s0
-
-    Shot data can be accessed directly through the Machine class::
-
-        >>> nstxu.s141398
-        >>> nstxu.s141399
 
     """
 
@@ -61,20 +52,17 @@ class Machine(MutableMapping):
         self._eventConnection = mds.Connection(EVENT_SERVERS[self._name])
 
         if len(self._connections) is 0:
-            print('Precaching MDS server connections...')
+            if VERBOSE: print('Precaching MDS server connections...')
             for _ in range(2):
                 try:
                     connection = mds.Connection(MDS_SERVERS[self._name])
                     connection.tree = None
-                    # print(type(connection))
-                    # print(dir(connection))
-                    # print(mds.Connection)
                     self._connections.append(connection)
                 except:
                     msg = 'MDSplus connection to {} failed'.format(
                         MDS_SERVERS[self._name])
                     raise FdpError(msg)
-            print('Finished.')
+            if VERBOSE: print('Finished.')
 
         if shotlist or xp or date:
             self.addshot(shotlist=shotlist, xp=xp, date=date)
@@ -149,9 +137,8 @@ class Machine(MutableMapping):
         except:
             msg = 'MDSplus connection error for tree {} and node {}'.format(
                 signal._mdstree, signal._mdsnode)
-            print('WARNING: ' + msg)
+            warn(msg, FdpWarning)
             return np.zeros(0)
-            # raise FdpError(msg)
         try:
             if signal._raw_of is not None:
                 data = data.raw_of()

@@ -2,7 +2,7 @@
 <container name='magnetics' mdstree='ops_pc'>
     <axis name='time' units='s' mdsnode='dim_of(\bdot_l1dmivvhf1_raw)'></axis>
     <signal name='highf' units='V' axes='time' mdsnode='\bdot_l1dmivvhf1_raw'></signal>
-    <container name='filtered' mdstree='operations'>
+    <container name='derived' mdstree='operations'>
         <axis name='time' units='s' mdsnode='dim_of(\mhd_oddn_lowf)'></axis>
         <signal name='lowf_oddn' units='G' axes='time' mdsnode='\mhd_oddn_lowf'></signal>
         <signal name='lowf_evenn' units='G' axes='time' mdsnode='\mhd_evenn_lowf'></signal>

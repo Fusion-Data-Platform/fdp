@@ -7,15 +7,16 @@ Created on Thu Jul  7 19:10:56 2016
 
 from fdp.classes.utilities import isSignal, isContainer, isAxis, isShot
 
-def info(obj, *args, **kswargs):
+def info(obj, *args, **kwargs):
     if isSignal(obj):
-        infoSignal(obj, *args, **kswargs)
+        infoSignal(obj, *args, **kwargs)
     elif isContainer(obj) or isShot(obj):
-        infoContainer(obj, *args, **kswargs)
+        infoContainer(obj, *args, **kwargs)
     return
     
-def infoSignal(obj, short=False, *args, **kswargs):
+def infoSignal(obj, short=False, *args, **kwargs):
     obj[:]
+    if obj.size==0: return
     print('Name:  {}'.format(dottedPath(obj)))
     if short: return
     print('  Shot:  {}'.format(obj.shot))
@@ -31,15 +32,15 @@ def infoSignal(obj, short=False, *args, **kswargs):
         else:
             print('  {}:  {}'.format(attrname, attr))
 
-def infoContainer(obj, *args, **kswargs):
+def infoContainer(obj, *args, **kwargs):
     signalnames = obj.listSignals()
     for signalname in signalnames:
         signal = getattr(obj, signalname)
-        signal.info()
+        signal.info(*args, **kwargs)
     containernames = obj.listContainers()
     for containername in containernames:
         container = getattr(obj, containername)
-        container.info()
+        container.info(*args, **kwargs)
         
 def dottedPath(obj):
     path = [obj._name]

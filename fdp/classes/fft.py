@@ -63,6 +63,9 @@ class Fft(object):
         
         # real, positive definite power spec. density, psd(freq,time)
         self.psd = None
+        self.logpsd = None
+        self.binavg_psd = None
+        self.binavg_logpsd = None
         # input signal integrated power, intpower(time)
         self.intpower = None
         self.maxintpowererror = None
@@ -162,7 +165,12 @@ class Fft(object):
             
     def calcPsd(self):
         # PSD in dB: 10*log10 (|FFT|^2)
-        self.psd = 10*np.log10(np.square(np.absolute(self.fft)))
+        self.psd = np.square(np.absolute(self.fft))
+        self.logpsd = 10*np.log10(self.psd)
+        # bin-averaged PSD in dB: 10*log10 (|FFT|^2)
+        self.binavg_psd = np.mean(self.psd, axis=0)
+        self.binavg_logpsd = 10*np.log10(self.binavg_psd)
+        
                 
     def checkIntegratedPower(self):
         intpowercheck = np.sum(np.square(np.absolute(self.fft)),
