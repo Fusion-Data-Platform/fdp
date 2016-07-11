@@ -30,6 +30,26 @@ class TestNstxu(SetupNstxu):
         """
         self.assertTrue(hasattr(self.nstxu, 's0'))
         
+    def testDiagnosticContainers(self):
+        """
+        Assert nstxu.s0 has diagnostic attributes
+        Assert that diagnostic attributes are subclasses of container.Container
+        """
+        containers = ['bes',
+                      'usxr',
+                      'mse',
+                      'chers',
+                      'mpts',
+                      'magnetics',
+                      'equilibria',
+                      'filterscopes',
+                      'nbi',
+                      'neutrons']
+        for containername in containers:
+            self.assertTrue(hasattr(self.nstxu.s0, containername))
+            container = getattr(self.nstxu.s0, containername)
+            self.assertTrue(issubclass(type(container), fdp.classes.container.Container))
+        
     def testLogbookConnection(self):
         """
         Assert Logbook object
