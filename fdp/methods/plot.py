@@ -89,10 +89,11 @@ def plot(signal, fig=None, ax=None, **kwargs):
         return
 
     signal[:]
-    if signal.size==0:
-        warn("Empty signal {}, returning".format(signal._mdsnode), 
-             FdpWarning)
-        return
+    if signal.size == 0:
+        warn("Empty signal {}".format(signal._mdsnode), FdpWarning)
+    signal.time[:]
+    if signal.time.size == 0:
+        warn("Empty signal.time {}".format(signal.time._mdsnode), FdpWarning)
     
     dims = signal.ndim
     multi_axis = defaults.get('multi', None)

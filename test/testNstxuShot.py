@@ -14,9 +14,11 @@ print('running tests in {}'.format(__file__))
 class TestNstxuShot(SetupNstxu):
     
     def testShotClass(self):
-        self.assertTrue(hasattr(self.nstxu, 's'+repr(self.shotnumber)))
-        self.assertTrue(issubclass(type(self.shot),
-                                   fdp.classes.shot.Shot))
+        shotattrname = 's'+repr(self.shotnumber)
+        self.assertTrue(hasattr(self.nstxu, shotattrname),
+                        'nstxu does not have {} attribute'.format(shotattrname))
+        self.assertTrue(issubclass(type(self.shot), fdp.classes.shot.Shot),
+                        '{} is not shot.Shot subclass'.format(repr(self.shot)))
                                    
     def testDiagnsticContainers(self):
         """
@@ -25,8 +27,8 @@ class TestNstxuShot(SetupNstxu):
         diagnostics = dir(self.shot)
         for diagnostic in diagnostics:
             diag = getattr(self.shot, diagnostic)
-            self.assertTrue(issubclass(type(diag),
-                                       fdp.classes.container.Container))
+            self.assertTrue(issubclass(type(diag), fdp.classes.container.Container),
+                            '{} is not subclass of container.Container'.format(repr(diag)))
                                        
     def testLogbook(self):
         """

@@ -135,8 +135,8 @@ class Machine(MutableMapping):
         try:
             data = connection.get(signal._mdsnode)
         except:
-            msg = 'MDSplus connection error for tree {} and node {}'.format(
-                signal._mdstree, signal._mdsnode)
+            msg = 'MDSplus connection error for shot {}, tree {}, and node {}'.format(
+                signal.shot, signal._mdstree, signal._mdsnode)
             warn(msg, FdpWarning)
             return np.zeros(0)
         try:
