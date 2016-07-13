@@ -9,12 +9,13 @@ import numpy as np
 from scipy import fftpack
 from .fdp_globals import FdpError
 
+
 class Fft(object):
     """
     Fft class
-    
+
     Calculates binned ffts for time interval tmin to tmax.
-    
+
     Attributes
         fft: complex-valued fft(time, freq),
             single-sided for real input, dboule-sided for complex input
@@ -22,45 +23,46 @@ class Fft(object):
         freq: frequency array [kHz]
         power2: # of points in fft, power-of-2 (>=) enforced
     """
-    
-    def __init__(self, signal, power2=None, tmin=0.2, tmax=1.0, 
+
+    def __init__(self, signal, power2=None, tmin=0.2, tmax=1.0,
                  hanning=True, offsetminimum=False, offsetdc=False,
                  normalizetodc=False):
         self.signal = signal
         self.signalname = signal._name
         self.parentname = signal._parent._name
         self.shot = signal.shot
-        self.power2 = power2 # in None, guess value below
-        self.hanning = hanning # true for Hann window
-        self.offsetminimum = offsetminimum # true to shift signal by minimum
-        self.offsetdc = offsetdc # true to remove DC component
+        self.power2 = power2  # in None, guess value below
+        self.hanning = hanning  # true for Hann window
+        self.offsetminimum = offsetminimum  # true to shift signal by minimum
+        self.offsetdc = offsetdc  # true to remove DC component
         self.normalizetodc = normalizetodc
-        
+
         if self.hanning:
             # 50% overlap for Hanning window
             self.overlapfactor = 2
         else:
             # no overlap among bins
             self.overlapfactor = 1
-        
-        if tmax>10:
+
+        if tmax > 10:
             # assume ms input and convert to s
             tmin = tmin/1e3
             tmax = tmax/1e3
         self.tmin = tmin
         self.tmax = tmax
-        
+
         # single-sided, complex-valued fft(time, freq)
         self.fft = None
         # frequency array
         self.freq = None
         # array of center times for bins
         self.time = None
-        
+
         self.nbins = None
+        self.nfft = None
         self.window = None
         self.iscomplexsignal = None
-        
+
         # real, positive definite power spec. density, psd(freq,time)
         self.psd = None
         self.logpsd = None
@@ -69,7 +71,7 @@ class Fft(object):
         # input signal integrated power, intpower(time)
         self.intpower = None
         self.maxintpowererror = None
-        
+
         self.loadSignal()
         self.makeTimeBins()
         if self.offsetminimum:
@@ -84,7 +86,7 @@ class Fft(object):
         if self.normalizetodc and not self.offsetdc:
             self.applyNormalizeToDc()
         self.calcPsd()
-        
+
     def loadSignal(self):
         self.signal[:]
         self.signal.time[:]
@@ -95,8 +97,7 @@ class Fft(object):
             self.iscomplexsignal = True
         else:
             raise FdpError('Data must be floating or complex')
-            
-        
+
     def makeTimeBins(self):
         self.time = []
         self.fft = []
@@ -108,8 +109,9 @@ class Fft(object):
             # guess appropriate pwoer2 value
             self.power2 = np.int(np.sqrt((istop-istart+1)*self.overlapfactor))
         self.power2 = nextpow2(self.power2)
+        self.nfft = self.power2
         t = np.mean(self.signal.time[istart:istart+self.power2])
-        while t.item(0)<=self.tmax:
+        while t.item(0) <= self.tmax:
             self.time.append(t)
             self.fft.append(self.signal[istart:istart+self.power2])
             # candidate istart and t for next iteration

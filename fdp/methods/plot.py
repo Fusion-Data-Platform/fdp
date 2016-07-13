@@ -42,10 +42,12 @@ def plot2d(signal, **kwargs):
     yaxis[:]
     plot_range = set_range(signal, default_min, default_max)
     levels = np.linspace(plot_range[0], plot_range[1], nlevels)
-    plot_func(np.array(xaxis), np.array(yaxis), np.array(signal),
+    artist = plot_func(np.array(xaxis), np.array(yaxis), np.array(signal),
               levels=levels, **kwargs)
     plt.ylabel('{} ({})'.format(yaxis._name, yaxis.units))
     plt.xlabel('{} ({})'.format(xaxis._name, xaxis.units))
+    if plot_type == 'contourf':
+        plt.colorbar(artist)
 
 
 def set_range(data, default_min, default_max):
