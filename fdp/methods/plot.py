@@ -23,7 +23,7 @@ def plot1d(signal, **kwargs):
     _ = kwargs.pop('stack', None)
     _ = kwargs.pop('maxrange', None)
     _ = kwargs.pop('minrange', None)
-    
+
     plt.plot(xaxis, signal, **kwargs)
     plt.ylabel('{} ({})'.format(signal._name, signal.units))
     plt.xlabel('{} ({})'.format(xaxis._name, xaxis.units))
@@ -43,7 +43,7 @@ def plot2d(signal, **kwargs):
     plot_range = set_range(signal, default_min, default_max)
     levels = np.linspace(plot_range[0], plot_range[1], nlevels)
     artist = plot_func(np.array(xaxis), np.array(yaxis), np.array(signal),
-              levels=levels, **kwargs)
+                       levels=levels, **kwargs)
     plt.ylabel('{} ({})'.format(yaxis._name, yaxis.units))
     plt.xlabel('{} ({})'.format(xaxis._name, xaxis.units))
     if plot_type == 'contourf':
@@ -96,7 +96,7 @@ def plot(signal, fig=None, ax=None, **kwargs):
     signal.time[:]
     if signal.time.size == 0:
         warn("Empty signal.time {}".format(signal.time._mdsnode), FdpWarning)
-    
+
     dims = signal.ndim
     multi_axis = defaults.get('multi', None)
     if multi_axis is 'shot':
@@ -123,9 +123,9 @@ def plot(signal, fig=None, ax=None, **kwargs):
         ax.plot(signal, **defaults)
         fig.canvas.draw()
         fig.canvas.mpl_connect('resize_event', ax._update_all_plots)
-    plt.title('{} -- {} -- {}'.format(signal._parent._name.upper(), 
-                                signal._name, 
-                                signal.shot), 
+    plt.title('{} -- {} -- {}'.format(signal._parent._name.upper(),
+                                      signal._name,
+                                      signal.shot),
               fontsize=20)
     # return fig
 
@@ -176,7 +176,7 @@ def plot_container(container, **kwargs):
         if index == 1:
             plt.subplot(vstack, hstack, index)
         else:
-            plt.subplot(vstack, hstack, index) # , sharex=ax, sharey=ax)
+            plt.subplot(vstack, hstack, index)  # , sharex=ax, sharey=ax)
         signal.plot(fig=fig, ax=None, **kwargs)
 
 
