@@ -7,17 +7,11 @@ Created on Thu Jul  7 21:42:27 2016
 
 import fdp
 
-nstx=fdp.nstx()
-#shot=nstx.s204620
-#shot.bes.ch01.info()
-#shot.bes.info()
-#
-#shot.mpts.ne.info()
-#shot.mpts.info()
 
-shot=nstx.s141000
-shot.chers.ti.info()
-shot.chers.info()
+nstx = fdp.nstx()
 
-shot.info(short=True)
+print('INFO() for 141000')
+nstx.s141000.info()
 
+print('INFO() for 204956')
+nstx.s204956.info()

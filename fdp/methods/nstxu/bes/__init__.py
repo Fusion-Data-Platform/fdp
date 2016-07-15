@@ -10,6 +10,8 @@ BES detector channels **do not** correspond to permanent measurement locations. 
 from .fft import fft, plotfft, powerspectrum
 from .animation import animate
 from .configuration import loadConfig
+from .coherence import coh
 
 __all__ = ['fft', 'plotfft', 'powerspectrum', 
-           'animate', 'loadConfig']
+           'animate', 'loadConfig',
+           'coh']
