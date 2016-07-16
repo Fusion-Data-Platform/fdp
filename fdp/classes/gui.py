@@ -16,6 +16,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
+plt.ioff()
 
 
 class BaseGui(object):
@@ -33,12 +34,20 @@ class BaseGui(object):
 
     def __init__(self, title='', parent=None):
         self.parent = parent
-        self.root = tk.Tk()
-        self.root.title(title)
+        self.tkroot = tk.Tk()
+        self.tkroot.title(title)
+        
         self.mainframe = ttk.Frame(master=self.parent)
+        
+        self.figure = plt.figure()
+        self.axes = self.figure.add_subplot(1, 1, 1)
+        
+        self.canvas = FigureCanvasTkAgg(self.figure, master=self.tkroot)
+        self.canvas.show()
+        self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         
         self.controlframe = None
         self.figureframe = None
         
-        self.root.mainloop()
+        self.tkroot.mainloop()
         
