@@ -30,24 +30,43 @@ class BaseGui(object):
     global_tmax = None
     global_update = False
 
-    def __init__(self, title='', parent=None):
+    def __init__(self, title='', parent=None, skipdefaultwidgets=False):
         self.parent = parent
         self.tkroot = tk.Tk()
         self.tkroot.title(title)
         
+        self.controlframe = ttk.Frame(master=self.tkroot, borderwidth=3, 
+                                      relief='ridge', padding=2)
+        self.controlframe.pack(side='left', fill='y')
+        # dummy frame to set controlframe width
+        controlwidth = ttk.Frame(master=self.controlframe, width=125)
+        controlwidth.pack(side='top', fill='x')
+        
+        if not skipdefaultwidgets:
+            self.shotEntry = self.addEntry(text='Shot:  ')
+            self.tminEntry = self.addEntry(text='Tmin (ms):  ')
+            self.tmaxEntry = self.addEntry(text='Tmax (ms):  ')
+        
+        self.figureframe = ttk.Frame(master=self.tkroot, borderwidth=3,
+                                     relief='ridge')
+        self.figureframe.pack(side='left', expand=1, fill='both')
+        
         self.figure = mpl.figure.Figure()
         self.axes = self.figure.add_subplot(1, 1, 1)
         
-        self.controlframe = ttk.Frame(master=self.tkroot, borderwidth=5, 
-                                     width=100, height=100, relief='ridge')
-        self.controlframe.pack(side='left')
-        self.figureframe = ttk.Frame(master=self.tkroot, borderwidth=5, 
-                                     width=100, height=100, relief='ridge')
-        self.figureframe.pack(side='right')
-        
         self.canvas = FigureCanvasTkAgg(self.figure, master=self.figureframe)
         self.canvas.show()
-        self.canvas.get_tk_widget().pack(side=tk.RIGHT, fill=tk.BOTH, expand=1)
+        self.canvas.get_tk_widget().pack(expand=1, fill='both')
         
         self.tkroot.mainloop()
+        
+    def addEntry(self, text=None, width=8):
+        frame = ttk.Frame(master=self.controlframe, borderwidth=0,
+                          relief='ridge', padding=2)
+        frame.pack(side='top', fill='x')
+        label = ttk.Label(master=frame, text=text)
+        label.pack(side='left')
+        entry = ttk.Entry(master=frame, width=width)
+        entry.pack(side='right')
+        return entry
         
