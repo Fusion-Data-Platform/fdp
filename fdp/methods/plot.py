@@ -10,6 +10,8 @@ import time
 
 import numpy as np
 import numba as nb
+import matplotlib as mpl
+mpl.use('TkAgg')
 import matplotlib.pyplot as plt
 import pyqtgraph as pg
 
