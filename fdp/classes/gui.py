@@ -37,6 +37,7 @@ class BaseGui(threading.Thread):
         self.title = title
         self.parent = parent
         self.signal = signal
+        self.root = self.signal._root
         self.skipdefaultwidgets = skipdefaultwidgets
         self.start()
 
@@ -61,7 +62,7 @@ class BaseGui(threading.Thread):
         
         self.figure = mpl.figure.Figure()
         self.axes = self.figure.add_subplot(111)
-        self.axes.plot(self.signal.time[:], self.signal[:])
+        self.signal.plot(fig=self.figure, ax=self.axes)
         
         self.figureframe = ttk.Frame(master=self.tkroot, borderwidth=3,
                                      relief='ridge')
@@ -71,15 +72,7 @@ class BaseGui(threading.Thread):
         self.canvas.get_tk_widget().pack(expand=1, fill='both')
         self.canvas.show()
         
-#        self.checkClassAttr()
         self.tkroot.mainloop()
-        
-#    def checkClassAttr(self):
-#        if self.basegui_update:
-#            print('update')
-#            self.basegui_update = False
-#            print(self.basegui_update)
-#        self.tkroot.after(500, self.checkClassAttr)
         
     def addEntry(self, text=None, width=8):
         frame = ttk.Frame(master=self.controlframe, padding=2)

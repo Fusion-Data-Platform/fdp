@@ -25,10 +25,15 @@ def plot1d(signal, **kwargs):
     _ = kwargs.pop('stack', None)
     _ = kwargs.pop('maxrange', None)
     _ = kwargs.pop('minrange', None)
+    ax = kwargs.pop('axes', None)
 
-    plt.plot(xaxis, signal, **kwargs)
-    plt.ylabel('{} ({})'.format(signal._name, signal.units))
-    plt.xlabel('{} ({})'.format(xaxis._name, xaxis.units))
+    ax.plot(xaxis, signal, **kwargs)
+    ax.set_ylabel('{} ({})'.format(signal._name, signal.units))
+    ax.set_xlabel('{} ({})'.format(xaxis._name, xaxis.units))
+    ax.set_title('{} -- {} -- {}'.format(signal._parent._name.upper(),
+                                         signal._name,
+                                         signal.shot),
+                 fontsize=20)
 
 
 def plot2d(signal, **kwargs):
@@ -112,9 +117,12 @@ def plot(signal, fig=None, ax=None, **kwargs):
 
     if fig is None:
         fig = plt.figure()
+        
+    if ax is None:
+        ax = fig.add_subplot(111)
 
     if 1: # dims > 1:
-        plot_methods[dims](signal, **defaults)
+        plot_methods[dims](signal, axes=ax, **defaults)
     else:
         if not len(fig.axes):
             ax = PlotAxes(plot_methods[dims], fig, [0.1, 0.1, 0.8, 0.8])
@@ -125,10 +133,6 @@ def plot(signal, fig=None, ax=None, **kwargs):
         ax.plot(signal, **defaults)
         fig.canvas.draw()
         fig.canvas.mpl_connect('resize_event', ax._update_all_plots)
-    plt.title('{} -- {} -- {}'.format(signal._parent._name.upper(),
-                                      signal._name,
-                                      signal.shot),
-              fontsize=20)
     # return fig
 
 
