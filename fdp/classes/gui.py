@@ -31,20 +31,19 @@ class BaseGui(threading.Thread):
     basegui_tmax = None
     basegui_update = False
 
-    def __init__(self, signal=None, title='', parent=None, 
-                 skipdefaultwidgets=False):
+    def __init__(self, obj=None, title='', parent=None, 
+                 defaultwidgets=True):
         super(BaseGui, self).__init__()
         self.title = title
         self.parent = parent
-        self.signal = signal
-        self.root = self.signal._root
-        self.skipdefaultwidgets = skipdefaultwidgets
+        self.obj = obj
+        self.root = self.obj._root
+        self.defaultwidgets = defaultwidgets
         self.start()
 
     def run(self):
         self.tkroot = tk.Tk()
         self.tkroot.title(self.title)
-        
         
         self.controlframe = ttk.Frame(master=self.tkroot, borderwidth=3, 
                                       relief='ridge', padding=2)
@@ -53,16 +52,10 @@ class BaseGui(threading.Thread):
         controlwidth = ttk.Frame(master=self.controlframe, width=125)
         controlwidth.pack(side='top', fill='x')
         
-        if not self.skipdefaultwidgets:
-            self.shotEntry = self.addEntry(text='Shot:  ')
-            self.tminEntry = self.addEntry(text='Tmin (ms):  ')
-            self.tmaxEntry = self.addEntry(text='Tmax (ms):  ')
-            self.closeButton = self.addButton(text='Close', 
-                                              command=self.tkroot.destroy)
+        if self.defaultwidgets:
+            self.addDefaultWidgets()
         
         self.figure = mpl.figure.Figure()
-        self.axes = self.figure.add_subplot(111)
-        self.signal.plot(fig=self.figure, ax=self.axes)
         
         self.figureframe = ttk.Frame(master=self.tkroot, borderwidth=3,
                                      relief='ridge')
@@ -70,11 +63,27 @@ class BaseGui(threading.Thread):
         
         self.canvas = FigureCanvasTkAgg(self.figure, master=self.figureframe)
         self.canvas.get_tk_widget().pack(expand=1, fill='both')
-        self.canvas.show()
+        
+        self.plotObject()
         
         self.tkroot.mainloop()
         
-    def addEntry(self, text=None, width=8):
+    def addDefaultWidgets(self):
+        self.shotEntry = self.insertTextEntry(text='Add shot:  ')
+        self.insertShotListbox()
+        self.tminEntry = self.insertTextEntry(text='Tmin (ms):  ')
+        self.tmaxEntry = self.insertTextEntry(text='Tmax (ms):  ')
+        self.closeButton = self.insertButton(text='Close', 
+                                             command=self.tkroot.destroy)
+        self.printButton = self.insertButton(text='Save', 
+                                             command=None)
+                
+    def plotObject(self):
+        self.axes = self.figure.add_subplot(111)
+        self.obj.plot(fig=self.figure, ax=self.axes)
+        self.canvas.show()
+        
+    def insertTextEntry(self, text=None, width=8):
         frame = ttk.Frame(master=self.controlframe, padding=2)
         frame.pack(side='top', fill='x')
         label = ttk.Label(master=frame, text=text)
@@ -83,9 +92,23 @@ class BaseGui(threading.Thread):
         entry.pack(side='right')
         return entry
         
-    def addButton(self, text=None, width=20, command=None):
+    def insertShotListbox(self):
         frame = ttk.Frame(master=self.controlframe, padding=2)
         frame.pack(side='top', fill='x')
+        label = ttk.Label(master=frame, text='Loaded shots:')
+        label.pack(side='left', anchor=tk.N)
+        self.shotControlVar = tk.StringVar()
+        self.shotList = tk.Listbox(master=frame, 
+                                   listvariable=self.shotControlVar,
+                                   selectmode=tk.SINGLE,
+                                   height=5, width=8)
+        for i, item in enumerate(self.root):
+            self.shotList.insert(i, item.shot)
+        self.shotList.pack(side='right', anchor=tk.N)
+        
+    def insertButton(self, text=None, width=20, command=None):
+        frame = ttk.Frame(master=self.controlframe, padding=2)
+        frame.pack(side='bottom', fill='x')
         button = ttk.Button(master=frame, text=text, 
                             command=command,
                             width=width)

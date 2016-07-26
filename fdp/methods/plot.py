@@ -32,8 +32,7 @@ def plot1d(signal, **kwargs):
     ax.set_xlabel('{} ({})'.format(xaxis._name, xaxis.units))
     ax.set_title('{} -- {} -- {}'.format(signal._parent._name.upper(),
                                          signal._name,
-                                         signal.shot),
-                 fontsize=20)
+                                         signal.shot))
 
 
 def plot2d(signal, **kwargs):
