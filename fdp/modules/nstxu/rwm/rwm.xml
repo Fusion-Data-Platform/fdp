@@ -1,0 +1,15 @@
+<?xml version='1.0'?>
+<container name='rwm' mdstree='engineering'>
+    <axis name='time' axis_ref='time1' units='s' mdsnode='dim_of(\IRWM1)'></axis>
+    <signal name='irwm1' units='A' axes='time' axis_ref='time1' mdsnode='\IRWM1'></signal>
+    <axis name='time' axis_ref='time2' units='s' mdsnode='dim_of(\IRWM2)'></axis>
+    <signal name='irwm2' units='A' axes='time' axis_ref='time1' mdsnode='\IRWM2'></signal>
+    <axis name='time' axis_ref='time3' units='s' mdsnode='dim_of(\IRWM3)'></axis>
+    <signal name='irwm3' units='A' axes='time' axis_ref='time1' mdsnode='\IRWM3'></signal>
+    <axis name='time' axis_ref='time4' units='s' mdsnode='dim_of(\IRWM4)'></axis>
+    <signal name='irwm4' units='A' axes='time' axis_ref='time1' mdsnode='\IRWM4'></signal>
+    <axis name='time' axis_ref='time5' units='s' mdsnode='dim_of(\IRWM5)'></axis>
+    <signal name='irwm5' units='A' axes='time' axis_ref='time1' mdsnode='\IRWM5'></signal>
+    <axis name='time' axis_ref='time6' units='s' mdsnode='dim_of(\IRWM6)'></axis>
+    <signal name='irwm6' units='A' axes='time' axis_ref='time1' mdsnode='\IRWM6'></signal>
+</container>
