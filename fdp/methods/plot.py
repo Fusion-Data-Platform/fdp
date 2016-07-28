@@ -20,7 +20,7 @@ from fdp.classes.fdp_globals import FdpWarning
 pg.mkQApp()
 
 
-def plot1d(signal, **kwargs):
+def plot1d(signal, tmin=0.0, tmax=2.0, **kwargs):
     xaxis = getattr(signal, signal.axes[0])
     _ = kwargs.pop('stack', None)
     _ = kwargs.pop('maxrange', None)
@@ -33,9 +33,10 @@ def plot1d(signal, **kwargs):
     ax.set_title('{} -- {} -- {}'.format(signal._parent._name.upper(),
                                          signal._name,
                                          signal.shot))
+    ax.set_xlim(tmin, tmax)
 
 
-def plot2d(signal, **kwargs):
+def plot2d(signal, tmin=0.0, tmax=2.0, **kwargs):
     plot_type = kwargs.pop('type', 'contourf')
     nlevels = int(kwargs.pop('nlevels', 100))
     default_min = float(kwargs.pop('minrange', 0.))
@@ -52,6 +53,7 @@ def plot2d(signal, **kwargs):
                        levels=levels, **kwargs)
     plt.ylabel('{} ({})'.format(yaxis._name, yaxis.units))
     plt.xlabel('{} ({})'.format(xaxis._name, xaxis.units))
+    plt.ylim(tmin, tmax)
     if plot_type == 'contourf':
         plt.colorbar(artist)
 
