@@ -11,7 +11,7 @@ import time
 import numpy as np
 import numba as nb
 import matplotlib as mpl
-mpl.use('TkAgg')
+#mpl.use('TkAgg')
 import matplotlib.pyplot as plt
 import pyqtgraph as pg
 
@@ -122,6 +122,7 @@ def plot(signal, fig=None, ax=None, **kwargs):
 
     if 1: # dims > 1:
         plot_methods[dims](signal, axes=ax, **defaults)
+        #fig.show()
     else:
         if not len(fig.axes):
             ax = PlotAxes(plot_methods[dims], fig, [0.1, 0.1, 0.8, 0.8])
