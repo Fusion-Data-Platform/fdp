@@ -9,10 +9,6 @@ import fdp
 
 
 nstx=fdp.nstx()
-nstx.addxp(1013)
+#nstx.addxp(1013)
 bes=nstx.s204620.bes
 gui = bes.gui()
-
-
-#from fdp.classes.gui import BaseGui
-#gui = BaseGui(title='my window')
