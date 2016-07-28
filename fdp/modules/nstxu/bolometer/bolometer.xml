@@ -1,0 +1,5 @@
+<?xml version='1.0'?>
+<container name='bolometer' mdstree='passivespec'>
+    <axis name='time' units='s' mdsnode='dim_of(\bolom_totpwr)'></axis>
+    <signal name='radpower' units='MW' axes='time' mdsnode='\bolom_totpwr'></signal>
+</container>
