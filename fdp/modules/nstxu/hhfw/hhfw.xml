@@ -1,0 +1,5 @@
+<?xml version='1.0'?>
+<container name='hhfw' mdstree='rf'>
+    <axis name='time' units='s' mdsnode='dim_of(\HHFW_POWER)'></axis>
+    <signal name='power' units='W' axes='time' mdsnode='\HHFW_POWER'></signal>
+</container>

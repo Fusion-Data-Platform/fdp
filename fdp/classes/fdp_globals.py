@@ -8,6 +8,8 @@ Created on Thu Jun 18 11:18:16 2015
 """
 import os
 
+VERBOSE = False
+
 MACHINES = ['nstxu', 'diiid', 'cmod']
 
 FDP_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -75,7 +77,7 @@ class FdpWarning(Warning):
 
     **Usage**::
 
-        raise FdpWarning('warning message')
+        warnings.warn("message", FdpWarning)
 
     """
     def __init__(self, message=''):

@@ -10,6 +10,7 @@
     <signal name='ne' units='cm^-3' axes='radius, time' error='fit_ne_err' mdsnode='fit_ne' title='Electron Density'>
         <defaults method='plot' maxrange='0.95'></defaults>
     </signal>
+    <signal name='ld' units='cm^-2' axes='time' mdsnode='ts_ld' title='Line Density'></signal>
     <container name='spline'>
         <axis name='radius' units='cm' mdsnode='spline_radii'></axis>
         <signal name='te' units='keV' axes='radius, time' mdsnode='spline_te' title='Electron Temperature (spline fit)'></signal>

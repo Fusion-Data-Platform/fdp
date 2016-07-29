@@ -18,28 +18,27 @@ import inspect
 import types
 import numpy as np
 from . import fdp_globals
-#from functools import wraps
 
 MDS_SERVERS = fdp_globals.MDS_SERVERS
-# implemented MDS_SERVERS from fdp_globals in place of hard-coded MDS server - DRS 10/18/15
 FdpError = fdp_globals.FdpError
 
 
-# commented out and replaced with FdpError - DRS 10/18/15
-#class MdsError(Exception):
-#    pass
-
 class Signal(np.ndarray):
     """
-    sig=fdp.Signal(signal_ndarray, units='m/s', axes=['radius','time'], axes_values=[ax1_1Darray, ax2_1Darray], axes_units=['s','cm']
+    sig=fdp.Signal(signal_ndarray, units='m/s', axes=['radius','time'],
+                   axes_values=[ax1_1Darray, ax2_1Darray],
+                   axes_units=['s','cm'])
 
     e.g.:
-    mds.Signal(np.arange((20*10)).reshape((10,20)), units='keV', axes=['radius','time'], axes_values=[100+np.arange(10)*5, np.arange(20)*0.1], axes_units=['s','cm'])
+    mds.Signal(np.arange((20*10)).reshape((10,20)), units='keV',
+               axes=['radius','time'], axes_values=[100+np.arange(10)*5,
+               np.arange(20)*0.1], axes_units=['s','cm'])
 
     or an empty signal:
     s=mds.Signal()
     default axes order=[time, space]
-    sig=fdp.Signal(units='m/s', axes=['radius','time'], axes_values=[radiusSignal, timeSignal])
+    sig=fdp.Signal(units='m/s', axes=['radius','time'],
+                   axes_values=[radiusSignal, timeSignal])
     """
     def __init__(self, **kwargs):
         pass
@@ -124,7 +123,7 @@ class Signal(np.ndarray):
         #if hasattr(obj,'units'):
         objaxes= getattr(obj, 'axes',None)
         objdict= getattr(obj, '__dict__', None)
-        _nodeltmpattr=False        
+        _nodeltmpattr=False
 
         if objdict is not None:
             #print(type(objdict))
@@ -133,8 +132,8 @@ class Signal(np.ndarray):
                 for key,val in objdict.items():
                     if key not in objaxes: setattr(self, key, val)
             else:
-                for key,val in objdict.items(): setattr(self, key, val) 
-                    
+                for key,val in objdict.items(): setattr(self, key, val)
+
             if '_verbose' in objdict:
                 if objdict['_verbose']:
                     try:
@@ -154,7 +153,7 @@ class Signal(np.ndarray):
                 if objdict['_fname'] == 'transpose':
                     if objaxes is not None:
                         self.axes = [obj.axes[i] for i in objdict['_fargs'][0]] if objdict.has_key('_fargs') else obj.axes[::-1]
-        
+
             if '_debug' in objdict:
                 if objdict['_debug']: _nodeltmpattr=True
 
@@ -173,7 +172,7 @@ class Signal(np.ndarray):
                         #>1-D
                         elif type(obj._slic) is tuple:
                             #if getattr(obj, axis).axes != []:
-                            #axes is multidimensional, build correct 
+                            #axes is multidimensional, build correct
                             _slicaxis=tuple([obj._slic[obj.axes.index(axisaxis)] for
                                              axisaxis in (getattr(obj, axis).axes + [axis])])
                             if self._verbose:
@@ -217,7 +216,7 @@ class Signal(np.ndarray):
             except:
                 pass
             return
-        
+
         if _nodeltmpattr:
             pass
         else:
@@ -229,7 +228,7 @@ class Signal(np.ndarray):
                 delattrtry(obj,'_fname')
                 delattrtry(obj,'_fargs')
                 delattrtry(obj,'_fkwargs')
-                
+
     def __array_wrap__(self, out_arr, context=None):
         if self._verbose:
             print('Called __array_wrap__:')
@@ -280,7 +279,7 @@ class Signal(np.ndarray):
 
         slcindex=parseindex(index, self.ndim)
         self._slic=slcindex
-        
+
         #Get the data
         if self._empty is True:
 #            try:
@@ -300,7 +299,7 @@ class Signal(np.ndarray):
             #print('__getitem__: self has len %s ' % len(self))
         return super(Signal,self).__getitem__(slcindex)
 
-        
+
     def __getattr__(self, attribute):
         if attribute is '_parent':
             raise AttributeError("'{}' object has no attribute '{}'".format(
@@ -389,9 +388,9 @@ class Signal(np.ndarray):
         args[0]._fname=f.__name__
         args[0]._fkwargs=kwargs
         return super(Signal,self).amin(*args, **kwargs)
-    
+
     @sigwrapper
     def transpose(self, *args, **kwargs):
         return super(Signal,self).transpose(*args, **kwargs)
-    
-    
+
+

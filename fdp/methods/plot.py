@@ -10,6 +10,8 @@ import time
 
 import numpy as np
 import numba as nb
+import matplotlib as mpl
+#mpl.use('TkAgg')
 import matplotlib.pyplot as plt
 import pyqtgraph as pg
 
@@ -18,18 +20,23 @@ from fdp.classes.fdp_globals import FdpWarning
 pg.mkQApp()
 
 
-def plot1d(signal, **kwargs):
+def plot1d(signal, tmin=0.0, tmax=2.0, **kwargs):
     xaxis = getattr(signal, signal.axes[0])
     _ = kwargs.pop('stack', None)
     _ = kwargs.pop('maxrange', None)
     _ = kwargs.pop('minrange', None)
-    
-    plt.plot(xaxis, signal, **kwargs)
-    plt.ylabel('{} ({})'.format(signal._name, signal.units))
-    plt.xlabel('{} ({})'.format(xaxis._name, xaxis.units))
+    ax = kwargs.pop('axes', None)
+
+    ax.plot(xaxis, signal, **kwargs)
+    ax.set_ylabel('{} ({})'.format(signal._name, signal.units))
+    ax.set_xlabel('{} ({})'.format(xaxis._name, xaxis.units))
+    ax.set_title('{} -- {} -- {}'.format(signal._parent._name.upper(),
+                                         signal._name,
+                                         signal.shot))
+    ax.set_xlim(tmin, tmax)
 
 
-def plot2d(signal, **kwargs):
+def plot2d(signal, tmin=0.0, tmax=2.0, **kwargs):
     plot_type = kwargs.pop('type', 'contourf')
     nlevels = int(kwargs.pop('nlevels', 100))
     default_min = float(kwargs.pop('minrange', 0.))
@@ -42,10 +49,13 @@ def plot2d(signal, **kwargs):
     yaxis[:]
     plot_range = set_range(signal, default_min, default_max)
     levels = np.linspace(plot_range[0], plot_range[1], nlevels)
-    plot_func(np.array(xaxis), np.array(yaxis), np.array(signal),
-              levels=levels, **kwargs)
+    artist = plot_func(np.array(xaxis), np.array(yaxis), np.array(signal),
+                       levels=levels, **kwargs)
     plt.ylabel('{} ({})'.format(yaxis._name, yaxis.units))
     plt.xlabel('{} ({})'.format(xaxis._name, xaxis.units))
+    plt.ylim(tmin, tmax)
+    if plot_type == 'contourf':
+        plt.colorbar(artist)
 
 
 def set_range(data, default_min, default_max):
@@ -89,10 +99,12 @@ def plot(signal, fig=None, ax=None, **kwargs):
         return
 
     signal[:]
-    if signal.size==0:
-        warn("Empty signal, returning", FdpWarning)
-        return
-    
+    if signal.size == 0:
+        warn("Empty signal {}".format(signal._mdsnode), FdpWarning)
+    signal.time[:]
+    if signal.time.size == 0:
+        warn("Empty signal.time {}".format(signal.time._mdsnode), FdpWarning)
+
     dims = signal.ndim
     multi_axis = defaults.get('multi', None)
     if multi_axis is 'shot':
@@ -106,9 +118,13 @@ def plot(signal, fig=None, ax=None, **kwargs):
 
     if fig is None:
         fig = plt.figure()
+        
+    if ax is None:
+        ax = fig.add_subplot(111)
 
     if 1: # dims > 1:
-        plot_methods[dims](signal, **defaults)
+        plot_methods[dims](signal, axes=ax, **defaults)
+        #fig.show()
     else:
         if not len(fig.axes):
             ax = PlotAxes(plot_methods[dims], fig, [0.1, 0.1, 0.8, 0.8])
@@ -119,10 +135,6 @@ def plot(signal, fig=None, ax=None, **kwargs):
         ax.plot(signal, **defaults)
         fig.canvas.draw()
         fig.canvas.mpl_connect('resize_event', ax._update_all_plots)
-    plt.title('{} -- {} -- {}'.format(signal._parent._name.upper(), 
-                                signal._name, 
-                                signal.shot), 
-              fontsize=20)
     # return fig
 
 
@@ -172,7 +184,7 @@ def plot_container(container, **kwargs):
         if index == 1:
             plt.subplot(vstack, hstack, index)
         else:
-            plt.subplot(vstack, hstack, index) # , sharex=ax, sharey=ax)
+            plt.subplot(vstack, hstack, index)  # , sharex=ax, sharey=ax)
         signal.plot(fig=fig, ax=None, **kwargs)
 
 
