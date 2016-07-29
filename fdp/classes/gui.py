@@ -16,7 +16,7 @@ import threading
 import time
 
 import matplotlib as mpl
-mpl.use('TkAgg')
+#mpl.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from .fdp_globals import FdpWarning
