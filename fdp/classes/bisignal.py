@@ -66,10 +66,12 @@ class bisignal(object):
         
         self.signal1 = signal1
         self.signal2 = signal2
-        self.signal1name = self.signal1._name
-        self.signal2name = self.signal2._name
-        self.parent1name = self.signal1._parent._name
-        self.parent2name = self.signal2._parent._name
+        self.signal1time = signal1.time
+        self.signal2time = signal2.time
+        self.signal1name = signal1._name
+        self.signal2name = signal2._name
+        self.parent1name = signal1._parent._name
+        self.parent2name = signal2._parent._name
         
         self.tmin = tmin
         self.tmax = tmax
@@ -114,8 +116,8 @@ class bisignal(object):
     def load_signal(self):
         self.signal1[:]
         self.signal2[:]
-        self.signal1.time[:]
-        self.signal2.time[:]
+        self.signal1time[:]
+        self.signal2time[:]
         
     def apply_offset_minimum(self):
         'Shift signal so that first 10,000 points are near zero'
@@ -126,30 +128,14 @@ class bisignal(object):
     
     def make_data_window(self):
         'Reduce signals to only contain data in the specified time window'
-        mask1 = np.logical_and(self.signal1.time >= self.tmin, 
-                               self.signal1.time <= self.tmax)
-        mask2 = np.logical_and(self.signal2.time >= self.tmin,
-                               self.signal2.time <= self.tmax)
-        
-#        print self.signal1
-#        print self.signal2
-        print self.signal1.time   
-        print self.signal2.time                    
-        
+        mask1 = np.logical_and(self.signal1time >= self.tmin, 
+                               self.signal1time <= self.tmax)
+        mask2 = np.logical_and(self.signal2time >= self.tmin,
+                               self.signal2time <= self.tmax)    
         self.signal1 = np.extract(mask1, self.signal1)
-        print self.signal1.time
-        print self.signal2.time
-        
         self.signal2 = np.extract(mask2, self.signal2)
-        print self.signal1.time
-        print self.signal2.time
-        
-        print 'length of mask 1'
-        print len(mask1)
-        print 'length of signal 1 time array'
-        print len(self.signal1.time)
-        self.signal1.time = np.extract(mask1, self.signal1.time)
-        self.signal2.time = np.extract(mask2, self.signal2.time)
+        self.signal1time = np.extract(mask1, self.signal1time)
+        self.signal2time = np.extract(mask2, self.signal2time)
     
     def calc_csd(self):
         """
@@ -169,7 +155,7 @@ class bisignal(object):
         
         # Calculate the sampling rate. Signal1 and signal2 must have the same 
         # sampling rate.
-        fs = 1 / np.mean(np.diff(self.signal1.time[:1e4]))
+        fs = 1 / np.mean(np.diff(self.signal1time[:1e4]))
         
         # If the number of points per segement is not specified, calculate the
         # number that gives approximately equal time and frequency resolution.
@@ -218,6 +204,7 @@ class bisignal(object):
         # 1 - does it make sense to normalize csd by 0 frequency value?
         # 2 - should it divide by real part or magnitude of 0 frequency value?
         self.csd /= np.real(self.csd[0])
+        self.crosspower /= self.crosspower[0]
         self.asd1 /= self.asd1[0]
         self.asd2 /= self.asd2[0]
         
