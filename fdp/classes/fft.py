@@ -106,12 +106,12 @@ class Fft(object):
         istart = time_indices[0]
         istop = time_indices[time_indices.size-1]
         if self.power2 is None:
-            # guess appropriate pwoer2 value
+            # guess appropriate power2 value
             self.power2 = np.int(np.sqrt((istop-istart+1)*self.overlapfactor))
         self.power2 = nextpow2(self.power2)
         self.nfft = self.power2
         t = np.mean(self.signal.time[istart:istart+self.power2])
-        while t.item(0) <= self.tmax:
+        while self.signal.time[istart+self.power2-1] <= self.tmax:        
             self.time.append(t)
             self.fft.append(self.signal[istart:istart+self.power2])
             # candidate istart and t for next iteration
@@ -138,7 +138,7 @@ class Fft(object):
             self.fft[i,:] = np.multiply(self.fft[i,:], self.window)
     
     def calcIntegratedSignalPower(self):
-        self.intpower = np.sum(np.square(self.fft), axis=1)
+        self.intpower = np.sum(np.square(np.absolute(self.fft)), axis=1)
     
     def calcFft(self):
         timeint = np.mean(np.diff(self.signal.time[0:1e4]))
