@@ -1,9 +1,9 @@
 <?xml version='1.0'?>
 <container name='engineering' mdstree='engineering'>
-    <axis name='time' axis_ref='time1' units='s' mdsnode='dim_of(\ip2)'></axis>
-    <signal name='ip' units='A' axes='time' axis_ref='time1' mdsnode='\ip2'></signal>
-    <axis name='time' axis_ref='time2' units='s' mdsnode='dim_of(\ioh)'></axis>
-    <signal name='ioh' units='A' axes='time' axis_ref='time2' mdsnode='\ioh'></signal>
-    <axis name='time' axis_ref='time3' units='s' mdsnode='dim_of(\itf)'></axis>
-    <signal name='itf' units='A' axes='time' axis_ref='time3' mdsnode='\itf'></signal>
+    <axis name='time1' units='s' mdsnode='dim_of(\ip2)'></axis>
+    <signal name='ip' units='A' axes='time' axes_refs='time1' mdsnode='\ip2'></signal>
+    <axis name='time2' units='s' mdsnode='dim_of(\ioh)'></axis>
+    <signal name='ioh' units='A' axes='time' axes_refs='time2' mdsnode='\ioh'></signal>
+    <axis name='time3' units='s' mdsnode='dim_of(\itf)'></axis>
+    <signal name='itf' units='A' axes='time' axes_refs='time3' mdsnode='\itf'></signal>
 </container>
