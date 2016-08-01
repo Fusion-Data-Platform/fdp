@@ -6,7 +6,7 @@ Created on Wed Jul 27 11:09:56 2016
 """
 
 import fdp
-from fdp.classes.bisignal import bisignal
+from fdp.classes.crosssignal import CrossSignal
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -21,8 +21,8 @@ bes = nstx.s204990.bes
 
 sig1 = bes.ch47 #SOL reference channel
 sig2 = bes.ch46 
-test = bisignal(sig1, sig2, tmin=0.47, tmax=0.52, nperseg=2048,
-                offsetminimum=True, normalizetodc=True)
+test = CrossSignal(sig1, sig2, tmin=0.47, tmax=0.52, nperseg=2048,
+                   offsetminimum=True, normalizetodc=True)
 
 loga1power = 10*np.log10(test.asd1)
 loga2power = 10*np.log10(test.asd2)

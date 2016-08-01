@@ -1,19 +1,19 @@
 <?xml version='1.0'?>
 <container name='neutrons' mdstree='particles'>
-    <axis name='time' axis_ref='time1' units='s' mdsnode='dim_of(\neut_fluct_fst_1de_zns)'></axis>
-    <signal name='fst_1de_zns' units='AU' axes='time' axis_ref='time1' mdsnode='\neut_fluct_fst_1de_zns'></signal>
-    <axis name='time' axis_ref='time2' units='s' mdsnode='dim_of(\neut_fluct_fst_2fg)'></axis>
-    <signal name='fst_2fg' units='AU' axes='time' axis_ref='time2' mdsnode='\neut_fluct_fst_2fg'></signal>
-    <axis name='time' axis_ref='time3' units='s' mdsnode='dim_of(\neut_fluct_fst_3de)'></axis>
-    <signal name='fst_3de' units='AU' axes='time' axis_ref='time3' mdsnode='\neut_fluct_fst_3de'></signal>
-    <axis name='time' axis_ref='time4' units='s' mdsnode='dim_of(\neut_fluct_fst_4ab)'></axis>
-    <signal name='fst_4ab' units='AU' axes='time' axis_ref='time4' mdsnode='\neut_fluct_fst_4ab'></signal>
-    <axis name='time' axis_ref='time5' units='s' mdsnode='dim_of(\neut_fluct_slw_1de_zns)'></axis>
-    <signal name='slw_1de_zns' units='AU' axes='time' axis_ref='time5' mdsnode='\neut_fluct_slw_1de_zns'></signal>
-    <axis name='time' axis_ref='time6' units='s' mdsnode='dim_of(\neut_fluct_slw_2fg)'></axis>
-    <signal name='slw_2fg' units='AU' axes='time' axis_ref='time6' mdsnode='\neut_fluct_slw_2fg'></signal>
-    <axis name='time' axis_ref='time7' units='s' mdsnode='dim_of(\neut_fluct_slw_3de)'></axis>
-    <signal name='slw_3de' units='AU' axes='time' axis_ref='time7' mdsnode='\neut_fluct_slw_3de'></signal>
-    <axis name='time' axis_ref='time8' units='s' mdsnode='dim_of(\neut_fluct_slw_4ab)'></axis>
-    <signal name='slw_4ab' units='AU' axes='time' axis_ref='time8' mdsnode='\neut_fluct_slw_4ab'></signal>
+    <axis name='time1' units='s' mdsnode='dim_of(\neut_fluct_fst_1de_zns)'></axis>
+    <signal name='fst_1de_zns' units='AU' axes='time' axes_refs='time1' mdsnode='\neut_fluct_fst_1de_zns'></signal>
+    <axis name='time2' units='s' mdsnode='dim_of(\neut_fluct_fst_2fg)'></axis>
+    <signal name='fst_2fg' units='AU' axes='time' axes_refs='time2' mdsnode='\neut_fluct_fst_2fg'></signal>
+    <axis name='time3' units='s' mdsnode='dim_of(\neut_fluct_fst_3de)'></axis>
+    <signal name='fst_3de' units='AU' axes='time' axes_refs='time3' mdsnode='\neut_fluct_fst_3de'></signal>
+    <axis name='time4' units='s' mdsnode='dim_of(\neut_fluct_fst_4ab)'></axis>
+    <signal name='fst_4ab' units='AU' axes='time' axes_refs='time4' mdsnode='\neut_fluct_fst_4ab'></signal>
+    <axis name='time5' units='s' mdsnode='dim_of(\neut_fluct_slw_1de_zns)'></axis>
+    <signal name='slw_1de_zns' units='AU' axes='time' axes_refs='time5' mdsnode='\neut_fluct_slw_1de_zns'></signal>
+    <axis name='time6' units='s' mdsnode='dim_of(\neut_fluct_slw_2fg)'></axis>
+    <signal name='slw_2fg' units='AU' axes='time' axes_refs='time6' mdsnode='\neut_fluct_slw_2fg'></signal>
+    <axis name='time7' units='s' mdsnode='dim_of(\neut_fluct_slw_3de)'></axis>
+    <signal name='slw_3de' units='AU' axes='time' axes_refs='time7' mdsnode='\neut_fluct_slw_3de'></signal>
+    <axis name='time8' units='s' mdsnode='dim_of(\neut_fluct_slw_4ab)'></axis>
+    <signal name='slw_4ab' units='AU' axes='time' axes_refs='time8' mdsnode='\neut_fluct_slw_4ab'></signal>
 </container>
