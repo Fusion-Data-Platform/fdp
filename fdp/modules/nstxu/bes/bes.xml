@@ -2,6 +2,6 @@
 <container name='bes' mdstree='activesp_raw'>
     <axis name='time' axis_ref='time1' units='s' mdsnode='dim_of(\TOP.BES.RAWDATA:BE_DT32_01:INPUT_01)'></axis>
     <signal name='ch{}' units='V' axes='time' axis_ref='time1' mdsnode='\TOP.BES.RAWDATA:BE_DT32_01:INPUT_{}' range='1, 32'></signal>
-    <axis name='time' axis_ref='time2' units='s' mdsnode='dim_of(\TOP.BES.RAWDATA:BE_DT32_01:INPUT_01)'></axis>
+    <axis name='time' axis_ref='time2' units='s' mdsnode='dim_of(\TOP.BES.RAWDATA:BE_DT32_02:INPUT_01)'></axis>
     <signal name='ch{}' units='V' axes='time' axis_ref='time2' mdsnode='\TOP.BES.RAWDATA:BE_DT32_02:INPUT_{}' range='1, 32' namerange='33,64'></signal>
 </container>
