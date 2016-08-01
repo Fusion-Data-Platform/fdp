@@ -10,7 +10,7 @@ Created on Fri Jul 15 16:39:37 2016
 from scipy import signal
 import numpy as np
 
-class bisignal(object):
+class Bisignal(object):
     """
     bisignal class
     
