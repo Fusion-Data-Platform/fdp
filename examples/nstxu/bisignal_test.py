@@ -47,6 +47,12 @@ plt.xlabel('Frequency [kHz]')
 plt.ylabel('Crosspower [dB]')
 
 plt.figure(4)
+plt.plot(test.freqs, test.crossphase)
+plt.axis([0,250,-180,180])
+plt.xlabel('Frequency [kHz]')
+plt.ylabel('Cross phase [degrees]')
+
+plt.figure(5)
 plt.plot(test.freqs, test.cohere)
 plt.axis([0,250,0,1])
 plt.xlabel('Frequency [kHz]')

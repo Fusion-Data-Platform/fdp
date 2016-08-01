@@ -191,7 +191,10 @@ class bisignal(object):
         self.crosspower = np.absolute(self.csd)
         
     def calc_crossphase(self):
-        'Calculate the cross phase (phase angle of cross spectral density)'
+        """
+        Calculate the cross phase (phase angle of cross spectral density)
+        Result is between -180 degrees and 180 degrees (or -pi/2 to pi/2)
+        """
         self.crossphase = np.angle(self.csd, deg=self.degrees)
         
     def calc_cohere(self):
