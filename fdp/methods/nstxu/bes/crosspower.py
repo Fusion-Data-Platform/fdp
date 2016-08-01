@@ -10,7 +10,7 @@ from warnings import warn
 import numpy as np
 import matplotlib.pyplot as plt
 
-from fdp.classes.bisignal import Bisignal
+from fdp.classes.crosssignal import CrossSignal
 from fdp.classes.utilities import isContainer
 from fdp.classes.fdp_globals import FdpWarning
 
@@ -22,8 +22,8 @@ def bisignal(container, sig1name='ch01', sig2name='ch02',
         return
     sig1 = getattr(container, sig1name)
     sig2 = getattr(container, sig2name)
-    bs = Bisignal(sig1, sig2, tmin=tmin, tmax=tmax, nperseg=nperseg,
-                  offsetminimum=True, normalizetodc=True)
+    bs = CrossSignal(sig1, sig2, tmin=tmin, tmax=tmax, nperseg=nperseg,
+                     offsetminimum=True, normalizetodc=True)
     return bs
 
 
