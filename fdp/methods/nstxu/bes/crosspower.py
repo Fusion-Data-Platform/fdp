@@ -15,7 +15,7 @@ from fdp.classes.utilities import isContainer
 from fdp.classes.fdp_globals import FdpWarning
 
 
-def bisignal(container, sig1name='ch01', sig2name='ch02',
+def crosssignal(container, sig1name='ch01', sig2name='ch02',
              tmin=0.5, tmax=0.55, nperseg=2048):
     if not isContainer(container):
         warn("Method valid only at container-level", FdpWarning)
@@ -31,7 +31,7 @@ def plotcrosspower(container, *args, **kwargs):
     if not isContainer(container):
         warn("Method valid only at container-level", FdpWarning)
         return
-    bs = bisignal(container, *args, **kwargs)
+    bs = crosssignal(container, *args, **kwargs)
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.plot(bs.freqs, 10*np.log10(bs.crosspower))
@@ -41,13 +41,27 @@ def plotcrosspower(container, *args, **kwargs):
     ax.set_title('{} -- {} -- {}/{} -- Crosspower'.format(
                  container.shot, container._name.upper(),
                  bs.signal1name.upper(), bs.signal2name.upper()))
-
+                 
+def plotcrossphase(container, *args, **kwargs):
+    if not isContainer(container):
+        warn("Method valid only at container-level", FdpWarning)
+        return
+    bs = crosssignal(container, *args, **kwargs)
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.plot(bs.freqs, bs.crossphase)
+    ax.set_xlim(0, 200)
+    ax.set_xlabel('Frequency (kHz)')
+    ax.set_ylabel('Crossphase')
+    ax.set_title('{} -- {} -- {}/{} -- Crossphase'.format(
+                 container.shot, container._name.upper(),
+                 bs.signal1name.upper(), bs.signal2name.upper()))
 
 def plotcoherence(container, *args, **kwargs):
     if not isContainer(container):
         warn("Method valid only at container-level", FdpWarning)
         return
-    bs = bisignal(container, *args, **kwargs)
+    bs = crosssignal(container, *args, **kwargs)
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.plot(bs.freqs, bs.cohere)
