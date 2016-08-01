@@ -6,15 +6,11 @@ Created on Fri Jul 29 11:15:00 2016
 """
 
 import fdp
-from fdp.classes.bisignal import Bisignal
 
 nstx = fdp.nstx()
 
-shot = nstx.s204620
+bes = nstx.s204990.bes
 
-sig1 = shot.bes.ch41
-sig2 = shot.bes.ch42
+bes.plotcrosspower('ch46', 'ch47', tmin=0.47, tmax=0.52, nperseg=2048)
 
-bs12 = Bisignal(sig1, sig2)
-
-bs11 = Bisignal(sig1, sig1)
+bes.plotcoherence('ch46', 'ch47', tmin=0.47, tmax=0.52, nperseg=2048)
