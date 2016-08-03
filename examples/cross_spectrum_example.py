@@ -6,11 +6,29 @@ Created on Fri Jul 29 11:15:00 2016
 """
 
 import fdp
+from fdp.classes.crosssignal import CrossSignal
+import numpy as np
+import matplotlib.pyplot as plt
 
 nstx = fdp.nstx()
-
 bes = nstx.s204990.bes
 
-bes.plotcrosspower('ch46', 'ch47', tmin=0.47, tmax=0.52, nperseg=2048)
+sig1 = bes.ch41
+sig2 = bes.ch41
+cs = CrossSignal(sig1, sig2, tmin=0.3, tmax=0.4, nperseg=4096, 
+                 offsetminimum=True, normalizetodc=True)
+                 
+powerspectrum = 10*np.log10(cs.crosspower_binavg)
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+ax.plot(cs.freqs, powerspectrum)
+ax.set_ylabel(r'$10\,\log_{10}(|FFT|^2)$ $(V^2/Hz)$')
+ax.set_xlim([0, 200])
+ax.set_xlabel('Frequency (kHz)')
 
-bes.plotcoherence('ch46', 'ch47', tmin=0.47, tmax=0.52, nperseg=2048)
+#bes.plotcrosspower('ch46', 'ch47', tmin=0.47, tmax=0.52, nperseg=2048)
+#bes.plotcrossphase('ch46', 'ch47', tmin=0.47, tmax=0.52, nperseg=2048)
+#bes.plotcoherence('ch46', 'ch47', tmin=0.47, tmax=0.52, nperseg=2048)
+
+#Compare autopower using Fft class to autopower from CrossSignal class
+bes.ch41.powerspectrum(tmin=0.3, tmax=0.4, fmax=200, power2=4096)

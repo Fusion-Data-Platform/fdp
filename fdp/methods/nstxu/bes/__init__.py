@@ -19,9 +19,9 @@ from .gui import gui
 from .fft import fft, plotfft, powerspectrum
 from .animation import animate
 from .configuration import loadConfig
-from .crosspower import plotcrosspower, plotcoherence
+from .crosspower import plotcrosspower, plotcrossphase, plotcoherence
 
 __all__ = ['fft', 'plotfft', 'powerspectrum',
            'animate', 'loadConfig',
            'gui',
-           'plotcrosspower', 'plotcoherence']
+           'plotcrosspower', 'plotcoherence', 'plotcrossphase']

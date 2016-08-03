@@ -5,7 +5,7 @@ Created on Fri Jul 15 16:39:37 2016
 @author: dkriete
 """
 
-from scipy import signal
+from scipy.signal.spectral import _spectral_helper
 import numpy as np
 
 
@@ -69,6 +69,7 @@ class CrossSignal(object):
         self.signal2name = signal2._name
         self.parent1name = signal1._parent._name
         self.parent2name = signal2._parent._name
+        self.shot = signal1.shot
 
         self.tmin = tmin
         self.tmax = tmax
@@ -76,13 +77,6 @@ class CrossSignal(object):
         self.nperseg = nperseg
         self.forcepower2 = forcepower2
         self.degrees = degrees
-
-#        self.signal1_fft = None
-#        self.signal2_fft = None
-#        self.signal1_timebins = None
-#        self.signal2_timebins = None
-#        self.signal1_freqbins = None
-#        self.signal2_freqbins = None
 
         # offsetdc cannot be used with offsetminimum and normalizetodc
         if offsetdc:
@@ -163,29 +157,62 @@ class CrossSignal(object):
         # efficient when nperseg is a power of 2.
         if self.forcepower2 is True:
             self.nperseg = np.power(2, int(np.log2(self.nperseg-1))+1)
-
-        # Calculate cross spectral density between signals 1 and 
-        self.freqs, self.csd = signal.csd(self.signal1, self.signal2, fs=fs, 
-                                          window=self.window,
-                                          nperseg=self.nperseg,
-                                          detrend=self.detrend)
+            
+        # Result of csd calculates is a 2D array. Axis 0 is the frequency axis
+        # and axis 1 is the time axis. Entries in the times array are the 
+        # center values for each time bin
+            
+        # Calculate cross spectral density
+        self.freqs, self.times, self.csd = _spectral_helper(
+                self.signal1,
+                self.signal2,
+                fs=fs,
+                window=self.window,
+                nperseg=self.nperseg,
+                detrend=self.detrend,
+                scaling='density',
+                mode='psd'
+            )
         
         # Calculate auto spectral density of signal 1
-        _, self.asd1 = signal.csd(self.signal1, self.signal1, fs=fs,
-                                  window=self.window, nperseg=self.nperseg,
-                                  detrend=self.detrend)                   
-
+        _, _, self.asd1 = _spectral_helper(
+                self.signal1,
+                self.signal1,
+                fs=fs,
+                window=self.window,
+                nperseg=self.nperseg,
+                detrend=self.detrend,
+                scaling='density',
+                mode='psd'
+            )
+        
         # Calculate auto spectral density of signal 2
-        _, self.asd2 = signal.csd(self.signal2, self.signal2, fs=fs,
-                                  window=self.window, nperseg=self.nperseg,
-                                  detrend=self.detrend)
+        _, _, self.asd2 = _spectral_helper(
+                self.signal2,
+                self.signal2,
+                fs=fs,
+                window=self.window,
+                nperseg=self.nperseg,
+                detrend=self.detrend,
+                scaling='density',
+                mode='psd'
+            )
+        
+        # Calculate time bin averaged spectral densities
+        self.csd_binavg = np.mean(self.csd, axis=-1)
+        self.asd1_binavg = np.mean(self.asd1, axis=-1)
+        self.asd2_binavg = np.mean(self.asd2, axis=-1)
         
         # Convert frequency units from Hz to kHz
         self.freqs /= 1000
+        
+        # Shift time bins to correspond to original data window
+        self.times += (self.signal1time[0] + self.signal2time[0]) / 2
     
     def calc_crosspower(self):
         'Calculate the cross power (magnitude of cross spectral density)'
         self.crosspower = np.absolute(self.csd)
+        self.crosspower_binavg = np.absolute(self.csd_binavg)
         
     def calc_crossphase(self):
         """
@@ -193,32 +220,30 @@ class CrossSignal(object):
         Result is between -180 degrees and 180 degrees (or -pi/2 to pi/2)
         """
         self.crossphase = np.angle(self.csd, deg=self.degrees)
+        self.crossphase_binavg = np.angle(self.csd_binavg, deg=self.degrees)
+        
+        # Unwrap phase
         
     def calc_cohere(self):
         'Calculate the magnitude squared coherence'
         self.cohere = np.absolute(self.csd)**2 / (self.asd1 * self.asd2)
+        self.cohere_binavg = (np.absolute(self.csd_binavg)**2 
+                              / (self.asd1_binavg * self.asd2_binavg))
         
     def apply_normalize_to_dc(self):
         'Normalize by dividing by the zero frequency value'
         # Not sure about normalization of the cross spectral density
         # 1 - does it make sense to normalize csd by 0 frequency value?
         # 2 - should it divide by real part or magnitude of 0 frequency value?
-        self.csd /= np.real(self.csd[0])
-        self.crosspower /= self.crosspower[0]
-        self.asd1 /= self.asd1[0]
-        self.asd2 /= self.asd2[0]
+        self.csd /= np.real(self.csd[0,:])
+        self.csd_binavg /= np.real(self.csd_binavg[0])
+        self.asd1 /= self.asd1[0,:]
+        self.asd1_binavg /= self.asd1_binavg[0]
+        self.asd2 /= self.asd2[0,:]
+        self.asd2_binavg /= self.asd2_binavg[0]
+        self.crosspower /= self.crosspower[0,:]
+        self.crosspower_binavg /= self.crosspower_binavg[0]
         
 #    def calc_xcorr(self):
 #        
 #    def calc_xcorrcoef(self):
-        
-#    def calc_fft(self):
-#        signal1_fft = Fft(self.signal1, *self.args, **self.kwargs)        
-#        self.signal1_fft = signal1_fft.fft
-#        self.signal1_timebins = signal1_fft.time
-#        self.signal1_freqbins = signal1_fft.freq
-#        
-#        signal2_fft = Fft(self.signal2, *self.args, **self.kwargs)
-#        self.signal2_fft = signal2_fft.fft
-#        self.signal2_timebins = signal2_fft.time
-#        self.signal2_freqbins = signal2_fft.freq
