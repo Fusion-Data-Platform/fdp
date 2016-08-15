@@ -5,8 +5,10 @@ Created on Fri Jul 15 16:39:37 2016
 @author: dkriete
 """
 
+from __future__ import division
 from scipy.signal.spectral import _spectral_helper
 import numpy as np
+from .fdp_globals import FdpError
 
 
 class CrossSignal(object):
@@ -96,13 +98,14 @@ class CrossSignal(object):
         self.calc_csd()
         self.calc_crosspower()
         self.calc_crossphase()
-        self.calc_cohere()
+        self.calc_coherence()
+        self.calc_variances2()
         if normalizetodc:
             self.apply_normalize_to_dc()
 
         # Calculate correlations
-#        self.calc_xcorr()
-#        self.calc_xcorrcoef()
+#        self.calc_correlation()
+#        self.calc_correlationcoef()
 
     def load_signal(self):
         self.signal1[:]
@@ -219,31 +222,110 @@ class CrossSignal(object):
         Calculate the cross phase (phase angle of cross spectral density)
         Result is between -180 degrees and 180 degrees (or -pi/2 to pi/2)
         """
-        self.crossphase = np.angle(self.csd, deg=self.degrees)
-        self.crossphase_binavg = np.angle(self.csd_binavg, deg=self.degrees)
+        self.crossphase = np.angle(self.csd)
+        self.crossphase_binavg = np.angle(self.csd_binavg)
         
-        # Unwrap phase
+        # Unwrap phase to get rid of jumps from +pi to -pi (or vice-versa)
+        # Doesn't seem to be fixing all the phase jumps
+        self.crossphase = np.unwrap(self.crossphase, axis=0)
+        self.crossphase_binavg = np.unwrap(self.crossphase_binavg)
         
-    def calc_cohere(self):
-        'Calculate the magnitude squared coherence'
-        self.cohere = np.absolute(self.csd)**2 / (self.asd1 * self.asd2)
-        self.cohere_binavg = (np.absolute(self.csd_binavg)**2 
-                              / (self.asd1_binavg * self.asd2_binavg))
+        # Convert to degrees if specified
+        if self.degrees:
+            self.crossphase = np.rad2deg(self.crossphase)
+            self.crossphase_binavg = np.rad2deg(self.crossphase_binavg)
+        
+        
+    def calc_coherence(self):
+        'Calculate the coherence'
+        # Note that the coherence in each time bin is identically 1 so there
+        # is no use in an unaveraged coherence.
+        self.coherence = np.sqrt(np.absolute(self.csd_binavg)**2 
+                        / (self.asd1_binavg * self.asd2_binavg))
+        
+        # Calculate the minimum statistically significant coherence under a 
+        # 95% confidence interval
+        if np.shape(self.csd)[-1] == 1:
+            self.minsigcoh = 1
+        else:
+            self.minsigcoh = np.sqrt(1 - 0.05**(1/(np.shape(self.csd)[-1] - 1)))
+
+    def calc_variances(self):
+        'Calculate the variance of the crosspower, crossphase, and coherence'
+        # The equations below give standard deviations larger than the mean
+        # for the bulk of the data. This doesn't seem correct so they should
+        # not be used for now (8/10/2016)
+        
+        # Start by calculating the mean, variance, and covariance for the real
+        # and imaginary parts of the cross spectral density at each frequency.
+        realmean = np.mean(np.real(self.csd), axis=-1)
+        imagmean = np.mean(np.imag(self.csd), axis=-1)
+        realvar = np.var(np.real(self.csd), axis=-1, ddof=1)
+        imagvar = np.var(np.imag(self.csd), axis=-1, ddof=1)
+        
+        covar = np.empty(np.shape(self.csd)[0])
+        for i in range(np.shape(self.csd)[0]):
+            # For each frequency, split the 1D complex array of data for each 
+            # time bin into a 2D array where first row is real part and second
+            # row is imaginary part. 
+            reform = np.array([np.real(self.csd[i,:]),np.imag(self.csd[i,:])])
+            # Pull the covariance between real and imaginary parts out of the
+            # covariance array.
+            cov = np.cov(reform)
+            covar[i] = cov[0,1]
+            
+            # Diagonal terms of covariance matrix should be variances
+            if not np.allclose(realvar, cov[0,0]):
+                raise FdpError('Real variance mismatch')
+            if not np.allclose(imagvar, cov[1,1]):
+                raise FdpError('Imaginary variance mismatch')
+            # Covariance matrix should be symmetric
+            if not np.allclose(cov[1,0], cov[0,1]):
+                raise FdpError('Covariance mismatch')
+        
+        # The following variance formulae are derived by applying the law of 
+        # propagation of uncertainty to the equations used to calculate 
+        # crosspower, crossphase, and coherence. The formulae are for the
+        # general case where the real and imaginary parts of the cross spectral
+        # density may be correlated.
+        
+        # Calculate the variance of the crosspower
+        self.crosspower_var = ((realvar*realmean**2 + imagvar*imagmean**2
+                            + 2*realmean*imagmean*covar)
+                            / (realmean**2 + imagmean**2))
+        
+        # Calculate the variance of the crossphase
+        self.crossphase_var = ((realvar*imagmean**2 + imagvar*realmean**2
+                            - 2*realmean*imagmean*covar)
+                            / ((realmean**2 + imagmean**2)**2))
+        
+#        self.coherence_var = 
+    
+    def calc_variances2(self):
+        'Calculate variance of crosspower and crossphase'
+        # This method calculates the variance of the crosspower by taking the 
+        # magnitude of each cross spectral density time bin and then computing
+        # the variance of these magnitudes. This is not a statistically correct
+        # way of calculating the variance but the other method I was trying 
+        # (in calc_variances) didn't seem to work so this is an alternative.
+        
+        self.crosspower_var = np.var(self.crosspower, axis=-1, ddof=1)
+        self.crossphase_var = np.var(self.crossphase, axis=-1, ddof=1)
         
     def apply_normalize_to_dc(self):
         'Normalize by dividing by the zero frequency value'
-        # Not sure about normalization of the cross spectral density
-        # 1 - does it make sense to normalize csd by 0 frequency value?
-        # 2 - should it divide by real part or magnitude of 0 frequency value?
-        self.csd /= np.real(self.csd[0,:])
-        self.csd_binavg /= np.real(self.csd_binavg[0])
-        self.asd1 /= self.asd1[0,:]
+        for i in range(np.shape(self.crosspower)[-1]):
+            self.asd1[:,i] /= self.asd1[0,i]
+            self.asd2[:,i] /= self.asd2[0,i]
+            self.crosspower[:,i] /= self.crosspower[0,i]
+        
+        #Normalize the crosspower variance
+        self.crosspower_var /= (self.crosspower_binavg[0]**2)
+        
         self.asd1_binavg /= self.asd1_binavg[0]
-        self.asd2 /= self.asd2[0,:]
         self.asd2_binavg /= self.asd2_binavg[0]
-        self.crosspower /= self.crosspower[0,:]
         self.crosspower_binavg /= self.crosspower_binavg[0]
         
-#    def calc_xcorr(self):
+#    def calc_correlation(self):
 #        
-#    def calc_xcorrcoef(self):
+#    def calc_correlationcoef(self):

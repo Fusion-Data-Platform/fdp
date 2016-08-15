@@ -56,6 +56,9 @@ def plotfft(signal, fmax=None, *args, **kwargs):
     cb.set_label(r'$10\,\log_{10}(|FFT|^2)$ $(V^2/Hz)$')
     ax.set_xlabel('Time (s)')
     ax.set_ylabel('Frequency (kHz)')
+    tmin = kwargs.get('tmin', 0)
+    tmax = kwargs.get('tmax', 2)
+    ax.set_xlim([tmin, tmax])
     if fmax:
         ax.set_ylim([0, fmax])
     ax.set_title('{} | {} | {}'.format(
