@@ -6,7 +6,6 @@ Created on Fri Jul 29 11:15:00 2016
 """
 
 import fdp
-from scipy import signal
 nstx = fdp.nstx()
 bes = nstx.s204990.bes
 
@@ -29,5 +28,4 @@ bes = nstx.s204990.bes
 #bes.plotcrossphase('ch42','ch46',tmin=0.3,tmax=0.4,nperseg=2000,spectrum=False)
 #bes.plotcoherence('ch42','ch46',fmax=1000,tmin=0.3,tmax=0.4,nperseg=2000)
 
-
-signal.correlate()
+bes.plotcorrelation('ch42','ch46',tmin=0.4995,tmax=0.5005,nperseg=None)

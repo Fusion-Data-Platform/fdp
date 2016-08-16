@@ -137,7 +137,6 @@ def plotcoherence(container, *args, **kwargs):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.plot(cs.freqs[mask], coherence)
-    print cs.minsigcoh
     ax.plot((0, fmax),(cs.minsigcoh, cs.minsigcoh), 'k-')
     ax.set_xlabel('Frequency (kHz)')
     ax.set_title('{} -- {} -- {}/{} -- Coherence'.format(
@@ -146,4 +145,20 @@ def plotcoherence(container, *args, **kwargs):
             cs.signal1name.upper(),
             cs.signal2name.upper()))
     
+    return cs
+
+def plotcorrelation(container, *args, **kwargs):
+    if not isContainer(container):
+        warn("Method valid only at container-level", FdpWarning)
+        return
+    cs = crosssignal(container, *args, **kwargs)
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.plot(cs.time_delays, cs.correlation_coef)
+    ax.set_xlabel('Time delay (s)')
+    ax.set_title('{} -- {} -- {}/{} -- Correlation'.format(
+            container.shot,
+            container._name.upper(),
+            cs.signal1name.upper(),
+            cs.signal2name.upper()))
     return cs

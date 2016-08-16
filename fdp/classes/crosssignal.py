@@ -104,7 +104,7 @@ class CrossSignal(object):
             self.apply_normalize_to_dc()
 
         # Calculate correlations
-#        self.calc_correlation()
+        self.calc_correlation()
 #        self.calc_correlationcoef()
 
     def load_signal(self):
@@ -326,6 +326,27 @@ class CrossSignal(object):
         self.asd2_binavg /= self.asd2_binavg[0]
         self.crosspower_binavg /= self.crosspower_binavg[0]
         
-#    def calc_correlation(self):
-#        
+    def calc_correlation(self):
+        'Calculate cross correlation of the fluctuating parts of input signals'
+        # Requires both signals to have the same time basis
+        if len(self.signal1) == len(self.signal2):
+            
+            # Calculate cross correlation using Numpy method
+            self.correlation = np.correlate(
+                    self.signal1 - np.mean(self.signal1),
+                    self.signal2 - np.mean(self.signal2),
+                    mode='Full')
+            self.correlation /= len(self.signal1)
+                    
+            # Normalize correlation to produce correlation coefficient
+            self.correlation_coef = self.correlation / np.sqrt(
+                    np.var(self.signal1) * np.var(self.signal2))
+                                            
+            # Construct time axis for cross correlation
+            delta_t = np.mean(np.diff(self.signal1time[:1e4]))
+            n = len(self.signal1)
+            self.time_delays = delta_t * np.linspace(-(n-1), (n-1), 2*n-1)
+        else:
+            raise FdpError('Input signals are different lengths')
+        
 #    def calc_correlationcoef(self):
