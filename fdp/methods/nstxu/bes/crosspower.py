@@ -16,14 +16,16 @@ from fdp.classes.fdp_globals import FdpWarning
 
 
 def crosssignal(container, sig1name='ch01', sig2name='ch02',
-             tmin=0.5, tmax=0.55, nperseg=2048, degrees=True):
+             tmin=0.5, tmax=0.55, nperseg=None, degrees=True, fmin=None,
+             fmax=None):
     if not isContainer(container):
         warn("Method valid only at container-level", FdpWarning)
         return
     sig1 = getattr(container, sig1name)
     sig2 = getattr(container, sig2name)
     cs = CrossSignal(sig1, sig2, tmin=tmin, tmax=tmax, nperseg=nperseg,
-                     offsetminimum=True, normalizetodc=True, degrees=degrees)
+                     offsetminimum=True, normalizetodc=True, degrees=degrees,
+                     fmin=fmin, fmax=fmax)
     return cs
 
 
@@ -32,9 +34,10 @@ def plotcrosspower(container, *args, **kwargs):
         warn("Method valid only at container-level", FdpWarning)
         return
     spectrum = kwargs.pop('spectrum', False)
-    fmax = kwargs.pop('fmax', 200)
+    fmin = kwargs.get('fmin', 0)
+    fmax = kwargs.get('fmax', 200)
     cs = crosssignal(container, *args, **kwargs)
-    mask = (cs.freqs <= fmax)
+    mask = np.logical_and(fmin <= cs.freqs, cs.freqs <= fmax)
  
     if spectrum:
         logcrosspower = 10*np.log10(cs.crosspower[mask,:])
@@ -80,7 +83,8 @@ def plotcrossphase(container, *args, **kwargs):
         warn("Method valid only at container-level", FdpWarning)
         return
     spectrum = kwargs.pop('spectrum', False)
-    fmax = kwargs.pop('fmax', 200)
+    fmin = kwargs.get('fmin', 0)
+    fmax = kwargs.get('fmax', 200)
     degrees = kwargs.get('degrees', True)
     if degrees:
         units = 'degrees'
@@ -88,7 +92,7 @@ def plotcrossphase(container, *args, **kwargs):
         units = 'radians'
     
     cs = crosssignal(container, *args, **kwargs)
-    mask = (cs.freqs <= fmax)
+    mask = np.logical_and(fmin <= cs.freqs, cs.freqs <= fmax)
  
     if spectrum:
         crossphase = cs.crossphase[mask,:]
@@ -101,7 +105,7 @@ def plotcrossphase(container, *args, **kwargs):
         pcm.set_clim([-50, 300])
         cb = plt.colorbar(pcm, ax=ax)
         cb.set_label(r'Angle (' + units + ')')
-        ax.set_ylim([0,130])
+        ax.set_ylim([fmin,fmax])
         ax.set_xlabel('Time (s)')
         ax.set_ylabel('Frequency (kHz)')
         ax.set_title('{} -- {} -- {}/{} -- Crossphase'.format(
@@ -111,7 +115,7 @@ def plotcrossphase(container, *args, **kwargs):
                 cs.signal2name.upper()))
     else:
         crossphase = cs.crossphase_binavg[mask]
-        stdev = np.sqrt(cs.crossphase_var[mask])
+#        stdev = np.sqrt(cs.crossphase_var[mask])
         fig = plt.figure()
         ax = fig.add_subplot(111)
         ax.plot(cs.freqs[mask], crossphase)
@@ -130,14 +134,15 @@ def plotcoherence(container, *args, **kwargs):
     if not isContainer(container):
         warn("Method valid only at container-level", FdpWarning)
         return
-    fmax = kwargs.pop('fmax', 200)
+    fmin = kwargs.get('fmin', 0)
+    fmax = kwargs.get('fmax', 200)
     cs = crosssignal(container, *args, **kwargs)
-    mask = (cs.freqs <= fmax)
+    mask = np.logical_and(fmin <= cs.freqs, cs.freqs <= fmax)
     coherence = cs.coherence[mask]
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.plot(cs.freqs[mask], coherence)
-    ax.plot((0, fmax),(cs.minsigcoh, cs.minsigcoh), 'k-')
+    ax.plot((fmin, fmax),(cs.minsigcoh, cs.minsigcoh), 'k-')
     ax.set_xlabel('Frequency (kHz)')
     ax.set_title('{} -- {} -- {}/{} -- Coherence'.format(
             container.shot,
@@ -151,12 +156,18 @@ def plotcorrelation(container, *args, **kwargs):
     if not isContainer(container):
         warn("Method valid only at container-level", FdpWarning)
         return
+    envelope = kwargs.pop('envelope', False)
     cs = crosssignal(container, *args, **kwargs)
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.plot(cs.time_delays, cs.correlation_coef)
-    ax.set_xlabel('Time delay (s)')
-    ax.set_title('{} -- {} -- {}/{} -- Correlation'.format(
+    if envelope:
+        ax.plot(cs.time_delays * 1000000., cs.correlation_coef_envelope)
+        ax.plot((0,0),(0,1), 'k-')
+    else:
+        ax.plot(cs.time_delays * 1000000., cs.correlation_coef)
+        ax.plot((0,0),(-1,1), 'k-')
+    ax.set_xlabel('Time delay (us)')
+    ax.set_title('{} -- {} -- {}/{} -- Time-Lag Cross Correlation'.format(
             container.shot,
             container._name.upper(),
             cs.signal1name.upper(),
