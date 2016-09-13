@@ -24,8 +24,8 @@ bes = nstx.s204990.bes
 #Compare autopower using Fft class to autopower from CrossSignal class
 #bes.ch41.powerspectrum(tmin=0.3, tmax=0.4, fmax=200, power2=4096)
 
-#bes.plotcrosspower('ch47','ch47',tmin=0.47,tmax=0.52,nperseg=2000,spectrum=False)
-#bes.plotcrossphase('ch42','ch46',tmin=0.3,tmax=0.4,nperseg=2000,spectrum=False)
-#bes.plotcoherence('ch42','ch46',fmax=1000,tmin=0.3,tmax=0.4,nperseg=2000)
+#bes.plotcrosspower('ch42','ch46',tmin=0.3,tmax=0.4,nperseg=2000,spectrum=False)
+bes.plotcrossphase('ch42','ch46',tmin=0.3,tmax=0.4,nperseg=2000,spectrum=False)
+#bes.plotcoherence('ch42','ch46',tmin=0.3,tmax=0.4,nperseg=2000)
 
-bes.plotcorrelation('ch42','ch46',tmin=0.4995,tmax=0.5005,nperseg=None)
+#bes.plotcorrelation('ch42','ch46',tmin=0.4995,tmax=0.5005,nperseg=None)

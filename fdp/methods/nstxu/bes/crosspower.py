@@ -115,12 +115,12 @@ def plotcrossphase(container, *args, **kwargs):
                 cs.signal2name.upper()))
     else:
         crossphase = cs.crossphase_binavg[mask]
-#        stdev = np.sqrt(cs.crossphase_var[mask])
+        stdev = cs.crossphase_error[mask]
         fig = plt.figure()
         ax = fig.add_subplot(111)
         ax.plot(cs.freqs[mask], crossphase)
-#        ax.fill_between(cs.freqs[mask], crossphase-stdev, crossphase+stdev,
-#                        alpha=0.5, linewidth=0)
+        ax.fill_between(cs.freqs[mask], crossphase-stdev, crossphase+stdev,
+                        alpha=0.5, linewidth=0)
         ax.set_xlabel('Frequency (kHz)')
         ax.set_ylabel('Angle (' + units + ')')
         ax.set_title('{} -- {} -- {}/{} -- Crossphase'.format(
@@ -139,10 +139,15 @@ def plotcoherence(container, *args, **kwargs):
     cs = crosssignal(container, *args, **kwargs)
     mask = np.logical_and(fmin <= cs.freqs, cs.freqs <= fmax)
     coherence = cs.coherence[mask]
+    stdev = cs.coherence_error[mask]
+    
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.plot(cs.freqs[mask], coherence)
-    ax.plot((fmin, fmax),(cs.minsigcoh, cs.minsigcoh), 'k-')
+    ax.plot((fmin, fmax),(cs.minsig_coherence, cs.minsig_coherence), 'k-')
+    ax.fill_between(cs.freqs[mask], coherence-stdev, coherence+stdev,
+                    alpha=0.5, linewidth=0)
+    ax.set_ylim([0,1])
     ax.set_xlabel('Frequency (kHz)')
     ax.set_title('{} -- {} -- {}/{} -- Coherence'.format(
             container.shot,

@@ -10,7 +10,7 @@ from scipy.signal import hilbert, firwin, filtfilt
 from scipy.signal.spectral import _spectral_helper
 import numpy as np
 from .fdp_globals import FdpError
-
+import time
 
 class CrossSignal(object):
     """
@@ -56,12 +56,11 @@ class CrossSignal(object):
         If True, the cross phase output will be in degrees. If False, the cross
         phase output will be in radians. Defaults to True.
     fmin : float, optional
-        Lower frequency in kHz for band pass filter applied to data that is 
-        used for time-lag cross correlation calculation. Defaults to 0.
+        Lower cutoff frequency in kHz for band pass filter applied to data.
+        Defaults to 0.
     fmax : float, optional
-        Higher frequency in kHz for band pass filter applied to data that is
-        used for time-lag cross correlation calculation. Defaults to Nyquist 
-        frequency.
+        Higher cutoff frequency in kHz for band pass filter applied to data.
+        Defaults to Nyquist frequency.
     """
 
     def __init__(self, signal1, signal2, tmin=0.2, tmax=1.0, window='hann',
@@ -89,45 +88,76 @@ class CrossSignal(object):
         self.fmax = fmax
 
         # offsetdc cannot be used with offsetminimum and normalizetodc
+        t0 = time.time()
         if offsetdc:
             self.detrend = 'constant'
             offsetminimum = False
             normalizetodc = False
         else:
             self.detrend = False
+        print 'Time to offset/detrend data: ' + str(time.time()-t0)
 
         # Preprocessing of input signals
         self.load_signals()
         if offsetminimum:
             self.apply_offset_minimum()
+        print 'Time to load/offset data: ' + str(time.time()-t0)
         self.make_data_window()
+        print 'Time to make data windows: ' + str(time.time()-t0)
         self.filter_signals()
+        print 'Time to filter data: ' + str(time.time()-t0)
 
         # Calculate spectral quantities
         self.calc_csd()
+        print 'Time to calculate spectral densities: ' + str(time.time()-t0)
         self.calc_crosspower()
+        print 'Time to calculate crosspower: ' + str(time.time()-t0)
         self.calc_crossphase()
+        print 'Time to calculate crossphase: ' + str(time.time()-t0)
         self.calc_coherence()
-#        self.calc_variances2()
+        print 'Time to calculate coherence: ' + str(time.time()-t0)
+        self.calc_error()
+        print 'Time to calculate error: ' + str(time.time()-t0)
         if normalizetodc:
             self.apply_normalize_to_dc()
+        print 'Time to normalize data: ' + str(time.time()-t0)
 
         # Calculate correlations
-        self.calc_correlation()
+#        self.calc_correlation_fft()
 
     def load_signals(self):
+        """
+        Load data and check to ensure each signal has same length and time
+        scaling.
+        """
         
+        # Load data
         self.signal1[:]
         self.signal2[:]
         self.signal1time[:]
         self.signal2time[:]
+        
+        # Check to ensure both signals have same number of points
+        if len(self.signal1) == len(self.signal2):
+            self.numpnts = len(self.signal1)
+        else:
+            raise FdpError('Input signals are different lengths')
+        
+        # Check to ensure both signals have same sampling rate
+        fs1 = 1 / np.mean(np.diff(np.array(self.signal1time))) # Not sure if np.array() needed
+        fs2 = 1 / np.mean(np.diff(np.array(self.signal2time)))
+        if abs(fs1 - fs2) < 1e-3:
+            self.fSample = (fs1 + fs2) / 2
+            self.fNyquist = self.fSample / 2
+        else:
+            raise FdpError('Input signals have different sampling rates')
 
     def apply_offset_minimum(self):
-        'Shift signal so that first 10,000 points are near zero'
+        'Shift signal so that first 1,000 points are near zero'
         
-        zerolevel1 = np.min(self.signal1[:1e4])
+        zerolevel1 = np.mean(self.signal1[:1e3])
         self.signal1 -= zerolevel1
-        zerolevel2 = np.min(self.signal2[:1e4])
+        zerolevel2 = np.mean(self.signal2[:1e3])
         self.signal2 -= zerolevel2
 
     def make_data_window(self):
@@ -145,11 +175,6 @@ class CrossSignal(object):
     def filter_signals(self):
         'Band pass filter the input data'
         
-        # Calculate the sampling rate. Signal1 and signal2 must have the same 
-        # sampling rate.
-        self.fs = 1 / np.mean(np.diff(np.array(self.signal1time[:1e4])))
-        fNyq = self.fs / 2
-        
         # Check to see if either filter frequency has been set. If not, then
         # don't filter the data
         if self.fmin is not None or self.fmax is not None:
@@ -161,14 +186,14 @@ class CrossSignal(object):
             else:
                 self.fmin *= 1000
             if self.fmax is None:
-                self.fmax = fNyq
+                self.fmax = self.fNyquist
             else:
                 self.fmax *= 1000
             
             # Verify that frequencies are valid
-            if self.fmin < 0 or self.fmin > fNyq:
+            if self.fmin < 0 or self.fmin > self.fNyquist:
                 raise FdpError('fmin is outside valid range')
-            if self.fmax < 0 or self.fmax > fNyq:
+            if self.fmax < 0 or self.fmax > self.fNyquist:
                 raise FdpError('fmax is outside valid range')
             if self.fmax < self.fmin:
                 raise FdpError('fmin is larger than fmax')
@@ -176,13 +201,13 @@ class CrossSignal(object):
             # Filter data using 501 tap FIR filter generated using window
             # method (Hamming window)
             desirednumtaps = 501
-            if len(self.signal1) <= desirednumtaps:
-                numtaps = 2 * int(len(self.signal1) / 2) - 1
+            if self.numpnts <= desirednumtaps:
+                numtaps = 2 * (self.numpnts // 2) - 1
             else:
                 numtaps = desirednumtaps
             
             h = firwin(numtaps, [self.fmin, self.fmax], pass_zero=False,
-                       nyq=fNyq)
+                       nyq=self.fNyquist)
             self.signal1 = filtfilt(h, 1.0, self.signal1, padlen=numtaps)
             self.signal2 = filtfilt(h, 1.0, self.signal2, padlen=numtaps)
 
@@ -200,27 +225,27 @@ class CrossSignal(object):
         A one-sided spectrum is returned for real inputs
         The cross spectral density (units V**2/Hz) is calculated, as
         opposed to the cross spectrum (units V**2).
+        
+        csd is a 2D array containing the cross spectral density. Axis 0 is the
+        frequency axis and axis 1 is the time axis. Entries in the times array
+        are the center values for each time bin.
         """
         
         # If the number of points per segement is not specified, calculate the
         # number that gives approximately equal time and frequency resolution.
         if self.nperseg is None:
-            self.nperseg = np.int(np.sqrt(2*len(self.signal1)))
+            self.nperseg = int(np.sqrt(2 * self.numpnts))
         
         # Use next power of 2 for nperseg if specified. FFT algorithm is most 
         # efficient when nperseg is a power of 2.
         if self.forcepower2 is True:
-            self.nperseg = np.power(2, int(np.log2(self.nperseg-1))+1)
-            
-        # Result of csd calculates is a 2D array. Axis 0 is the frequency axis
-        # and axis 1 is the time axis. Entries in the times array are the 
-        # center values for each time bin
-            
+            self.nperseg = np.power(2, int(np.log2(self.nperseg - 1)) + 1)
+        
         # Calculate cross spectral density
         self.freqs, self.times, self.csd = _spectral_helper(
                 self.signal1,
                 self.signal2,
-                fs=self.fs,
+                fs=self.fSample,
                 window=self.window,
                 nperseg=self.nperseg,
                 detrend=self.detrend,
@@ -232,7 +257,7 @@ class CrossSignal(object):
         _, _, self.asd1 = _spectral_helper(
                 self.signal1,
                 self.signal1,
-                fs=self.fs,
+                fs=self.fSample,
                 window=self.window,
                 nperseg=self.nperseg,
                 detrend=self.detrend,
@@ -244,7 +269,7 @@ class CrossSignal(object):
         _, _, self.asd2 = _spectral_helper(
                 self.signal2,
                 self.signal2,
-                fs=self.fs,
+                fs=self.fSample,
                 window=self.window,
                 nperseg=self.nperseg,
                 detrend=self.detrend,
@@ -256,6 +281,9 @@ class CrossSignal(object):
         self.csd_binavg = np.mean(self.csd, axis=-1)
         self.asd1_binavg = np.mean(self.asd1, axis=-1)
         self.asd2_binavg = np.mean(self.asd2, axis=-1)
+        
+        # Record number of bins (aka # segments or # realizations) in the ffts
+        self.numbins = np.shape(self.csd)[-1]
         
         # Convert frequency units from Hz to kHz
         self.freqs /= 1000
@@ -283,134 +311,95 @@ class CrossSignal(object):
         self.crossphase = np.unwrap(self.crossphase, axis=0)
         self.crossphase_binavg = np.unwrap(self.crossphase_binavg)
         
-        # Convert to degrees if specified
+        # Convert to degrees if requested
         if self.degrees:
             self.crossphase = np.rad2deg(self.crossphase)
             self.crossphase_binavg = np.rad2deg(self.crossphase_binavg)
         
-        
     def calc_coherence(self):
-        'Calculate the coherence'
+        'Calculate the magnitude squared coherence'
         
+        # Calculate magnitude squared coherence
         # Note that the coherence in each time bin is identically 1 so there
         # is no use in an unaveraged coherence.
-        self.coherence = np.sqrt(np.absolute(self.csd_binavg)**2 
-                        / (self.asd1_binavg * self.asd2_binavg))
+        self.mscoherence = (np.absolute(self.csd_binavg)**2 
+                       / (self.asd1_binavg * self.asd2_binavg))
         
-        # Calculate the minimum statistically significant coherence under a 
+        # Calculate coherence (square root of magnitude squared coherence)
+        self.coherence = np.sqrt(self.mscoherence)
+        
+        # Calculate the minimum statistically significant coherence for a 
         # 95% confidence interval
-        if np.shape(self.csd)[-1] == 1:
-            self.minsigcoh = 1
+        if self.numbins == 1:
+            self.minsig_mscoherence = 1
+            self.minsig_coherence = 1
         else:
-            self.minsigcoh = np.sqrt(1 - 0.05**(1/(np.shape(self.csd)[-1] - 1)))
-
-    def calc_variances(self):
-        'Calculate the variance of the crosspower, crossphase, and coherence'
-        
-        # The equations below give standard deviations larger than the mean
-        # for the bulk of the data. This doesn't seem correct so they should
-        # not be used for now (8/10/2016)
-        
-        # Start by calculating the mean, variance, and covariance for the real
-        # and imaginary parts of the cross spectral density at each frequency.
-        realmean = np.mean(np.real(self.csd), axis=-1)
-        imagmean = np.mean(np.imag(self.csd), axis=-1)
-        realvar = np.var(np.real(self.csd), axis=-1, ddof=1)
-        imagvar = np.var(np.imag(self.csd), axis=-1, ddof=1)
-        
-        covar = np.empty(np.shape(self.csd)[0])
-        for i in range(np.shape(self.csd)[0]):
-            # For each frequency, split the 1D complex array of data for each 
-            # time bin into a 2D array where first row is real part and second
-            # row is imaginary part. 
-            reform = np.array([np.real(self.csd[i,:]),np.imag(self.csd[i,:])])
-            # Pull the covariance between real and imaginary parts out of the
-            # covariance array.
-            cov = np.cov(reform)
-            covar[i] = cov[0,1]
-            
-            # Diagonal terms of covariance matrix should be variances
-            if not np.allclose(realvar, cov[0,0]):
-                raise FdpError('Real variance mismatch')
-            if not np.allclose(imagvar, cov[1,1]):
-                raise FdpError('Imaginary variance mismatch')
-            # Covariance matrix should be symmetric
-            if not np.allclose(cov[1,0], cov[0,1]):
-                raise FdpError('Covariance mismatch')
-        
-        # The following variance formulae are derived by applying the law of 
-        # propagation of uncertainty to the equations used to calculate 
-        # crosspower, crossphase, and coherence. The formulae are for the
-        # general case where the real and imaginary parts of the cross spectral
-        # density may be correlated.
-        
-        # Calculate the variance of the crosspower
-        self.crosspower_var = ((realvar*realmean**2 + imagvar*imagmean**2
-                            + 2*realmean*imagmean*covar)
-                            / (realmean**2 + imagmean**2))
-        
-        # Calculate the variance of the crossphase
-        self.crossphase_var = ((realvar*imagmean**2 + imagvar*realmean**2
-                            - 2*realmean*imagmean*covar)
-                            / ((realmean**2 + imagmean**2)**2))
-        
-#        self.coherence_var = 
+            self.minsig_mscoherence = 1 - 0.05**(1/(self.numbins - 1))
+            self.minsig_coherence = np.sqrt(self.minsig_mscoherence)
     
-    def calc_variances2(self):
-        'Calculate variance of crosspower and crossphase'
+    def calc_error(self):
+        """
+        Calculate random error of coherence and crossphase using 
+        formulae from Bendat & Piersol textbook.
+        """
         
-        # This method calculates the variance of the crosspower by taking the 
-        # magnitude of each cross spectral density time bin and then computing
-        # the variance of these magnitudes. This is not a statistically correct
-        # way of calculating the variance but the other method I was trying 
-        # (in calc_variances) didn't seem to work so this is an alternative.
+        # Bendat & Piersol eq 11.62
+        self.crossphase_error = (np.sqrt(1 - self.coherence)
+                              / (self.mscoherence * np.sqrt(2 * self.numbins)))
+        if self.degrees:
+            self.crossphase_error = np.rad2deg(self.crossphase_error)
         
-        if np.shape(self.csd)[-1] > 1:
-            self.crosspower_var = np.var(self.crosspower, axis=-1, ddof=1)
-            self.crossphase_var = np.var(self.crossphase, axis=-1, ddof=1)
-        else:
-            self.crosspower_var = np.zeros(np.shape(self.csd)[0])
-            self.crossphase_var = np.zeros(np.shape(self.csd)[0])
+        # Bendat & Piersol eq 11.47 (multiplied by coherence to get std dev)
+        self.mscoherence_error = (np.sqrt(2 * self.coherence / self.numbins)
+                             * (1 - self.coherence))
+                             
+        # Use of law of propagation of uncertainty to calculate coherence error
+        self.coherence_error = self.mscoherence_error / (2 * self.coherence)
         
     def apply_normalize_to_dc(self):
         'Normalize by dividing by the zero frequency value'
         
-        for i in range(np.shape(self.crosspower)[-1]):
+        for i in range(self.numbins):
             self.asd1[:,i] /= self.asd1[0,i]
             self.asd2[:,i] /= self.asd2[0,i]
             self.crosspower[:,i] /= self.crosspower[0,i]
-        
-        # Normalize the crosspower variance
-        self.crosspower_var /= (self.crosspower_binavg[0]**2)
         
         self.asd1_binavg /= self.asd1_binavg[0]
         self.asd2_binavg /= self.asd2_binavg[0]
         self.crosspower_binavg /= self.crosspower_binavg[0]
         
-    def calc_correlation(self):
-        'Calculate cross correlation of the fluctuating parts of input signals'
+    def calc_correlation_fft(self):
+        """
+        Calculate cross correlation of fluctuation component of input signals 
+        using the fft method to perform the convolution. This is faster than 
+        the integral definition method.
+        """
         
-        # Requires both signals to have the same time basis
-        if len(self.signal1) == len(self.signal2):
-            
-            # Calculate cross correlation using Numpy method
-            self.correlation = np.correlate(
-                    self.signal1 - np.mean(self.signal1),
-                    self.signal2 - np.mean(self.signal2),
-                    mode='Full')
-            self.correlation /= len(self.signal1)
-                    
-            # Normalize correlation to produce correlation coefficient
-            self.correlation_coef = self.correlation / np.sqrt(
-                    np.var(self.signal1) * np.var(self.signal2))
-            
-            # Calculate envelope of correlation using analytic signal method
-            self.correlation_coef_envelope = np.absolute(
-                    hilbert(self.correlation_coef))
-                                            
-            # Construct time axis for cross correlation
-            delta_t = np.mean(np.diff(self.signal1time[:1e4]))
-            n = len(self.signal1)
-            self.time_delays = delta_t * np.linspace(-(n-1), (n-1), 2*n-1)
-        else:
-            raise FdpError('Input signals are different lengths')
+        
+    def calc_correlation(self):
+        """
+        Calculate cross correlation of the fluctuating parts of input signals. 
+        Warning: this method is slow, calc_correlation_fft is a faster 
+        alternative.
+        """
+        
+        # Calculate cross correlation using Numpy method
+        self.correlation = np.correlate(
+                self.signal1 - np.mean(self.signal1),
+                self.signal2 - np.mean(self.signal2),
+                mode='Full')
+        self.correlation /= self.numpnts
+        
+        # Normalize correlation to produce correlation coefficient
+        self.correlation_coef = self.correlation / np.sqrt(
+                np.var(self.signal1) * np.var(self.signal2))
+        
+        # Calculate envelope of correlation using analytic signal method
+        self.correlation_coef_envelope = np.absolute(
+                hilbert(self.correlation_coef))
+        
+        # Construct time axis for cross correlation
+        delta_t = 1 / self.fSample
+        self.time_delays = delta_t * np.linspace(-(self.numpnts - 1),
+                                                  (self.numpnts - 1), 
+                                                 2*self.numpnts - 1)

@@ -57,7 +57,7 @@ def plotfft(signal, fmax=None, *args, **kwargs):
     ax.set_xlabel('Time (s)')
     ax.set_ylabel('Frequency (kHz)')
     tmin = kwargs.get('tmin', 0)
-    tmax = kwargs.get('tmax', 2)
+    tmax = kwargs.get('tmax', 1.5)
     ax.set_xlim([tmin, tmax])
     if fmax:
         ax.set_ylim([0, fmax])
