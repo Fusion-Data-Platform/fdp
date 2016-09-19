@@ -6,7 +6,7 @@ Created on Fri Jul 15 16:39:37 2016
 """
 
 from __future__ import division
-from scipy.signal import hilbert, firwin, filtfilt
+from scipy.signal import firwin, filtfilt, fftconvolve, hilbert
 from scipy.signal.spectral import _spectral_helper
 import numpy as np
 from .fdp_globals import FdpError
@@ -373,8 +373,64 @@ class CrossSignal(object):
         Calculate cross correlation of fluctuation component of input signals 
         using the fft method to perform the convolution. This is faster than 
         the integral definition method.
-        """
         
+        Returns R(tau), where R(-tau) = F^-1[F[x(t)] * F[y(-t)]] and F[]
+        denotes the Fourier transform. This calculation is equivalent to 
+        R[k] = Sum_i[x[i] * y[i + k]]
+        """
+        # Segment the signals with nperseg points in each segment
+        signal1_seg = []
+        signal2_seg = []
+        nseg = self.numpnts // self.nperseg # Number of segments
+        for i in range(nseg):
+            start_i = i * self.nperseg
+            signal1_seg.append(self.signal1[start_i:start_i + self.nperseg])
+            signal2_seg.append(self.signal2[start_i:start_i + self.nperseg])
+        signal1_seg = np.array(signal1_seg)
+        signal2_seg = np.array(signal2_seg)
+        
+        xcorr = np.zeros((nseg, 2 * self.nperseg - 1))
+        autocorr1 = np.zeros((nseg, 2 * self.nperseg - 1))
+        autocorr2 = np.zeros((nseg, 2 * self.nperseg - 1))
+        xcorr_coef = np.zeros((nseg, 2 * self.nperseg - 1))
+        for i in range(nseg):
+            
+            # Subtract mean from each segment
+            signal1_seg[i,:] -= np.mean(signal1_seg, axis=1)[i]
+            signal2_seg[i,:] -= np.mean(signal2_seg, axis=1)[i]
+            
+            # Calculate cross-correlation for each segment
+            #     The second input is reversed to change the convolution to a
+            #     cross-correlation of the form Sum[x[i] * y[i - k]]. The
+            #     output is then reversed to put the cross-correlation into 
+            #     the more standard form Sum[x[i] * y[i +k]]
+            xcorr[i,:] = fftconvolve(signal1_seg[i,:],
+                                     signal2_seg[i,::-1])[::-1]
+            
+            # Calculate autocorrelations for each segment
+            autocorr1[i,:] = fftconvolve(signal1_seg[i,:],
+                                         signal1_seg[i,::-1])[::-1]
+            autocorr2[i,:] = fftconvolve(signal2_seg[i,:],
+                                         signal2_seg[i,::-1])[::-1]
+            
+            # Calculate correlation coefficient
+            xcorr_coef[i,:] = xcorr[i,:] / np.sqrt(
+                    autocorr1[i,self.nperseg-1] * autocorr2[i,self.nperseg-1])
+            
+            # Average over all segments
+            self.crosscorrelation = np.mean(xcorr, axis=0)
+            self.autocorrelation1 = np.mean(autocorr1, axis=0)
+            self.autocorrelation2 = np.mean(autocorr2, axis=0)
+            self.correlation_coef = np.mean(xcorr_coef, axis=0)
+            
+            # Calculate envelope of correlation using analytic signal method
+            self.correlation_coef_envelope = np.absolute(
+                    hilbert(self.correlation_coef))
+            
+            # Construct time axis for cross correlation
+            self.time_delays = np.linspace(-(self.nperseg - 1),
+                                            (self.nperseg - 1),
+                                           2*self.nperseg - 1) / self.fSample
         
     def calc_correlation(self):
         """
@@ -384,14 +440,14 @@ class CrossSignal(object):
         """
         
         # Calculate cross correlation using Numpy method
-        self.correlation = np.correlate(
+        self.crosscorrelation = np.correlate(
                 self.signal1 - np.mean(self.signal1),
                 self.signal2 - np.mean(self.signal2),
                 mode='Full')
-        self.correlation /= self.numpnts
+        self.crosscorrelation /= self.numpnts
         
         # Normalize correlation to produce correlation coefficient
-        self.correlation_coef = self.correlation / np.sqrt(
+        self.correlation_coef = self.crosscorrelation / np.sqrt(
                 np.var(self.signal1) * np.var(self.signal2))
         
         # Calculate envelope of correlation using analytic signal method
