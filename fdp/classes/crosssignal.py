@@ -123,12 +123,12 @@ class CrossSignal(object):
         print 'Time to normalize data: ' + str(time.time()-t0)
 
         # Calculate correlations
-#        self.calc_correlation_fft()
+        self.calc_correlation_fft()
+        print 'Time to calculate correlation coefficient: ' + str(time.time()-t0)
 
     def load_signals(self):
         """
-        Load data and check to ensure each signal has same length and time
-        scaling.
+        Load data and check to ensure each signal has same time scaling.
         """
         
         # Load data
@@ -136,12 +136,6 @@ class CrossSignal(object):
         self.signal2[:]
         self.signal1time[:]
         self.signal2time[:]
-        
-        # Check to ensure both signals have same number of points
-        if len(self.signal1) == len(self.signal2):
-            self.numpnts = len(self.signal1)
-        else:
-            raise FdpError('Input signals are different lengths')
         
         # Check to ensure both signals have same sampling rate
         fs1 = 1 / np.mean(np.diff(np.array(self.signal1time))) # Not sure if np.array() needed
@@ -161,7 +155,10 @@ class CrossSignal(object):
         self.signal2 -= zerolevel2
 
     def make_data_window(self):
-        'Reduce signals to only contain data in the specified time window'
+        """
+        Reduce signals to only contain data in the specified time window. Then
+        check to ensure each signal has same length.
+        """
         
         mask1 = np.logical_and(self.signal1time >= self.tmin,
                                self.signal1time <= self.tmax)
@@ -171,6 +168,12 @@ class CrossSignal(object):
         self.signal2 = np.extract(mask2, self.signal2)
         self.signal1time = np.extract(mask1, self.signal1time)
         self.signal2time = np.extract(mask2, self.signal2time)
+        
+        # Check to ensure both signals have same number of points
+        if len(self.signal1) == len(self.signal2):
+            self.numpnts = len(self.signal1)
+        else:
+            raise FdpError('Input signals are different lengths')
     
     def filter_signals(self):
         'Band pass filter the input data'
@@ -436,7 +439,7 @@ class CrossSignal(object):
         """
         Calculate cross correlation of the fluctuating parts of input signals. 
         Warning: this method is slow, calc_correlation_fft is a faster 
-        alternative.
+        alternative.s
         """
         
         # Calculate cross correlation using Numpy method

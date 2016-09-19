@@ -172,7 +172,7 @@ def plotcorrelation(container, *args, **kwargs):
         ax.plot(cs.time_delays * 1000000., cs.correlation_coef)
         ax.plot((0,0),(-1,1), 'k-')
     ax.set_xlabel('Time delay (us)')
-    ax.set_title('{} -- {} -- {}/{} -- Time-Lag Cross Correlation'.format(
+    ax.set_title('{} -- {} -- {}/{} -- Time-lag cross-correlation'.format(
             container.shot,
             container._name.upper(),
             cs.signal1name.upper(),
