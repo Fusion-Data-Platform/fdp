@@ -8,9 +8,10 @@ Created on Fri Jul 15 16:39:37 2016
 from __future__ import division
 from scipy.signal import firwin, filtfilt, fftconvolve, hilbert
 from scipy.signal.spectral import _spectral_helper
+from scipy.stats import linregress
 import numpy as np
-from .fdp_globals import FdpError
-import time
+from .fdp_globals import FdpError, FdpWarning
+#import time # Used with time.time() statements to time calculations
 
 class CrossSignal(object):
     """
@@ -61,12 +62,18 @@ class CrossSignal(object):
     fmax : float, optional
         Higher cutoff frequency in kHz for band pass filter applied to data.
         Defaults to Nyquist frequency.
+    numfilttaps : int, optional
+        Number of FIR filter taps to use. Should be an odd number to avoid 
+        phase shifting the data. Defaults to 501.
+    removesawteeth : bool, optional
+        If True, throw away time bins of cross spectral density that contain
+        sawteeth events. Defaults to False.
     """
 
     def __init__(self, signal1, signal2, tmin=0.2, tmax=1.0, window='hann',
                  nperseg=None, forcepower2=False, offsetminimum=False,
                  offsetdc=False, normalizetodc=False, degrees=True,
-                 fmin=None, fmax=None):
+                 fmin=None, fmax=None, numfilttaps=None, removesawteeth=False):
 
         self.signal1 = signal1
         self.signal2 = signal2
@@ -86,45 +93,40 @@ class CrossSignal(object):
         self.degrees = degrees
         self.fmin = fmin
         self.fmax = fmax
+        self.numfilttaps = numfilttaps
+        self.removesawteeth = removesawteeth
+        
+        if signal1 is signal2:
+            self.same_signal = True
+        else:
+            self.same_signal = False
 
         # offsetdc cannot be used with offsetminimum and normalizetodc
-        t0 = time.time()
         if offsetdc:
             self.detrend = 'constant'
             offsetminimum = False
             normalizetodc = False
         else:
             self.detrend = False
-        print 'Time to offset/detrend data: ' + str(time.time()-t0)
-
+            
         # Preprocessing of input signals
         self.load_signals()
         if offsetminimum:
             self.apply_offset_minimum()
-        print 'Time to load/offset data: ' + str(time.time()-t0)
         self.make_data_window()
-        print 'Time to make data windows: ' + str(time.time()-t0)
         self.filter_signals()
-        print 'Time to filter data: ' + str(time.time()-t0)
 
         # Calculate spectral quantities
         self.calc_csd()
-        print 'Time to calculate spectral densities: ' + str(time.time()-t0)
         self.calc_crosspower()
-        print 'Time to calculate crosspower: ' + str(time.time()-t0)
         self.calc_crossphase()
-        print 'Time to calculate crossphase: ' + str(time.time()-t0)
         self.calc_coherence()
-        print 'Time to calculate coherence: ' + str(time.time()-t0)
         self.calc_error()
-        print 'Time to calculate error: ' + str(time.time()-t0)
         if normalizetodc:
             self.apply_normalize_to_dc()
-        print 'Time to normalize data: ' + str(time.time()-t0)
 
         # Calculate correlations
-        self.calc_correlation_fft()
-        print 'Time to calculate correlation coefficient: ' + str(time.time()-t0)
+        #self.calc_correlation_fft()
 
     def load_signals(self):
         """
@@ -176,7 +178,7 @@ class CrossSignal(object):
             raise FdpError('Input signals are different lengths')
     
     def filter_signals(self):
-        'Band pass filter the input data'
+        'Filter the input data over the user specified frequency range'
         
         # Check to see if either filter frequency has been set. If not, then
         # don't filter the data
@@ -184,33 +186,62 @@ class CrossSignal(object):
             
             # Set default values for unspecified frequencies and convert units
             # of specified frequencies from kHz to Hz
+            if self.fmin is not None and self.fmax is not None:
+                filttype = 'bandpass'
+            
             if self.fmin is None:
-                self.fmin = 0.
+                filttype = 'lowpass'
+                self.fmin = self.fNyquist / 2 # Placeholder valid frequency
             else:
                 self.fmin *= 1000
+                
             if self.fmax is None:
-                self.fmax = self.fNyquist
+                filttype = 'highpass'
+                self.fmax = self.fNyquist / 2 # Placeholder valid frequency
             else:
                 self.fmax *= 1000
             
             # Verify that frequencies are valid
-            if self.fmin < 0 or self.fmin > self.fNyquist:
+            if self.fmin <= 0 or self.fmin >= self.fNyquist:
                 raise FdpError('fmin is outside valid range')
-            if self.fmax < 0 or self.fmax > self.fNyquist:
+            if self.fmax <= 0 or self.fmax >= self.fNyquist:
                 raise FdpError('fmax is outside valid range')
             if self.fmax < self.fmin:
                 raise FdpError('fmin is larger than fmax')
             
-            # Filter data using 501 tap FIR filter generated using window
-            # method (Hamming window)
-            desirednumtaps = 501
-            if self.numpnts <= desirednumtaps:
-                numtaps = 2 * (self.numpnts // 2) - 1
+            # Calculate a "good" number of filter taps to use
+            if self.numfilttaps is None:
+                numtaps = 501 # 501 currently, in future will improve
             else:
-                numtaps = desirednumtaps
+                numtaps = self.numfilttaps
             
-            h = firwin(numtaps, [self.fmin, self.fmax], pass_zero=False,
-                       nyq=self.fNyquist)
+            # Verify that there are less taps than length of data
+            if numtaps >= self.numpnts - 1:
+                raise FdpError('Number of filter taps must be smaller than '
+                               'number of data points in signal - 1.')
+            
+            # Alert user that minimum cutoff frequency is not too small
+            if self.fNyquist / self.fmin > (numtaps // 2):
+                raise FdpWarning('Cutoff frequency too small for specified '
+                                 'numberof filter taps. Increase number of '
+                                 'filter taps for lower cutoff frequency.')
+            
+            # Alert user that an odd number of filter coefficients are used
+            if numtaps % 2 == 0: # even number
+                raise FdpWarning('Even number of filter taps will phase shift'
+                                 'data.')
+            
+            # Filter data using FIR filter generated using window method
+            # (Hamming window)
+            if filttype == 'lowpass':
+                h = firwin(numtaps, self.fmax, nyq=self.fNyquist)
+            elif filttype == 'highpass':
+                h = firwin(numtaps, self.fmin, pass_zero=False,
+                           nyq=self.fNyquist)
+            else: # bandpass
+                h = firwin(numtaps, [self.fmin, self.fmax], pass_zero=False,
+                           nyq=self.fNyquist)
+            
             self.signal1 = filtfilt(h, 1.0, self.signal1, padlen=numtaps)
             self.signal2 = filtfilt(h, 1.0, self.signal2, padlen=numtaps)
 
@@ -280,6 +311,13 @@ class CrossSignal(object):
                 mode='psd'
             )
         
+        # Shift time bins to correspond to original data window
+        self.times += (self.signal1time[0] + self.signal2time[0]) / 2
+        
+        # Remove bins with sawtooth crashes
+        if self.removesawteeth:
+            self.remove_sawteeth()
+        
         # Calculate time bin averaged spectral densities
         self.csd_binavg = np.mean(self.csd, axis=-1)
         self.asd1_binavg = np.mean(self.asd1, axis=-1)
@@ -290,9 +328,6 @@ class CrossSignal(object):
         
         # Convert frequency units from Hz to kHz
         self.freqs /= 1000
-        
-        # Shift time bins to correspond to original data window
-        self.times += (self.signal1time[0] + self.signal2time[0]) / 2
     
     def calc_crosspower(self):
         'Calculate the cross power (magnitude of cross spectral density)'
@@ -320,13 +355,20 @@ class CrossSignal(object):
             self.crossphase_binavg = np.rad2deg(self.crossphase_binavg)
         
     def calc_coherence(self):
-        'Calculate the magnitude squared coherence'
+        """
+        Calculate the magnitude squared coherence'
         
-        # Calculate magnitude squared coherence
-        # Note that the coherence in each time bin is identically 1 so there
-        # is no use in an unaveraged coherence.
-        self.mscoherence = (np.absolute(self.csd_binavg)**2 
-                       / (self.asd1_binavg * self.asd2_binavg))
+        Note that the coherence in each time bin is identically 1 so there
+        is no use in an unaveraged coherence.
+        """
+        
+        # To avoid numerical errors set coherence to be identically 1 for 
+        # special cases (no averaging or autospectra)
+        if self.numbins == 1 or self.same_signal: 
+            self.mscoherence = np.ones(len(self.csd_binavg))
+        else:
+            self.mscoherence = (np.absolute(self.csd_binavg)**2 
+                             / (self.asd1_binavg * self.asd2_binavg))
         
         # Calculate coherence (square root of magnitude squared coherence)
         self.coherence = np.sqrt(self.mscoherence)
@@ -334,8 +376,8 @@ class CrossSignal(object):
         # Calculate the minimum statistically significant coherence for a 
         # 95% confidence interval
         if self.numbins == 1:
-            self.minsig_mscoherence = 1
-            self.minsig_coherence = 1
+            self.minsig_mscoherence = 1.
+            self.minsig_coherence = 1.
         else:
             self.minsig_mscoherence = 1 - 0.05**(1/(self.numbins - 1))
             self.minsig_coherence = np.sqrt(self.minsig_mscoherence)
@@ -347,7 +389,7 @@ class CrossSignal(object):
         """
         
         # Bendat & Piersol eq 11.62
-        self.crossphase_error = (np.sqrt(1 - self.coherence)
+        self.crossphase_error = (np.sqrt(1. - self.coherence)
                               / (self.mscoherence * np.sqrt(2 * self.numbins)))
         if self.degrees:
             self.crossphase_error = np.rad2deg(self.crossphase_error)
@@ -439,7 +481,7 @@ class CrossSignal(object):
         """
         Calculate cross correlation of the fluctuating parts of input signals. 
         Warning: this method is slow, calc_correlation_fft is a faster 
-        alternative.s
+        alternative.
         """
         
         # Calculate cross correlation using Numpy method
@@ -458,7 +500,55 @@ class CrossSignal(object):
                 hilbert(self.correlation_coef))
         
         # Construct time axis for cross correlation
-        delta_t = 1 / self.fSample
-        self.time_delays = delta_t * np.linspace(-(self.numpnts - 1),
-                                                  (self.numpnts - 1), 
-                                                 2*self.numpnts - 1)
+        self.time_delays = np.linspace(-(self.numpnts - 1),
+                                        (self.numpnts - 1), 
+                                       2*self.numpnts - 1) / self.fSample
+    
+    def remove_sawteeth(self):
+        """
+        Somehow remove time bins that contain sawteeth events.
+        Note: Currently hardcoded to work only for shot 204551 with time 
+        window 0.9 - 1.2 s. In future an automatic sawteeth detection scheme 
+        using frequency domain characteristics may be implemented.
+        """
+        
+        sawtooth_times = np.array([0.921,0.944,0.967,0.989,1.011,1.036,1.058,
+                                   1.081,1.106,1.127,1.150,1.171,1.193])
+        
+        for i in range(len(sawtooth_times)):
+            t = sawtooth_times[i]
+            index = np.searchsorted(self.times, t)
+            
+            # Delete 4 bins surrounding the sawtooth crash
+            self.csd = np.delete(self.csd, range(index-2, index+3), axis=-1)
+            self.asd1 = np.delete(self.asd1, range(index-2, index+3), axis=-1)
+            self.asd2 = np.delete(self.asd2, range(index-2, index+3), axis=-1)
+            self.times = np.delete(self.times, range(index-2, index+3), axis=-1)
+    
+    def phase_slope(self, fstart, fend):
+        """
+        Calculate the slope of the crossphase over the user given frequency
+        range using linear regression. The slope is returned in units of
+        rad/Hz.
+        
+        To calculate the propagation from the crossphase slope use 
+        c = (2 * pi * d) / slope, where c is the propagation velocity, d is the
+        distance between channels used in the crossphase, and slope is the 
+        crossphase slope returned by this function.
+        
+        Positive slope implies signal 2 leads signal 1 and negative slope 
+        implies signal 1 leads signal 2.
+        """
+        
+        # Find indices that define the specified frequency range
+        istart = np.searchsorted(self.freqs, fstart)
+        iend = np.searchsorted(self.freqs, fend)
+        
+        # Calculate crossphase slope over specified frequency range
+        slope, _, _, _, _ = linregress(self.freqs[istart:iend+1] * 1000,
+                                       self.crossphase_binavg[istart:iend+1])
+        
+        # Convert slope units to rad/s and return
+        if self.degrees:
+            slope = np.deg2rad(slope)
+        return slope
