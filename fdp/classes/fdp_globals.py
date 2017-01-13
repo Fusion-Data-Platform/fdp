@@ -38,6 +38,7 @@ LOGBOOK_CREDENTIALS = {
 }
 """Dictionary: machine-name key paired with logbook login credentials"""
 
+TKROOT = None
 
 def machineAlias(machine):
 
