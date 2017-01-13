@@ -59,7 +59,7 @@ class Movie(object):
         self.loadConfig()
         self.setTimeIndices()
         self.loadData()
-        self.applyNormalization()
+        #self.applyNormalization()
         self.filterData()
         #self.gridData()
         self.makeAnimation()
@@ -71,6 +71,16 @@ class Movie(object):
     
     def loadConfig(self):
         self.container.loadConfig()
+    
+    def readromercsv(self):
+        """
+        do stuff
+        """
+        
+    def setPositions(self):
+        """
+        do stuff
+        """
     
     def setTimeIndices(self):
         time = self.signals[0].time
@@ -94,11 +104,11 @@ class Movie(object):
             column = signal.column
             zerosignal = np.mean(signal[0:1e3])
             self.data[row-1,column-1,:] = signal[self.istart:self.istop+1] - zerosignal
-            #self.data[row-1,column-1,:] = signal[self.istart:self.istop+1]
             self.datamask[row-1,column-1] = True
         
     def applyNormalization(self):
         nrow,ncol,_ = self.data.shape
+        
         # column-wise normalization factor
         self.colcal = np.zeros((ncol,))
         for col in np.arange(ncol):
@@ -106,6 +116,7 @@ class Movie(object):
             if not rowmask.any():
                 continue
             self.colcal[col] = np.mean(self.data[rowmask.nonzero(),col,0:self.ntime/20])
+        
         # boxcar filter column-wise normalization factor
         tmp = self.colcal.copy()
         for col in np.arange(ncol):
@@ -116,6 +127,7 @@ class Movie(object):
                 continue
             tmp[col] = np.mean(d)
         self.colcal = tmp.copy()
+        
         # apply normalization to data array
         for row in np.arange(nrow):
             for col in np.arange(ncol):
@@ -123,7 +135,12 @@ class Movie(object):
                     self.data[row,col,:] = self.data[row,col,:] * self.colcal[col] / np.mean(self.data[row,col,0:self.ntime/20])
         
     def filterData(self):
-        self.fdata = self.data
+        nrow, ncol, _ = self.data.shape        
+        self.fdata = np.zeros((7,9,self.ntime))
+        for row in range(nrow):
+            for col in range(ncol):
+                if self.datamask[row,col]:
+                    self.fdata[row,col,:] -= np.mean(self.data[row,col,:])
         self.ftime = self.time
         
     def gridData(self):
@@ -161,23 +178,22 @@ class Movie(object):
         
     def makeAnimation(self):
         ims = []
+        
         if self.hightimeres:
             frameint = 2
         else:
             frameint = 40
         nframes = np.int(self.ftime.size/frameint)
+        
         self.fig = plt.figure(figsize=(6.4,7))
-        ax1 = self.fig.add_subplot(2,1,1)
+        ax1 = self.fig.add_subplot(1,1,1)
         ax1.set_xlabel('Radial channels')
         ax1.set_ylabel('Poloidal channels')
         ax1.set_aspect('equal')
-        ax2 = self.fig.add_subplot(2,1,2)
-        ax2.set_xlim(np.array([self.tmin,self.tmax])*1e3)
-        ax2.set_xlabel('Time (ms)')
-        ax2.set_ylabel('Signal (V)')
-        self.fig.subplots_adjust(hspace=0.38)
-        print('starting frame loop with {} frames'.format(nframes))
+        
         clim = [np.amin(self.fdata), np.amax(self.fdata)]
+        print('starting frame loop with {} frames'.format(nframes))
+        
         for i in np.arange(nframes):
             if i!=0 and np.mod(i+1,20)==0:
                 print('  frame {} of {}'.format(i+1,nframes))
@@ -188,11 +204,6 @@ class Movie(object):
                 cb = plt.colorbar(im, ax=ax1)
                 cb.set_label('Signal (V)')
                 cb.draw_all()
-            pt = ax2.plot(self.ftime*1e3, self.fdata[0,1,:], 'b',
-                          self.ftime*1e3, self.fdata[4,1,:], 'g',
-                          self.ftime*1e3, self.fdata[0,6,:], 'c',
-                          self.ftime*1e3, self.fdata[5,6,:], 'm')
-            ax2.get_xaxis().get_major_formatter().set_useOffset(False)
             ax1_title = ax1.annotate('BES | {} | t={:.3f} ms'.format(
                 self.shot,
                 self.ftime[i*frameint]*1e3),
@@ -200,33 +211,8 @@ class Movie(object):
                 xycoords='axes fraction',
                 horizontalalignment ='center',
                 size='large')
-            ln = ax2.plot(np.ones(2)*self.ftime[i*frameint]*1e3,
-                          ax2.get_ylim(), 
-                          'r')
-            an_l0 = ax2.annotate('Core Top',
-                                  xy=(self.ftime[0]*1e3+0.01,
-                                      self.fdata[0,1,15]+0.6),
-                                  color='b')
-            an_l1 = ax2.annotate('Core Bottom',
-                                  xy=(self.ftime[0]*1e3+0.01,
-                                      self.fdata[4,1,15]-0.6),
-                                  color='g')
-            an_l2 = ax2.annotate('SOL Top',
-                                  xy=(self.ftime[0]*1e3+0.01,
-                                      self.fdata[0,6,15]+0.6),
-                                  color='c')
-            an_l3 = ax2.annotate('SOL Bottom',
-                                  xy=(self.ftime[0]*1e3+0.01,
-                                      self.fdata[5,6,15]-0.6),
-                                  color='m')
-            ax2_title = ax2.annotate('BES | {}'.format(self.shot),
-                xy=(0.5, 1.04), 
-                xycoords='axes fraction',
-                horizontalalignment ='center',
-                size='large')
             plt.draw()
-            artists = [cb.solids, pt[0], pt[1], pt[2], pt[3], ln[0], ax1_title, 
-                       an_l0, an_l1, an_l2, an_l3, ax2_title]
+            artists = [cb.solids, ax1_title]
             gc.disable()  # disable garbage collection to keep list appends fast
             if hasattr(im, 'collections'):
                 ims.append(im.collections+artists)

@@ -11,7 +11,6 @@ from scipy.signal.spectral import _spectral_helper
 from scipy.stats import linregress
 import numpy as np
 from .fdp_globals import FdpError, FdpWarning
-#import time # Used with time.time() statements to time calculations
 
 class CrossSignal(object):
     """
@@ -74,7 +73,7 @@ class CrossSignal(object):
                  nperseg=None, forcepower2=False, offsetminimum=False,
                  offsetdc=False, normalizetodc=False, degrees=True,
                  fmin=None, fmax=None, numfilttaps=None, removesawteeth=False):
-
+        
         self.signal1 = signal1
         self.signal2 = signal2
         self.signal1time = signal1.time
@@ -101,11 +100,8 @@ class CrossSignal(object):
         else:
             self.same_signal = False
 
-        # offsetdc cannot be used with offsetminimum and normalizetodc
         if offsetdc:
             self.detrend = 'constant'
-            offsetminimum = False
-            normalizetodc = False
         else:
             self.detrend = False
             
@@ -126,7 +122,7 @@ class CrossSignal(object):
             self.apply_normalize_to_dc()
 
         # Calculate correlations
-        #self.calc_correlation_fft()
+#        self.calc_correlation_fft()
 
     def load_signals(self):
         """
@@ -134,10 +130,10 @@ class CrossSignal(object):
         """
         
         # Load data
-        self.signal1[:]
-        self.signal2[:]
-        self.signal1time[:]
-        self.signal2time[:]
+        self.signal1[:] 
+        self.signal2[:] 
+        self.signal1time[:] 
+        self.signal2time[:] 
         
         # Check to ensure both signals have same sampling rate
         fs1 = 1 / np.mean(np.diff(np.array(self.signal1time))) # Not sure if np.array() needed
@@ -149,11 +145,18 @@ class CrossSignal(object):
             raise FdpError('Input signals have different sampling rates')
 
     def apply_offset_minimum(self):
-        'Shift signal so that first 1,000 points are near zero'
+        """
+        Get zero signal level by averaging 1000 points near beginning of shot 
+        together, then use this to offset signal.
         
-        zerolevel1 = np.mean(self.signal1[:1e3])
+        For BES, first 20 points exhibit turn on transient effects so second 
+        group of 1000 points is used.
+        
+        """
+        
+        zerolevel1 = np.mean(self.signal1[1e3:2e3])
         self.signal1 -= zerolevel1
-        zerolevel2 = np.mean(self.signal2[:1e3])
+        zerolevel2 = np.mean(self.signal2[1e3:2e3])
         self.signal2 -= zerolevel2
 
     def make_data_window(self):
@@ -220,7 +223,7 @@ class CrossSignal(object):
                 raise FdpError('Number of filter taps must be smaller than '
                                'number of data points in signal - 1.')
             
-            # Alert user that minimum cutoff frequency is not too small
+            # Alert user that minimum cutoff frequency is too small
             if self.fNyquist / self.fmin > (numtaps // 2):
                 raise FdpWarning('Cutoff frequency too small for specified '
                                  'numberof filter taps. Increase number of '
@@ -318,13 +321,13 @@ class CrossSignal(object):
         if self.removesawteeth:
             self.remove_sawteeth()
         
+        # Record number of bins (aka # segments or # realizations) in the ffts
+        self.numbins = np.shape(self.csd)[-1]
+        
         # Calculate time bin averaged spectral densities
         self.csd_binavg = np.mean(self.csd, axis=-1)
         self.asd1_binavg = np.mean(self.asd1, axis=-1)
         self.asd2_binavg = np.mean(self.asd2, axis=-1)
-        
-        # Record number of bins (aka # segments or # realizations) in the ffts
-        self.numbins = np.shape(self.csd)[-1]
         
         # Convert frequency units from Hz to kHz
         self.freqs /= 1000
@@ -377,26 +380,29 @@ class CrossSignal(object):
         # 95% confidence interval
         if self.numbins == 1:
             self.minsig_mscoherence = 1.
-            self.minsig_coherence = 1.
         else:
             self.minsig_mscoherence = 1 - 0.05**(1/(self.numbins - 1))
-            self.minsig_coherence = np.sqrt(self.minsig_mscoherence)
+            
+        self.minsig_coherence = np.sqrt(self.minsig_mscoherence)
     
     def calc_error(self):
         """
-        Calculate random error of coherence and crossphase using 
-        formulae from Bendat & Piersol textbook.
+        Calculate random errors using formulae from Bendat & Piersol textbook.
         """
         
-        # Bendat & Piersol eq 11.62
-        self.crossphase_error = (np.sqrt(1. - self.coherence)
-                              / (self.mscoherence * np.sqrt(2 * self.numbins)))
+        # Crosspower error: Bendat & Piersol eq 11.23 (multiplied by crosspower)
+        self.crosspower_error = (self.crosspower_binavg
+                              / (self.coherence * np.sqrt(self.numbins)))
+        
+        # Crossphase error: Bendat & Piersol eq 11.62
+        self.crossphase_error = (np.sqrt(1. - self.mscoherence)
+                              / (self.coherence * np.sqrt(2 * self.numbins)))
         if self.degrees:
             self.crossphase_error = np.rad2deg(self.crossphase_error)
         
-        # Bendat & Piersol eq 11.47 (multiplied by coherence to get std dev)
-        self.mscoherence_error = (np.sqrt(2 * self.coherence / self.numbins)
-                             * (1 - self.coherence))
+        # Coherence error: Bendat & Piersol eq 11.47 (multiplied by coherence)
+        self.mscoherence_error = (self.coherence * np.sqrt(2 / self.numbins)
+                               * (1 - self.mscoherence))
                              
         # Use of law of propagation of uncertainty to calculate coherence error
         self.coherence_error = self.mscoherence_error / (2 * self.coherence)
@@ -423,6 +429,7 @@ class CrossSignal(object):
         denotes the Fourier transform. This calculation is equivalent to 
         R[k] = Sum_i[x[i] * y[i + k]]
         """
+        
         # Segment the signals with nperseg points in each segment
         signal1_seg = []
         signal2_seg = []
@@ -483,7 +490,7 @@ class CrossSignal(object):
         Warning: this method is slow, calc_correlation_fft is a faster 
         alternative.
         """
-        
+    
         # Calculate cross correlation using Numpy method
         self.crosscorrelation = np.correlate(
                 self.signal1 - np.mean(self.signal1),
@@ -512,8 +519,13 @@ class CrossSignal(object):
         using frequency domain characteristics may be implemented.
         """
         
+        # Shot 204551
         sawtooth_times = np.array([0.921,0.944,0.967,0.989,1.011,1.036,1.058,
                                    1.081,1.106,1.127,1.150,1.171,1.193])
+        
+        # Shot 204963
+#        sawtooth_times = np.array([0.920,0.941,0.961,0.982,1.001,1.022,1.042,
+#                                   1.064,1.085,1.107,1.129,1.151,1.173,1.198])
         
         for i in range(len(sawtooth_times)):
             t = sawtooth_times[i]

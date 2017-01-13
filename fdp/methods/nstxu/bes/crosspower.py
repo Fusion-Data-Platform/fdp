@@ -16,16 +16,20 @@ from fdp.classes.fdp_globals import FdpWarning
 
 
 def crosssignal(container, sig1name='ch01', sig2name='ch02',
-             tmin=0.5, tmax=0.55, nperseg=None, degrees=True, fmin=None,
-             fmax=None, numfilttaps=None, removesawteeth=False):
+             tmin=0.5, tmax=0.55, window='hann', nperseg=None,
+             forcepower2=False, offsetminimum=True, offsetdc=False,
+             normalizetodc=True, degrees=True, fmin=None, fmax=None,
+             numfilttaps=None, removesawteeth=False):
     if not isContainer(container):
         warn("Method valid only at container-level", FdpWarning)
         return
     sig1 = getattr(container, sig1name)
     sig2 = getattr(container, sig2name)
-    cs = CrossSignal(sig1, sig2, tmin=tmin, tmax=tmax, nperseg=nperseg,
-                     offsetminimum=True, normalizetodc=True, degrees=degrees,
-                     fmin=fmin, fmax=fmax, numfilttaps=numfilttaps, 
+    cs = CrossSignal(sig1, sig2, tmin=tmin, tmax=tmax, window=window,
+                     nperseg=nperseg, forcepower2=forcepower2,
+                     offsetminimum=offsetminimum, offsetdc=offsetdc, 
+                     normalizetodc=normalizetodc, degrees=degrees, fmin=fmin,
+                     fmax=fmax, numfilttaps=numfilttaps,
                      removesawteeth=removesawteeth)
     return cs
 
@@ -63,10 +67,15 @@ def plotcrosspower(container, *args, **kwargs):
                 cs.signal1name.upper(),
                 cs.signal2name.upper()))
     else:
-        logcrosspower = 10*np.log10(cs.crosspower_binavg[mask])
+        crosspower = cs.crosspower_binavg[mask]
+        stdev = cs.crosspower_error[mask]
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        ax.plot(cs.freqs[mask], logcrosspower, 'k-')
+        ax.plot(cs.freqs[mask], crosspower, 'k-')
+        ax.fill_between(cs.freqs[mask], crosspower-stdev,
+                        crosspower+stdev, alpha=0.5, linewidth=0,
+                        facecolor='black')
+        ax.set_yscale('log')
         ax.set_xlabel('Frequency (kHz)')
         ax.set_ylabel(r'$10\,\log_{10}(Crosspower)$ $(V^2/Hz)$')
         ax.set_title('{} -- {} -- {}/{} -- Crosspower'.format(

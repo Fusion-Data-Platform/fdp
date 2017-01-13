@@ -21,6 +21,8 @@
     <signal name='wdia' title='Stored Energy' units='J' axes='time' mdsnode='\wdia'></signal>
     <signal name='wbdot' title='Stored Energy' units='J' axes='time' mdsnode='\wbdot'></signal>
     <signal name='taumhd' title='Stored Energy' units='J' axes='time' mdsnode='\taumhd'></signal>
+    <signal name='psi0' title='Stored Energy' units='J' axes='time' mdsnode='\psi0'></signal>
+    <signal name='psibdy' title='Stored Energy' units='J' axes='time' mdsnode='\psibdy'></signal>
 
     <axis name='R' units='m' axes='time' mdsnode='\R'></axis>
     <axis name='z' units='m' axes='time' mdsnode='\z'></axis>
