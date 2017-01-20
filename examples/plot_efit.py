@@ -12,5 +12,5 @@ nstx = fdp.nstx()
 eq=nstx.s204551.equilibria.efit01
 eq.ipmeas.plot()
 
-eq3=nstx.s204551.equilibria.efit02
-eq3.kappa.plot()
+eq2=nstx.s204551.equilibria.efit02
+eq2.kappa.plot()
