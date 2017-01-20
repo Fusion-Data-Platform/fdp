@@ -29,7 +29,8 @@ class Animation(object):
     def __init__(self, container, 
                  tmin=0.0, tmax=5.0,
                  savemovie=False,
-                 hightimeres=False):
+                 hightimeres=False,
+                 saveeps = False):
         
         if not isContainer(container):
             raise FdpError("Use at container level, not signal level")
@@ -41,6 +42,8 @@ class Animation(object):
         self.tmin = tmin
         self.tmax = tmax
         self.hightimeres = hightimeres
+        self.saveeps = saveeps
+        self.savemovie = savemovie
         
         self.signals = None
         self.data = None
@@ -63,7 +66,7 @@ class Animation(object):
         self.filterData()
         #self.gridData()
         self.makeAnimation()
-        if savemovie:
+        if self.savemovie:
             self.saveAnimationVideo()
         
     def getSignals(self):
@@ -231,20 +234,29 @@ class Animation(object):
                 horizontalalignment ='center',
                 size='large')
             plt.draw()
-            artists = [cb.solids, pt[0], pt[1], pt[2], pt[3], ln[0], ax1_title, 
-                       an_l0, an_l1, an_l2, an_l3, ax2_title]
-            gc.disable()  # disable garbage collection to keep list appends fast
-            if hasattr(im, 'collections'):
-                ims.append(im.collections+artists)
-            else:
-                ims.append([im]+artists)
-            gc.enable()
+            if self.saveeps:
+                filename = 'Bes2d_{}_{}.eps'.format(
+                                self.shot,
+                                np.int(self.ftime[i*frameint]*1e7))
+                self.fig.savefig(filename, format='eps', transparent=True)
+                ax1.cla()
+                ax2.cla()
+            if self.savemovie:
+                artists = [cb.solids, pt[0], pt[1], pt[2], pt[3], ln[0], ax1_title, 
+                           an_l0, an_l1, an_l2, an_l3, ax2_title]
+                gc.disable()  # disable garbage collection to keep list appends fast
+                if hasattr(im, 'collections'):
+                    ims.append(im.collections+artists)
+                else:
+                    ims.append([im]+artists)
+                gc.enable()
             
-        print('calling ArtistAnimation')
-        self.animation = animation.ArtistAnimation(self.fig, ims, 
-                                                   blit=False,
-                                                   interval=50,
-                                                   repeat=False)
+        if self.savemovie:
+            print('calling ArtistAnimation')
+            self.animation = animation.ArtistAnimation(self.fig, ims, 
+                                                       blit=False,
+                                                       interval=50,
+                                                       repeat=False)
                                                    
     def saveAnimationVideo(self):
         print('calling ArtistAnimation.save()')

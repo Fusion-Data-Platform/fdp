@@ -45,11 +45,13 @@ def plotfft(signal, fmax=None, *args, **kwargs):
                         sigfft.logpsd.transpose(), 
                         cmap=plt.cm.YlGnBu)
     pcm.set_clim([sigfft.logpsd.max()-100, sigfft.logpsd.max()-20])
-    #ax.set_ylim([0,200])
     cb = plt.colorbar(pcm, ax=ax)
     cb.set_label(r'$10\,\log_{10}(|FFT|^2)$ $(V^2/Hz)$')
     ax.set_xlabel('Time (s)')
     ax.set_ylabel('Frequency (kHz)')
+    tmin = kwargs.get('tmin', 0)
+    tmax = kwargs.get('tmax', 2)
+    ax.set_xlim([tmin,tmax])
     if fmax:
         if sigfft.iscomplexsignal:
             ax.set_ylim([-fmax,fmax])

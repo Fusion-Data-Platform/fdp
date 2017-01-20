@@ -13,13 +13,12 @@ else:
     import tkinter as tk
 import ttk
 import threading
-import time
 
 import matplotlib as mpl
 #mpl.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from .fdp_globals import FdpWarning
+from . import fdp_globals
 
 
 class BaseGui(threading.Thread):
@@ -30,21 +29,27 @@ class BaseGui(threading.Thread):
     this base class.
     """
 
-    def __init__(self, obj=None, title='', parent=None, 
+    def __init__(self, obj, title='FDP GUI', parent=None, 
                  defaultwidgets=True):
         super(BaseGui, self).__init__()
         self.title = title
         self.parent = parent
         self.obj = obj
-        self.root = self.obj._root
-        self.shotkeys = sorted(self.root._shots.keys())
+        self.machine = self.obj._root
+        self.machinelock = threading.RLock()
+        with self.machinelock:
+            self.shotkeys = sorted(self.machine._shots.keys())
         self.defaultwidgets = defaultwidgets
         self.start()
 
     def run(self):
-        self.tkroot = tk.Tk()
-        self.tkroot.title(self.title)
-        self.controlframe = ttk.Frame(master=self.tkroot, 
+        if not fdp_globals.TKROOT:
+            self.topwindow = tk.Tk()
+            fdp_globals.TKROOT = self.topwindow
+        else:
+            self.topwindow = tk.Toplevel()
+        self.topwindow.title(self.title)
+        self.controlframe = ttk.Frame(master=self.topwindow, 
                                       borderwidth=3, 
                                       relief='ridge', 
                                       padding=2)
@@ -57,7 +62,7 @@ class BaseGui(threading.Thread):
             self.addDefaultWidgets()
         
         self.figure = mpl.figure.Figure()
-        self.figureframe = ttk.Frame(master=self.tkroot, 
+        self.figureframe = ttk.Frame(master=self.topwindow, 
                                      borderwidth=3,
                                      relief='ridge')
         self.figureframe.pack(side='left', expand=1, fill='both')
@@ -67,17 +72,19 @@ class BaseGui(threading.Thread):
         
         self.plotObject()
         
-        self.tkroot.after(5000, self.checkShotKeys)
-        self.tkroot.mainloop()
+        self.topwindow.after(5000, self.checkShotKeys)
+        self.topwindow.mainloop()
         
     def checkShotKeys(self):
-        newkeys = sorted(self.root._shots.keys())
+        self.machinelock.acquire()
+        with self.machinelock:
+            newkeys = sorted(self.machine._shots.keys())
         if self.shotkeys != newkeys:
             for i, key in enumerate(newkeys):
                 if key not in self.shotkeys:
                     self.shotList.insert(i, key)
             self.shotkeys = newkeys
-        self.tkroot.after(1000, self.checkShotKeys)
+        self.topwindow.after(1000, self.checkShotKeys)
         
     def addDefaultWidgets(self):
         self.shotEntry = self.insertButtonEntry(text='Add shot',
@@ -87,7 +94,7 @@ class BaseGui(threading.Thread):
         self.tminEntry = self.insertTextEntry(text='Tmin (ms):  ')
         self.tmaxEntry = self.insertTextEntry(text='Tmax (ms):  ')
         self.closeButton = self.insertButton(text='Close', 
-                                             command=self.tkroot.destroy)
+                                             command=self.topwindow.destroy)
         self.printButton = self.insertButton(text='Save', 
                                              command=None)
         
@@ -98,9 +105,10 @@ class BaseGui(threading.Thread):
         try:
             shot = int(self.shotEntry.get())
         except ValueError:
-            warn('Shot value is invalid', FdpWarning)
+            warn('Shot value is invalid', fdp_globals.FdpWarning)
             return
-        self.root.addshot(shot)
+        with self.machinelock:
+            self.machine.addshot(shot)
         self.checkShotKeys()
     
     def plotObject(self):
