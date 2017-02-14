@@ -6,25 +6,25 @@ Created on Thu Oct 29 10:20:43 2015
 """
 
 from warnings import warn
-import time
+#import time
 
 import numpy as np
 import numba as nb
-import matplotlib as mpl
+#import matplotlib as mpl
 #mpl.use('TkAgg')
 import matplotlib.pyplot as plt
-import pyqtgraph as pg
+#import pyqtgraph as pg
 
 from fdp.classes.fdp_globals import FdpWarning
 
-pg.mkQApp()
+#pg.mkQApp()
 
 
 def plot1d(signal, tmin=0.0, tmax=2.0, **kwargs):
     xaxis = getattr(signal, signal.axes[0])
-    _ = kwargs.pop('stack', None)
-    _ = kwargs.pop('maxrange', None)
-    _ = kwargs.pop('minrange', None)
+    kwargs.pop('stack', None)
+    kwargs.pop('maxrange', None)
+    kwargs.pop('minrange', None)
     ax = kwargs.pop('axes', None)
 
     ax.plot(xaxis, signal, **kwargs)
@@ -89,12 +89,9 @@ plot_methods = [None, plot1d, plot2d, plot3d, plot4d]
 
 
 def plot(signal, fig=None, ax=None, **kwargs):
-    dim_title = None
-
     defaults = getattr(signal, '_plot_defaults', {})
     defaults.update(kwargs)
     if signal._is_container():
-        dim_title = signal._name.upper()
         plot_container(signal, **defaults)
         return
 
@@ -108,8 +105,8 @@ def plot(signal, fig=None, ax=None, **kwargs):
     dims = signal.ndim
     multi_axis = defaults.get('multi', None)
     if multi_axis is 'shot':
-        plot_multishot(signal, **defaults)
-        plt.title(signal._name, fontsize=20)
+        #plot_multishot(signal, **defaults)
+        #plt.title(signal._name, fontsize=20)
         return
     if multi_axis in signal.axes and dims > 1:
         plot_multi(signal, ax=ax, **defaults)
@@ -118,7 +115,7 @@ def plot(signal, fig=None, ax=None, **kwargs):
 
     if fig is None:
         fig = plt.figure()
-        
+
     if ax is None:
         ax = fig.add_subplot(111)
 
@@ -144,8 +141,8 @@ def plot_multi(signal, ax=None, **kwargs):
     plot_range = set_range(signal, default_min, default_max)
 
     axis_name = kwargs.pop('multi', None)
-    ptype = kwargs.pop('type', None)
-    stack = kwargs.pop('stack', '1,1')
+    kwargs.pop('type', None)
+    kwargs.pop('stack', '1,1')
     axes = [getattr(signal, axis) for axis in signal.axes]
     axis_index = signal.axes.index(axis_name)
     multi_axis = axes.pop(axis_index)
@@ -219,7 +216,6 @@ class PlotAxes(plt.Axes):
 
         signal, index_list, args, kwargs = myplot
         axes = [getattr(signal, axis) for axis in signal.axes]
-        ndim = len(signal.shape)
 
         y = signal
         x = axes[0]
@@ -240,8 +236,8 @@ class PlotAxes(plt.Axes):
         ixmin = np.searchsorted(x, xmin, side='left')
         ixmax = np.searchsorted(x, xmax*1.1, side='right')
         stride = kwargs.pop('stride', 0)
-        ptype = kwargs.pop('type', None)
-        stack = kwargs.pop('stack', None)
+        kwargs.pop('type', None)
+        kwargs.pop('stack', None)
         stride_level = 0
         if stride:
             stride_level = int(np.floor(np.log((ixmax-ixmin)/nx)/np.log(stride)))
@@ -286,73 +282,73 @@ class PlotAxes(plt.Axes):
         self.limits = ((xmin, xmax), (ymin, ymax))
 
 
-class PyQTPlot(pg.PlotCurveItem):
-    def __init__(self, *args, **kwds):
-        self.hdf5 = None
-        self.limit = 10000  # maximum number of samples to be plotted
-        pg.PlotCurveItem.__init__(self, *args, **kwds)
-
-    def setHDF5(self, data):
-        self.hdf5 = data
-        self.updateHDF5Plot()
-
-    def viewRangeChanged(self):
-        self.updateHDF5Plot()
-
-    def updateHDF5Plot(self):
-        if self.hdf5 is None:
-            self.setData([])
-            return
-
-        vb = self.getViewBox()
-        if vb is None:
-            return  # no ViewBox yet
-
-        # Determine what data range must be read from HDF5
-        xrange = vb.viewRange()[0]
-        start = max(0, int(xrange[0])-1)
-        stop = min(len(self.hdf5), int(xrange[1]+2))
-
-        # Decide by how much we should downsample
-        ds = int((stop-start) / self.limit) + 1
-
-        if ds == 1:
-            # Small enough to display with no intervention.
-            visible = self.hdf5[start:stop]
-            scale = 1
-        else:
-            # Here convert data into a down-sampled array suitable for visualizing.
-            # Must do this piecewise to limit memory usage.
-            samples = 1 + ((stop-start) // ds)
-            visible = np.zeros(samples*2, dtype=self.hdf5.dtype)
-            sourcePtr = start
-            targetPtr = 0
-
-            # read data in chunks of ~1M samples
-            chunkSize = (1000000//ds) * ds
-            while sourcePtr < stop-1:
-                chunk = self.hdf5[sourcePtr:min(stop, sourcePtr+chunkSize)]
-                sourcePtr += len(chunk)
-
-                # reshape chunk to be integral multiple of ds
-                chunk = chunk[:(len(chunk)//ds) * ds].reshape(len(chunk)//ds, ds)
-
-                # compute max and min
-                chunkMax = chunk.max(axis=1)
-                chunkMin = chunk.min(axis=1)
-
-                # interleave min and max into plot data to preserve envelope shape
-                visible[targetPtr:targetPtr+chunk.shape[0]*2:2] = chunkMin
-                visible[1+targetPtr:1+targetPtr+chunk.shape[0]*2:2] = chunkMax
-                targetPtr += chunk.shape[0]*2
-
-            visible = visible[:targetPtr]
-            scale = ds * 0.5
-
-        self.setData(visible)  # update the plot
-        self.setPos(start, 0)  # shift to match starting index
-        self.resetTransform()
-        self.scale(scale, 1)   # scale to match downsampling
+#class PyQTPlot(pg.PlotCurveItem):
+#    def __init__(self, *args, **kwds):
+#        self.hdf5 = None
+#        self.limit = 10000  # maximum number of samples to be plotted
+#        pg.PlotCurveItem.__init__(self, *args, **kwds)
+#
+#    def setHDF5(self, data):
+#        self.hdf5 = data
+#        self.updateHDF5Plot()
+#
+#    def viewRangeChanged(self):
+#        self.updateHDF5Plot()
+#
+#    def updateHDF5Plot(self):
+#        if self.hdf5 is None:
+#            self.setData([])
+#            return
+#
+#        vb = self.getViewBox()
+#        if vb is None:
+#            return  # no ViewBox yet
+#
+#        # Determine what data range must be read from HDF5
+#        xrange = vb.viewRange()[0]
+#        start = max(0, int(xrange[0])-1)
+#        stop = min(len(self.hdf5), int(xrange[1]+2))
+#
+#        # Decide by how much we should downsample
+#        ds = int((stop-start) / self.limit) + 1
+#
+#        if ds == 1:
+#            # Small enough to display with no intervention.
+#            visible = self.hdf5[start:stop]
+#            scale = 1
+#        else:
+#            # Here convert data into a down-sampled array suitable for visualizing.
+#            # Must do this piecewise to limit memory usage.
+#            samples = 1 + ((stop-start) // ds)
+#            visible = np.zeros(samples*2, dtype=self.hdf5.dtype)
+#            sourcePtr = start
+#            targetPtr = 0
+#
+#            # read data in chunks of ~1M samples
+#            chunkSize = (1000000//ds) * ds
+#            while sourcePtr < stop-1:
+#                chunk = self.hdf5[sourcePtr:min(stop, sourcePtr+chunkSize)]
+#                sourcePtr += len(chunk)
+#
+#                # reshape chunk to be integral multiple of ds
+#                chunk = chunk[:(len(chunk)//ds) * ds].reshape(len(chunk)//ds, ds)
+#
+#                # compute max and min
+#                chunkMax = chunk.max(axis=1)
+#                chunkMin = chunk.min(axis=1)
+#
+#                # interleave min and max into plot data to preserve envelope shape
+#                visible[targetPtr:targetPtr+chunk.shape[0]*2:2] = chunkMin
+#                visible[1+targetPtr:1+targetPtr+chunk.shape[0]*2:2] = chunkMax
+#                targetPtr += chunk.shape[0]*2
+#
+#            visible = visible[:targetPtr]
+#            scale = ds * 0.5
+#
+#        self.setData(visible)  # update the plot
+#        self.setPos(start, 0)  # shift to match starting index
+#        self.resetTransform()
+#        self.scale(scale, 1)   # scale to match downsampling
 
 
 def decimate_plot(data, pixels=2000):
