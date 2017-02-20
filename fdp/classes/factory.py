@@ -24,18 +24,18 @@ def Factory(module_branch, Container, root=None, shot=None, parent=None):
     Factory method
     """
 
+    module_branch = module_branch.lower()
+    module_list = module_branch.split('.')
+    module = module_list[-1]
+    branch_str = ''.join([word.capitalize() for word in module_list])
+    if module_branch not in _tree_dict:
+        module_path = os.path.join(FDP_DIR, 'modules', root._name,
+                                   *module_list)
+        parse_tree = ET.parse(os.path.join(module_path,
+                                           ''.join([module, '.xml'])))
+        module_tree = parse_tree.getroot()
+        _tree_dict[module_branch] = module_tree
     try:
-        module_branch = module_branch.lower()
-        module_list = module_branch.split('.')
-        module = module_list[-1]
-        branch_str = ''.join([word.capitalize() for word in module_list])
-        if module_branch not in _tree_dict:
-            module_path = os.path.join(FDP_DIR, 'modules', root._name,
-                                       *module_list)
-            parse_tree = ET.parse(os.path.join(module_path,
-                                               ''.join([module, '.xml'])))
-            module_tree = parse_tree.getroot()
-            _tree_dict[module_branch] = module_tree
         ContainerClassName = ''.join(['Container', branch_str])
         if ContainerClassName not in Container._classes:
             ContainerClass = type(ContainerClassName, (Container,), {})
@@ -49,8 +49,8 @@ def Factory(module_branch, Container, root=None, shot=None, parent=None):
                               parent=parent, top=True)
 
     except:
-        print("{} not found in modules directory".format(module))
         raise
+        #raise fdp_globals.FdpError("{} not found in modules directory".format(module))
 
 
 def iterable(obj):
@@ -87,9 +87,11 @@ def init_class(cls, module_tree, **kwargs):
 def parse_method(obj, level=None):
     if level is not None:
         if level is 'top':
+            # parse fdp/methods
             method_path = FDP_DIR
             module = 'methods'
         else:
+            # parse fdp/methods/<machine_name>
             method_path = os.path.join(FDP_DIR, 'methods')
             module = obj._name
     else:

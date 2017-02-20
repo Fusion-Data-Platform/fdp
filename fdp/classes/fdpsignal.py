@@ -44,170 +44,114 @@ class Signal(np.ndarray):
         pass
 
     def __new__(cls, input_array=[], verbose=False, **kwargs):
-        #maybe an **kwargs dict for more attr
-        #name is name of signal...e.g. Te
-        #__doc__ for the signal...decriptor (filled in when? XML/MDSvalue?)
-        if verbose:
-            print('Called __new__:')
         obj = np.asanyarray(input_array).view(cls).copy()
-        #arr = np.asanyarray(input_array).view(cls)
-        #print '__new__: type(arr) %s' % type(arr)
-        #obj = np.array(arr,copy=True)
-        #obj = np.ndarray.__new__(cls, shape=arr.shape, buffer=arr,dtype=arr.dtype)
-        #obj = np.ndarray.__new__(cls, shape=arr.shape, dtype=arr.dtype)
-        #if input_array is not None:
-        #    obj[:] = input_array
-        # obj = np.asarray(input_array).view(cls)
-        #arr = np.asarray(input_array)
-        #obj = np.ndarray.__new__(cls, shape=arr.shape, buffer=arr, dtype=arr.dtype)
-
-        if verbose:
-            print('__new__: type(obj) %s' % type(obj))
-            print('__new__: setting attributes')
-        #obj.units = units
-        #obj.axes = axes
-        #obj._parent = parent
-        #obj._root = root
-        #obj._dim_of = dim_of
-        obj._verbose = verbose
-        #obj._slic = slice(None)
+        if 'Axis' in str(cls):
+            obj._verbose = True
+        else:
+            obj._verbose = verbose
+        if obj._verbose:
+            print('__new__: cls {}'.format(cls))
+            print('__new__: type(cls) {}'.format(type(cls)))
+            print('__new__: type(obj) {}'.format(type(obj)))
         obj._empty = True
-        #obj._name = name
-        #not necessary but can be defined
-        #obj.mdstree = mdstree
-        #obj.mdsnode = mdsnode
-        #obj.mdsshot = mdsshot
-        for key,value in iter(kwargs.items()):
-            setattr(obj,key,value)
-
-        #Initiate slic attribute to hold slice index info
-
-#        try:
-#            for i, axis in enumerate(axes):
-#                print(name, axis)
-#                setattr(obj, axis, axes_values[i])
-#            for axis, reference in zip(axes, axes_values):
-#                setattr(obj, axis, reference)
-#        except:
-#            pass
+        for key, value in kwargs.iteritems():
+            setattr(obj, key, value)
         return obj
 
-#    def __array_prepare__(self, context=None):
-#        print 'In __array_prepare__:'
-#        print '   context is' , context
-
     def __array_finalize__(self, obj):
-#        if self._verbose:
-#            print('Called __array_finalize__:')
-#            print '__array_finalize__: self is type %s  ' % type(self)
-#
-#            try:
-#                print '__array_finalize__: self has len %s' % len(self)
-#            except:
-#                print '__array_finalize__: self has undefined len'
-#
-#            print('__array_finalize__: self hasattr(self,"slic") is', hasattr(self,'slic'))
-#            print('__array_finalize__: obj is type ', type(obj))
-#            try:
-#                print '__array_finalize__: obj has len %s' % len(obj)
-#            except:
-#                print '__array_finalize__: obj has undefined len'
-#            print('__array_finalize__: hasattr(obj,"_slic") is', hasattr(obj,"_slic"))
-#            if hasattr(obj,'_slic'):
-#                print('__array_finalize__: obj._slic is', obj._slic)
-
         if obj is None:
             return
+        objaxes = getattr(obj, 'axes', None)
+        objdict = getattr(obj, '__dict__', None)
+        _deltmpattr = True
 
-        #simple copying over of attributes. Defaults to None so hasattr check skipped
-        #if hasattr(obj,'units'):
-        objaxes= getattr(obj, 'axes',None)
-        objdict= getattr(obj, '__dict__', None)
-        _nodeltmpattr=False
+        if self._verbose:
+            print('{}.__arrayfinalize__: BEGIN'.format(self._name))
 
         if objdict is not None:
-            #print(type(objdict))
-            #print(type(objaxes))
             if objaxes is not None:
-                for key,val in objdict.items():
-                    if key not in objaxes: setattr(self, key, val)
+                for key,val in objdict.iteritems():
+                    if key not in objaxes:
+                        setattr(self, key, val)
             else:
-                for key,val in objdict.items(): setattr(self, key, val)
+                for key,val in objdict.iteritems():
+                    setattr(self, key, val)
 
-            if '_verbose' in objdict:
-                if objdict['_verbose']:
-                    try:
-                        print("__array_finalize__:Function name {}".format(obj._fname))
-                    except AttributeError:
-                        pass
-                    try:
-                        print("__array_finalize__:Function args {}".format(obj._fargs))
-                    except AttributeError:
-                        pass
-                    try:
-                        print("__array_finalize__:Function kwargs {}".format(obj._fkwargs))
-                    except AttributeError:
-                        pass
+            if self._verbose:
+                try:
+                    print("{}.__arrayfinalize__:Function name {}".
+                          format(self._name, obj._fname))
+                except AttributeError:
+                    pass
+                try:
+                    print("{}.__arrayfinalize__:Function args {}".
+                          format(self._name, obj._fargs))
+                except AttributeError:
+                    pass
+                try:
+                    print("{}.__arrayfinalize__:Function kwargs {}".
+                          format(self._name, obj._fkwargs))
+                except AttributeError:
+                    pass
 
-            if '_fname' in objdict:
-                if objdict['_fname'] == 'transpose':
-                    if objaxes is not None:
-                        self.axes = [obj.axes[i] for i in objdict['_fargs'][0]] if objdict.has_key('_fargs') else obj.axes[::-1]
+            if '_fname' in objdict and objdict['_fname'] == 'transpose':
+                if objaxes is not None:
+                    self.axes = [obj.axes[i] for i in objdict['_fargs'][0]] if objdict.has_key('_fargs') else obj.axes[::-1]
 
-            if '_debug' in objdict:
-                if objdict['_debug']: _nodeltmpattr=True
+            _deltmpattr = True
+            if '_debug' in objdict and objdict['_debug']:
+                _deltmpattr=False
 
         if objaxes is not None:
             for axis in objaxes:
                 if hasattr(obj,'_slic'): #slice axis according to _slic
                     # reverted to hasattr() to avoid FutureWarning
-                    if '_verbose' in objdict:
-                        if objdict['_verbose']:
-                            print('__array_finalize__: type(obj._slic) is  ', type(obj._slic))
-                            print('__array_finalize__: obj._slic is  ',obj._slic)
+                    if self._verbose:
+                        print('{}.__arrayfinalize__: type(obj._slic) is {}'.
+                              format(self._name, type(obj._slic)))
                     try:
                         #1-D
                         if type(obj._slic) is slice or type(obj._slic) is list:
                             setattr(self,axis,getattr(obj, axis)[obj._slic])
                         #>1-D
                         elif type(obj._slic) is tuple:
-                            #if getattr(obj, axis).axes != []:
-                            #axes is multidimensional, build correct
                             _slicaxis=tuple([obj._slic[obj.axes.index(axisaxis)] for
                                              axisaxis in (getattr(obj, axis).axes + [axis])])
                             if self._verbose:
-                                print('__array_finalize__: Assigning axis  ',axis)
-                                print('__array_finalize__: type(_slicaxis) is  ',type(_slicaxis))
-                                print('__array_finalize__: _slicaxis is  ',_slicaxis)
-                                print('__array_finalize__: axis shape is  ', getattr(obj, axis)[_slicaxis].shape)
-                            #if isinstance(_slicaxis[0], (int, long, float, np.generic)):
-                            #    self.axes=self.axes+[self.axes.pop(self.axes.index(axis))]
+                                print('{}.__arrayfinalize__: Assigning axis {}'.
+                                      format(self._name, axis))
+                                print('{}.__arrayfinalize__: type(_slicaxis) is {}'.
+                                      format(self._name, type(_slicaxis)))
+                                print('{}.__arrayfinalize__: _slicaxis is {}'.
+                                      format(self._name, _slicaxis))
+                                print('{}.__arrayfinalize__: axis shape is {}'.
+                                      format(self._name, getattr(obj, axis)[_slicaxis].shape))
                             setattr(self,axis,getattr(obj, axis)[_slicaxis])
-                            if '_verbose' in objdict:
-                                if objdict['_verbose']:
-                                    print('__array_finalize__: Fixing {0} axes'.format(axis))
+                            if self._verbose:
+                                print('{}.__arrayfinalize__: Fixing {} axes'.
+                                      format(self._name, axis))
                             for axisaxis in getattr(obj, axis).axes:
                                 if isinstance(obj._slic[obj.axes.index(axisaxis)], (int, long, float, np.generic)):
-                                    if '_verbose' in objdict:
-                                        if objdict['_verbose']:
-                                            print('__array_finalize__: Removing {0} axis from {1}'.format(axisaxis,axis))
+                                    if self._verbose:
+                                        print('{}.__arrayfinalize__: Removing {} axis from {}'.
+                                              format(self._name, axisaxis,axis))
                                     self.axis.axes.remove(axisaxis)
                                 else:
-                                    if '_verbose' in objdict:
-                                        if objdict['_verbose']:
-                                            print('__array_finalize__: {0} is not primitive'.
-                                                  format(type(obj._slic[obj.axes.index(axisaxis)])))
+                                    if self._verbose:
+                                        print('{}.__arrayfinalize__: {} is not primitive'.
+                                              format(type(obj._slic[obj.axes.index(axisaxis)])))
                         else:
-                            if '_verbose' in objdict:
-                                if objdict['_verbose']:
-                                    print('_slic is neither slice, list, nor tuple type for ',axis)
+                            if self._verbose:
+                                print('_slic is neither slice, list, nor tuple type for ',axis)
                     except: #must not have a len(), e.g. int type
-                            if '_verbose' in objdict:
-                                if objdict['_verbose']:
-                                    print('Exception: Axes parsing for ',axis,' failed')
+                            if self._verbose:
+                                print('Exception: Axes parsing for ',axis,' failed')
                     pass
                 else: #no slicing, copy each axis as is
-                    setattr(self,axis,getattr(obj, axis, None))
+                    setattr(self, axis, getattr(obj, axis, None))
+                    if self._verbose:
+                        print('{}.__arrayfinalize__: no attr _slic in object {}'.
+                              format(self._name, obj))
 
         #clean-up temp attributes
         def delattrtry(ob,at):
@@ -215,19 +159,19 @@ class Signal(np.ndarray):
                 delattr(ob,at)
             except:
                 pass
-            return
 
-        if _nodeltmpattr:
-            pass
-        else:
-                delattrtry(self,'_slic')
-                delattrtry(self,'_fname')
-                delattrtry(self,'_fargs')
-                delattrtry(self,'_fkwargs')
-                delattrtry(obj,'_slic')
-                delattrtry(obj,'_fname')
-                delattrtry(obj,'_fargs')
-                delattrtry(obj,'_fkwargs')
+        if _deltmpattr:
+            delattrtry(self,'_slic')
+            delattrtry(self,'_fname')
+            delattrtry(self,'_fargs')
+            delattrtry(self,'_fkwargs')
+            delattrtry(obj,'_slic')
+            delattrtry(obj,'_fname')
+            delattrtry(obj,'_fargs')
+            delattrtry(obj,'_fkwargs')
+
+        if self._verbose:
+            print('{}.__arrayfinalize__: END'.format(self._name))
 
     def __array_wrap__(self, out_arr, context=None):
         if self._verbose:
@@ -253,51 +197,95 @@ class Signal(np.ndarray):
         self must be Signal class for this to be called, so therefore
         must have the _slic attribute. The _slic attribute preserves indexing for attributes
         '''
+
+        if self._verbose:
+            print('{}.__getitem__: BEGIN'.format(self._name))
+            print('{}.__getitem__: type(self) is {}'.format(self._name, type(self)))
+            print('{}.__getitem__: self.ndim is {}'.format(self._name, self.ndim))
+            print('{}.__getitem__: self.shape is {}'.format(self._name, self.shape))
+            print('{}.__getitem__: type(index) is {}'.format(self._name, type(index)))
+
         #This passes index to array_finalize after a new signal obj is created to assign axes
         def parseindex(index, dims):
              #format index to account for single elements and pad with appropriate slices.
              #int2slc=lambda i: slice(-1,-2,-1) if int(i) == -1 else slice(int(i),int(i)+1)
+             if self._verbose:
+                 print('{}.__getitem__: begin parseindex'.format(self._name))
              if isinstance(index, (list, slice, np.ndarray)):
-                 if dims <= 1: return index
-                 else: newindex=[index]
-             #elif isinstance(index, (int, long, float, np.generic)): newindex=[int2slc(index)]
-             elif isinstance(index, (int, long, float, np.generic)): newindex=[int(index)]
+                 # index is list, slice, or ndarray
+                 if self._verbose:
+                     print('{}.__getitem__: index is list|slice|ndarray'.format(self._name))
+                 if dims <= 1:
+                     if self._verbose:
+                         print('{}.__getitem__: ndim <= 1'.format(self._name))
+                     return index
+                 else:
+                     if self._verbose:
+                         print('{}.__getitem__: ndim > 1'.format(self._name))
+                     newindex=[index]
+             elif isinstance(index, (int, long, float, np.generic)):
+                 if self._verbose:
+                     print('{}.__getitem__: index is int|long|float|generic'.format(self._name))
+                 newindex = [int(index)]
              elif isinstance(index, tuple):
-                 #newindex = [int2slc(i) if isinstance(i, (int, long, float, np.generic)) else i for i in index]
-                 newindex = [int(i) if isinstance(i, (int, long, float, np.generic)) else i for i in index]
+                 if self._verbose:
+                     print('{}.__getitem__: index is tuple'.format(self._name))
+                 newindex = [int(i) if isinstance(i, (int, long, float, np.generic))
+                     else i for i in index]
+             # check for ellipses in newindex
              ellipsisbool=[Ellipsis is i for i in newindex]
              if sum(ellipsisbool) > 0:
-                 ellipsisindex=ellipsisbool.index(True)
-                 slcpadding=([slice(None)]*(dims-len(newindex)+1))
-                 newindex=newindex[:ellipsisindex] + slcpadding + newindex[ellipsisindex+1:]
+                 # elipses exists
+                 ellipsisindex = ellipsisbool.index(True)
+                 slcpadding = ([slice(None)]*(dims-len(newindex)+1))
+                 newindex = newindex[:ellipsisindex] \
+                     + slcpadding \
+                     + newindex[ellipsisindex+1:]
              else:
-                 newindex=newindex + ([slice(None)]*(dims-len(newindex)))
+                 # no elipses
+                 newindex = newindex + ([slice(None)]*(dims-len(newindex)))
+             if self._verbose:
+                 print('{}.__getitem__: end parseindex'.format(self._name))
              return tuple(newindex)
 
+        slcindex = parseindex(index, self.ndim)
+        self._slic = slcindex
         if self._verbose:
-            print('Called __getitem__:')
+            print('{}.__getitem__: type(slcindex) is {}'.format(self._name, type(slcindex)))
 
-        slcindex=parseindex(index, self.ndim)
-        self._slic=slcindex
-
-        #Get the data
         if self._empty is True:
-#            try:
+            # get MDSplus data
             self._empty=False
+            print('{}.__getitem__: getting MDS data'.format(self._name))
             data = self._root._get_mdsdata(self)
+            print('{}.__getitem__: resize'.format(self._name))
             self.resize(data.shape, refcheck=False)
+            print('{}.__getitem__: attaching MDS data'.format(self._name))
             self[:] = data
-#            except:
-#                print 'Something went wrong with getting data'
-        #Exec userfunc if method defined:
+            print('{}.__getitem__: end attaching MDS data'.format(self._name))
+
         if self._verbose:
-            print('__getitem__: index is ', index)
-            print('__getitem__: type(self._slic) is ', type(self._slic))
-            print('__getitem__: self._slic is ', self._slic)
-            #print '__getitem__: new is type %s' % type(new)
-            print('__getitem__: self is type %s' % type(self))
-            #print('__getitem__: self has len %s ' % len(self))
-        return super(Signal,self).__getitem__(slcindex)
+            print('{}.__getitem__: self.shape is {}'.format(self._name, self.shape))
+            print('{}.__getitem__: CALLING super(Signal,self).__getitem__(slcindex)'.
+                  format(self._name))
+
+        retvalue = super(Signal,self).__getitem__(slcindex)
+
+        if self._verbose:
+            print('{}.__getitem__: END CALL to super(Signal,self).__getitem__(slcindex)'.
+                  format(self._name))
+
+        if self._verbose:
+            #print('{}: type(self._slic) is ', type(self._slic))
+            #print('{}: self._slic is ', self._slic)
+            #print '  {}: new is type %s' % type(new)
+            #print('{}: self has len %s ' % len(self))
+            #print('{}.__getitem__: type(<return>) is {}'.format(self._name, type(retvalue)))
+            #print('{}: <return>._name is {}'.format(self._name, retvalue._name))
+            #print('{}.__getitem__: <return>.shape is {}'.format(self._name, retvalue.shape))
+            print('{}.__getitem__: END'.format(self._name))
+
+        return retvalue
 
 
     def __getattr__(self, attribute):
@@ -314,8 +302,8 @@ class Signal(np.ndarray):
             return attr
 
     def __repr__(self):
-        if self._verbose:
-            print('Called custom __repr__')
+#        if self._verbose:
+#            print('Called custom __repr__')
         if self._empty is True:
             data = self._root._get_mdsdata(self)
             self.resize(data.shape, refcheck=False)
@@ -325,8 +313,8 @@ class Signal(np.ndarray):
         #return np.asarray(self).__repr__()
 
     def __str__(self):
-        if self._verbose:
-            print('Called custom __str__')
+#        if self._verbose:
+#            print('Called custom __str__')
         if self._empty is True:
             data = self._root._get_mdsdata(self)
             self.resize(data.shape, refcheck=False)
