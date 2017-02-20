@@ -201,7 +201,9 @@ class Machine(MutableMapping):
         self.addshot(date=date)
 
     def listshot(self):
-        for shotkey in self._shots:
+        keys = self._shots.keys()
+        keys.sort()
+        for shotkey in keys:
             shot = self._shots[shotkey]
             print('{} in XP {} on {}'.format(shot.shot, shot.xp, shot.date))
 
@@ -272,7 +274,7 @@ class Machine(MutableMapping):
 
     def filter_shots(self, date=[], xp=[]):
         """
-        Get a Machine-like object with an immutable shotlist for XP(s) 
+        Get a Machine-like object with an immutable shotlist for XP(s)
         or date(s)
         """
         self.addshot(xp=xp, date=date)
@@ -282,21 +284,21 @@ class Machine(MutableMapping):
 class ImmutableMachine(Mapping):
     """
     An immutable Machine-like class for dates and XPs.
-    
+
     The shotlist is auto-loaded based on date or XP, and the shotlist
     can not be modified.
-    
+
     Machine.filter_shots() returns an ImmutableMachine object.
-    
+
     **Usage**::
-    
+
         >>> xp1013 = fdp.nstxu.filter_shots(xp=1013)
         >>> for shot in xp1013:
         ...     shot.mpts.te.plot()
-        ... 
-        
+        ...
+
     """
-    
+
     def __init__(self, xp=[], date=[], parent=None):
         self._shots = {}
         self._parent = parent
@@ -311,7 +313,7 @@ class ImmutableMachine(Mapping):
         except:
             raise AttributeError("'{}' object has no attribute '{}'".format(
                 type(self), name))
-                
+
     def __repr__(self):
         return '<immutable machine {}>'.format(self._name.upper())
 
@@ -334,7 +336,7 @@ class ImmutableMachine(Mapping):
         for shotnum in self._shots:
             shotObj = self._shots[shotnum]
             shotObj.logbook()
-            
+
     def list_shots(self):
         for shotnum in self._shots:
             shotObj = self._shots[shotnum]
