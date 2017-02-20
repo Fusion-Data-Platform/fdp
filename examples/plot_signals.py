@@ -6,7 +6,7 @@ Created on Tue Jul  5 12:11:09 2016
 """
 
 import fdp
-    
+
 nstxu = fdp.nstxu()
 
 #shotlist = [nstxu.s140000, nstxu.s141000, nstxu.s141001, nstxu.s204620]
@@ -14,7 +14,21 @@ shotlist = [nstxu.s204620]
 
 for shot in shotlist:
     print('SHOT {}'.format(shot.shot))
-#    shot.bes.ch01.plot(tmin=0.1,tmax=0.5)
+    mpts = shot.mpts
+    #ne = mpts.ne[:]
+#    bes = shot.bes
+#    print('***************  Getting time  ***************')
+#    t=bes.ch01.time[:]
+#    print('***************  getting data  ***************')
+#    a=bes.ch01[:]
+#    print('[2:5]')
+#    bes.ch01[2:5]
+#    print('[0:9]')
+#    container.ch02.time[0:9]
+#    print('[3]')
+#    container.ch03.time[3]
+#    print('plot command')
+#    sig.plot(tmin=0.1,tmax=0.5)
 #    shot.mpts.ne.plot(tmin=0.1, tmax=0.4)
 #    #shot.mpts.te.plot()
 #    #shot.mpts.plot()
@@ -24,4 +38,4 @@ for shot in shotlist:
 #    #shot.usxr.hdown.plot()
 #    shot.magnetics.highf.plot(tmin=0.5)
 #    shot.magnetics.highn.highn_1.plot()
-    shot.rwm.irwm1.plot()
+#    shot.rwm.irwm1.plot()
