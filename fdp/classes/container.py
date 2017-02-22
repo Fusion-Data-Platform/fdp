@@ -14,6 +14,7 @@ from .node import Node
 from .fdpsignal import Signal
 
 FDP_DIR = fdp_globals.FDP_DIR
+VERBOSE = fdp_globals.VERBOSE
 
 class Container(object):
     """
@@ -25,13 +26,13 @@ class Container(object):
     def __init__(self, module_tree, top=False, **kwargs):
 
         cls = self.__class__
-
         self._signals = {}
         self._axes = {}
         self._containers = {}
         self._dynamic_containers = {}
         self._tags = []
         self._title = module_tree.get('title')
+        if VERBOSE: print('    {}.__init__()'.format(self._name))
         self._desc = module_tree.get('desc')
 
         for read_only in ['parent']:
@@ -52,6 +53,8 @@ class Container(object):
         if top:
             self._get_dynamic_containers()
 
+        if VERBOSE: print('    {}.__init__() Begin module parsing'.format(self._name))
+
         for node in module_tree.findall('node'):
             branch_str = self._get_branchstr()
             NodeClassName = ''.join(['Node', branch_str])
@@ -70,6 +73,8 @@ class Container(object):
             setattr(self, method_defaults, defaults_dict)
 
         for element in module_tree.findall('axis'):
+            if VERBOSE: print('    {}.__init__ Begin parsing axis {}'.
+                              format(self._name,element.get('name')))
             signal_list = factory.parse_signal(self, element)
             branch_str = self._get_branchstr()
             for signal_dict in signal_list:
@@ -87,6 +92,8 @@ class Container(object):
                 for axis, ref in zip(SignalObj.axes, refs):
                     setattr(SignalObj, axis, getattr(self, '_'+ref))
                 setattr(self, ''.join(['_', signal_dict['_name']]), SignalObj)
+            if VERBOSE: print('    {}.__init__ End parsing axis {}'.
+                              format(self._name,element.get('name')))
 
         for branch in module_tree.findall('container'):
             name = branch.get('name')
@@ -104,6 +111,8 @@ class Container(object):
             self._containers[name] = ContainerObj
 
         for element in module_tree.findall('signal'):
+            if VERBOSE: print('    {}.__init__ Begin parsing signal {}'.
+                              format(self._name,element.get('name')))
             signal_list = factory.parse_signal(self, element)
             branch_str = self._get_branchstr()
             for signal_dict in signal_list:
@@ -128,15 +137,20 @@ class Container(object):
                     setattr(SignalObj, method_defaults, defaults_dict)
                 setattr(self, signal_dict['_name'], SignalObj)
                 self._signals[signal_dict['_name']] = SignalObj
+            if VERBOSE: print('    {}.__init__ End parsing signal {}'.
+                              format(self._name,element.get('name')))
 
         if top and hasattr(self, '_preprocess'):
             self._preprocess()
 
-    def __getattr__(self, attribute):
+        if VERBOSE: print('    {}.__init__() End module parsing'.format(self._name))
 
+    def __getattr__(self, attribute):
+        if VERBOSE: print('    {}.__getattr__({})'.format(self._name, attribute))
         try:
             if self._dynamic_containers[attribute] is None:
                 branch_path = '.'.join([self._get_branch(), attribute])
+                if VERBOSE: print('    {}.__getattr__({}) calling Factory()'.format(self._name, attribute))
                 self._dynamic_containers[attribute] = \
                     factory.Factory(branch_path, root=self._root,
                                     shot=self.shot, parent=self)
