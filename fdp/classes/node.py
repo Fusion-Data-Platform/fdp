@@ -6,7 +6,7 @@ Created on Wed Nov 25 19:27:21 2015
 """
 import inspect
 import types
-from .factory import parse_mdspath
+from .parse import parse_mdspath
 
 
 class Node(object):
