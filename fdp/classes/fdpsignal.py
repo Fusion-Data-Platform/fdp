@@ -136,6 +136,7 @@ class Signal(np.ndarray):
                                               format(self._name))
                             setattr(self, axis, obj_axis[_slicaxis])
                         else:
+                            # can't handle _slicaxis
                             raise FdpError()
                         for axisaxis in obj_axis.axes:
                             if isinstance(obj._slic[obj.axes.index(axisaxis)], (int, long, float, np.generic)):
@@ -158,6 +159,8 @@ class Signal(np.ndarray):
                     axis = pa['axis']
                     if axis in axes:
                         axes.remove(axis)
+                    if hasattr(self, axis):
+                        delattr(self, axis)
                 setattr(self, 'axes', axes)
 
         # end "if objaxes" block
