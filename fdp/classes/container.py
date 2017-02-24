@@ -39,7 +39,7 @@ def init_class(cls, module_tree, **kwargs):
     cls._base_items = set(cls.__dict__.keys())
     if VERBOSE: print('init_class({})  Calling parse_method({})'.
                       format(cls._name, cls._name))
-    factory.parse_method(cls)
+    parse.parse_method(cls)
 
 
 # TODO: odd circulat dependence: Container.__getattr__ call Factory() and
@@ -95,7 +95,7 @@ class Container(object):
             setattr(self, node.get('name'), NodeClass(node, parent=self))
 
         for element in module_tree.findall('defaults'):
-            method_defaults, defaults_dict = factory.parse_defaults(element)
+            method_defaults, defaults_dict = parse.parse_defaults(element)
             if hasattr(self._parent, method_defaults):
                 defaults_dict.update(getattr(self._parent, method_defaults))
             setattr(self, method_defaults, defaults_dict)
@@ -103,18 +103,18 @@ class Container(object):
         for element in module_tree.findall('axis'):
             if VERBOSE: print('    {}.__init__ Begin parsing axis {}'.
                               format(self._name,element.get('name')))
-            signal_list = factory.parse_signal(self, element)
+            signal_list = parse.parse_signal(self, element)
             branch_str = self._get_branchstr()
             for signal_dict in signal_list:
                 SignalClassName = ''.join(['Axis', branch_str])
                 if SignalClassName not in cls._classes:
                     SignalClass = type(SignalClassName, (Signal, cls), {})
-                    factory.parse_method(SignalClass)
+                    parse.parse_method(SignalClass)
                     cls._classes[SignalClassName] = SignalClass
                 else:
                     SignalClass = cls._classes[SignalClassName]
                 SignalObj = SignalClass(**signal_dict)
-                refs = factory.parse_refs(self, element, SignalObj._transpose)
+                refs = parse.parse_refs(self, element, SignalObj._transpose)
                 if not refs:
                     refs = SignalObj.axes
                 for axis, ref in zip(SignalObj.axes, refs):
@@ -141,25 +141,25 @@ class Container(object):
         for element in module_tree.findall('signal'):
             if VERBOSE: print('    {}.__init__ Begin parsing signal {}'.
                               format(self._name,element.get('name')))
-            signal_list = factory.parse_signal(self, element)
+            signal_list = parse.parse_signal(self, element)
             branch_str = self._get_branchstr()
             for signal_dict in signal_list:
                 # name = element.get('name').format('').capitalize()
                 SignalClassName = ''.join(['Signal', branch_str])
                 if SignalClassName not in cls._classes:
                     SignalClass = type(SignalClassName, (Signal, cls), {})
-                    factory.parse_method(SignalClass)
+                    parse.parse_method(SignalClass)
                     cls._classes[SignalClassName] = SignalClass
                 else:
                     SignalClass = cls._classes[SignalClassName]
                 SignalObj = SignalClass(**signal_dict)
-                refs = factory.parse_refs(self, element, SignalObj._transpose)
+                refs = parse.parse_refs(self, element, SignalObj._transpose)
                 if not refs:
                     refs = SignalObj.axes
                 for axis, ref in zip(SignalObj.axes, refs):
                     setattr(SignalObj, axis, getattr(self, '_'+ref))
                 for default in element.findall('defaults'):
-                    method_defaults, defaults_dict = factory.parse_defaults(default)
+                    method_defaults, defaults_dict = parse.parse_defaults(default)
                     if hasattr(self, method_defaults):
                         defaults_dict.update(getattr(self, method_defaults))
                     setattr(SignalObj, method_defaults, defaults_dict)
