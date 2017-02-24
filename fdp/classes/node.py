@@ -6,7 +6,7 @@ Created on Wed Nov 25 19:27:21 2015
 """
 import inspect
 import types
-from . import factory
+from .parse import parse_mdspath
 
 
 class Node(object):
@@ -16,7 +16,7 @@ class Node(object):
     def __init__(self, element, parent=None):
         self._parent = parent
         self._name = element.get('name')
-        self._mdsnode = factory.parse_mdspath(self, element)[0]
+        self._mdsnode = parse_mdspath(self, element)[0]
         self._data = None
         self._title = element.get('title')
         self._desc = element.get('desc')

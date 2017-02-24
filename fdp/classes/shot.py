@@ -8,9 +8,8 @@ import inspect
 import types
 import numpy as np
 from collections import MutableMapping
-from . import factory, fdp_globals, container
-
-VERBOSE = fdp_globals.VERBOSE
+from . import container
+from .fdp_globals import VERBOSE
 
 
 class Shot(MutableMapping):
@@ -34,11 +33,10 @@ class Shot(MutableMapping):
             if self._modules[attribute] is None:
                 if VERBOSE: print('  s{}.__getattr__({}) calling Factory()'.
                                   format(self.shot, attribute))
-                self._modules[attribute] = factory.Factory(attribute,
-                                                           container.Container,
-                                                           root=self._root,
-                                                           shot=self.shot,
-                                                           parent=self)
+                self._modules[attribute] = container.Factory(attribute,
+                                                             root=self._root,
+                                                             shot=self.shot,
+                                                             parent=self)
             return self._modules[attribute]
         try:
             attr = getattr(self._parent, attribute)

@@ -7,87 +7,8 @@ Created on Thu Jun 18 10:38:40 2015
 import sys
 import os
 import importlib
-import xml.etree.ElementTree as ET
 import numpy as np
-from . import fdp_globals
-
-FDP_DIR = fdp_globals.FDP_DIR
-VERBOSE = fdp_globals.VERBOSE
-
-_tree_dict = {}
-
-
-# TODO: what is class Container from __init__.py in function definition?
-def Factory(module_branch, Container, root=None, shot=None, parent=None):
-    global _tree_dict
-
-    """
-    Factory method
-    """
-
-    if VERBOSE: print('Factory({}, root={}, shot={}, parent={})'.
-                      format(module_branch, root, shot, parent))
-    module_branch = module_branch.lower()
-    module_list = module_branch.split('.')
-    module = module_list[-1]
-    branch_str = ''.join([word.capitalize() for word in module_list])
-    if module_branch not in _tree_dict:
-        module_path = os.path.join(FDP_DIR, 'modules', root._name,
-                                   *module_list)
-        parse_tree = ET.parse(os.path.join(module_path,
-                                           ''.join([module, '.xml'])))
-        module_tree = parse_tree.getroot()
-        _tree_dict[module_branch] = module_tree
-    try:
-        ContainerClassName = ''.join(['Container', branch_str])
-        if ContainerClassName not in Container._classes:
-            ContainerClass = type(ContainerClassName, (Container,), {})
-            if VERBOSE: print('Factory() calling init_class()')
-            init_class(ContainerClass, _tree_dict[module_branch], root=root,
-                       container=module, classparent=parent.__class__)
-            Container._classes[ContainerClassName] = ContainerClass
-        else:
-            ContainerClass = Container._classes[ContainerClassName]
-
-        return ContainerClass(_tree_dict[module_branch], shot=shot,
-                              parent=parent, top=True)
-
-    except:
-        raise
-
-
-def iterable(obj):
-    try:
-        iter(obj)
-        if type(obj) is str:
-            return False
-        return True
-    except TypeError:
-        return False
-
-
-def init_class(cls, module_tree, **kwargs):
-    cls._name = module_tree.get('name')
-    if VERBOSE: print('init_class({})'.format(cls._name))
-    if cls not in cls._instances:
-        cls._instances[cls] = {}
-
-    for read_only in ['root', 'container', 'classparent']:
-        try:
-            setattr(cls, '_'+read_only, kwargs[read_only])
-            # print(cls._name, read_only, kwargs.get(read_only, 'Not there'))
-        except:
-            pass
-
-    for item in ['mdstree', 'mdspath', 'units']:
-        getitem = module_tree.get(item)
-        if getitem is not None:
-            setattr(cls, '_'+item, getitem)
-
-    cls._base_items = set(cls.__dict__.keys())
-    if VERBOSE: print('init_class({})  Calling parse_method({})'.
-                      format(cls._name, cls._name))
-    parse_method(cls)
+from .fdp_globals import FDP_DIR, VERBOSE
 
 
 def parse_method(obj, level=None):
@@ -122,13 +43,6 @@ def parse_method(obj, level=None):
         pass
     sys.path.pop(0)
     if VERBOSE: print('End parse_method({}, {})'.format(obj, level))
-
-
-def base_container(container):
-    parent_container = container
-    while hasattr(parent_container, '_parent'):
-        parent_container = parent_container._parent
-    return parent_container
 
 
 def parse_defaults(element):

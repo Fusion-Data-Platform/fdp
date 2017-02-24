@@ -7,11 +7,8 @@ Created on Wed Nov 25 12:19:00 2015
 import datetime
 import numpy as np
 import pymssql
-from . import fdp_globals
-from .factory import iterable
-
-FdpError = fdp_globals.FdpError
-LOGBOOK_CREDENTIALS = fdp_globals.LOGBOOK_CREDENTIALS
+from .fdp_globals import FdpError
+from .datasources import LOGBOOK_CREDENTIALS
 
 
 class Logbook(object):
@@ -78,7 +75,7 @@ class Logbook(object):
 
     def _shot_query(self, shot=[]):
         cursor = self._get_cursor()
-        if shot and not iterable(shot):
+        if shot and not isinstance(shot, list):
             shot = [shot]
         for sh in shot:
             if sh not in self.logbook:
@@ -102,7 +99,7 @@ class Logbook(object):
         rows = []
         shotlist = []   # start with empty shotlist
 
-        if date and not iterable(date):      # if it's just a single date
+        if date and not isinstance(date, list):      # if it's just a single date
             date = [date]   # put it into a list
         for d in date:
             query = ('{0} and rundate={1} ORDER BY shot ASC'.
@@ -110,7 +107,7 @@ class Logbook(object):
             cursor.execute(query)
             rows.extend(cursor.fetchall())
 
-        if xp and not iterable(xp):           # if it's just a single xp
+        if xp and not isinstance(xp, list):           # if it's just a single xp
             xp = [xp]             # put it into a list
         for x in xp:
             query = ('{0} and xp={1} ORDER BY shot ASC'.
@@ -138,7 +135,7 @@ class Logbook(object):
     def get_entries(self, shot=None, date=None, xp=None):
         # return list of lobgook entries (dictionaries) for shot(s)
         shotlist=[]
-        if shot and not iterable(shot):
+        if shot and not isinstance(shot, list):
             shot = [shot]
         if shot:
             shotlist.extend(shot)

@@ -5,10 +5,7 @@ Created on Wed Nov 25 19:34:56 2015
 @author: ktritz
 """
 
-from .classes import fdp, container, fdpsignal, factory, fdp_globals
-
-VERBOSE = fdp_globals.VERBOSE
-TKROOT = fdp_globals.TKROOT
+from .classes import fdp
 
 def nstxu():
     return fdp.Fdp().nstxu

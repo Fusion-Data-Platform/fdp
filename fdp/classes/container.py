@@ -8,14 +8,42 @@ import os
 import inspect
 import types
 import numpy as np
-from . import fdp_globals
-from . import factory
+import xml.etree.ElementTree as ET
+
+from .fdp_globals import FDP_DIR, VERBOSE
+from . import parse
 from .node import Node
-from .fdpsignal import Signal
+from .signal import Signal
 
-FDP_DIR = fdp_globals.FDP_DIR
-VERBOSE = fdp_globals.VERBOSE
+_tree_dict = {}
 
+
+def init_class(cls, module_tree, **kwargs):
+    cls._name = module_tree.get('name')
+    if VERBOSE: print('init_class({})'.format(cls._name))
+    if cls not in cls._instances:
+        cls._instances[cls] = {}
+
+    for read_only in ['root', 'container', 'classparent']:
+        try:
+            setattr(cls, '_'+read_only, kwargs[read_only])
+            # print(cls._name, read_only, kwargs.get(read_only, 'Not there'))
+        except:
+            pass
+
+    for item in ['mdstree', 'mdspath', 'units']:
+        getitem = module_tree.get(item)
+        if getitem is not None:
+            setattr(cls, '_'+item, getitem)
+
+    cls._base_items = set(cls.__dict__.keys())
+    if VERBOSE: print('init_class({})  Calling parse_method({})'.
+                      format(cls._name, cls._name))
+    parse.parse_method(cls)
+
+
+# TODO: odd circulat dependence: Container.__getattr__ call Factory() and
+#       Factory() creates subclass of Container
 class Container(object):
     """
     Container class
@@ -67,7 +95,7 @@ class Container(object):
             setattr(self, node.get('name'), NodeClass(node, parent=self))
 
         for element in module_tree.findall('defaults'):
-            method_defaults, defaults_dict = factory.parse_defaults(element)
+            method_defaults, defaults_dict = parse.parse_defaults(element)
             if hasattr(self._parent, method_defaults):
                 defaults_dict.update(getattr(self._parent, method_defaults))
             setattr(self, method_defaults, defaults_dict)
@@ -75,18 +103,18 @@ class Container(object):
         for element in module_tree.findall('axis'):
             if VERBOSE: print('    {}.__init__ Begin parsing axis {}'.
                               format(self._name,element.get('name')))
-            signal_list = factory.parse_signal(self, element)
+            signal_list = parse.parse_signal(self, element)
             branch_str = self._get_branchstr()
             for signal_dict in signal_list:
                 SignalClassName = ''.join(['Axis', branch_str])
                 if SignalClassName not in cls._classes:
                     SignalClass = type(SignalClassName, (Signal, cls), {})
-                    factory.parse_method(SignalClass)
+                    parse.parse_method(SignalClass)
                     cls._classes[SignalClassName] = SignalClass
                 else:
                     SignalClass = cls._classes[SignalClassName]
                 SignalObj = SignalClass(**signal_dict)
-                refs = factory.parse_refs(self, element, SignalObj._transpose)
+                refs = parse.parse_refs(self, element, SignalObj._transpose)
                 if not refs:
                     refs = SignalObj.axes
                 for axis, ref in zip(SignalObj.axes, refs):
@@ -102,7 +130,7 @@ class Container(object):
                                           name.capitalize()])
             if ContainerClassName not in cls._classes:
                 ContainerClass = type(ContainerClassName, (cls, Container), {})
-                factory.init_class(ContainerClass, branch, classparent=cls)
+                init_class(ContainerClass, branch, classparent=cls)
                 cls._classes[ContainerClassName] = ContainerClass
             else:
                 ContainerClass = cls._classes[ContainerClassName]
@@ -113,25 +141,25 @@ class Container(object):
         for element in module_tree.findall('signal'):
             if VERBOSE: print('    {}.__init__ Begin parsing signal {}'.
                               format(self._name,element.get('name')))
-            signal_list = factory.parse_signal(self, element)
+            signal_list = parse.parse_signal(self, element)
             branch_str = self._get_branchstr()
             for signal_dict in signal_list:
                 # name = element.get('name').format('').capitalize()
                 SignalClassName = ''.join(['Signal', branch_str])
                 if SignalClassName not in cls._classes:
                     SignalClass = type(SignalClassName, (Signal, cls), {})
-                    factory.parse_method(SignalClass)
+                    parse.parse_method(SignalClass)
                     cls._classes[SignalClassName] = SignalClass
                 else:
                     SignalClass = cls._classes[SignalClassName]
                 SignalObj = SignalClass(**signal_dict)
-                refs = factory.parse_refs(self, element, SignalObj._transpose)
+                refs = parse.parse_refs(self, element, SignalObj._transpose)
                 if not refs:
                     refs = SignalObj.axes
                 for axis, ref in zip(SignalObj.axes, refs):
                     setattr(SignalObj, axis, getattr(self, '_'+ref))
                 for default in element.findall('defaults'):
-                    method_defaults, defaults_dict = factory.parse_defaults(default)
+                    method_defaults, defaults_dict = parse.parse_defaults(default)
                     if hasattr(self, method_defaults):
                         defaults_dict.update(getattr(self, method_defaults))
                     setattr(SignalObj, method_defaults, defaults_dict)
@@ -152,7 +180,7 @@ class Container(object):
                 branch_path = '.'.join([self._get_branch(), attribute])
                 if VERBOSE: print('    {}.__getattr__({}) calling Factory()'.format(self._name, attribute))
                 self._dynamic_containers[attribute] = \
-                    factory.Factory(branch_path, root=self._root,
+                    Factory(branch_path, root=self._root,
                                     shot=self.shot, parent=self)
 
             return self._dynamic_containers[attribute]
@@ -254,3 +282,40 @@ class Container(object):
         word_list = [s for s in [self._name, self._title] if s]
         word_list.extend(self._tags)
         return np.any([string.lower() in word.lower() for word in word_list])
+
+
+def Factory(module_branch, root=None, shot=None, parent=None):
+    global _tree_dict
+
+    """
+    Factory method
+    """
+
+    if VERBOSE: print('Factory({}, root={}, shot={}, parent={})'.
+                      format(module_branch, root, shot, parent))
+    module_branch = module_branch.lower()
+    module_list = module_branch.split('.')
+    module = module_list[-1]
+    branch_str = ''.join([word.capitalize() for word in module_list])
+    if module_branch not in _tree_dict:
+        module_path = os.path.join(FDP_DIR, 'modules', root._name,
+                                   *module_list)
+        parse_tree = ET.parse(os.path.join(module_path,
+                                           ''.join([module, '.xml'])))
+        module_tree = parse_tree.getroot()
+        _tree_dict[module_branch] = module_tree
+    try:
+        ContainerClassName = 'Container' + branch_str
+        if ContainerClassName not in Container._classes:
+            ContainerClass = type(ContainerClassName, (Container,), {})
+            if VERBOSE: print('Factory() calling init_class()')
+            init_class(ContainerClass, _tree_dict[module_branch], root=root,
+                       container=module, classparent=parent.__class__)
+            Container._classes[ContainerClassName] = ContainerClass
+        else:
+            ContainerClass = Container._classes[ContainerClassName]
+
+        return ContainerClass(_tree_dict[module_branch], shot=shot,
+                              parent=parent, top=True)
+    except:
+        raise
