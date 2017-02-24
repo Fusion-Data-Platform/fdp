@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 from .fdp_globals import FDP_DIR, VERBOSE
 from . import parse
 from .node import Node
-from .fdpsignal import Signal
+from .signal import Signal
 
 _tree_dict = {}
 
