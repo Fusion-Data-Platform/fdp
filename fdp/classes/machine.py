@@ -43,16 +43,16 @@ class Machine(MutableMapping):
     _parent = None
     _modules = None
 
-    def __init__(self, name='nstxu', shotlist=[], xp=[], date=[]):
+    def __init__(self, name='nstxu', shotlist=None, xp=None, date=None):
         self._shots = {}  # shot dictionary with shot number (int) keys
         self._classlist = {}
         self._name = machineAlias(name)
+        if VERBOSE: print('{}.__init__'.format(self._name))
         self._logbook = Logbook(name=self._name, root=self)
-        self.s0 = Shot(0, root=self, parent=self)
         self._eventConnection = mds.Connection(EVENT_SERVERS[self._name])
-
         if len(self._connections) is 0:
-            if VERBOSE: print('Precaching MDS server connections...')
+            if VERBOSE: print('{}.__init__  Precaching MDS connections...'.
+                              format(self._name))
             for _ in range(2):
                 try:
                     connection = mds.Connection(MDS_SERVERS[self._name])
@@ -62,18 +62,21 @@ class Machine(MutableMapping):
                     msg = 'MDSplus connection to {} failed'.format(
                         MDS_SERVERS[self._name])
                     raise FdpError(msg)
-            if VERBOSE: print('Finished.')
-
+            if VERBOSE: print('{}.__init__  Finished MDS'.format(self._name))
+        self.s0 = Shot(0, root=self, parent=self)
         if shotlist or xp or date:
             self.addshot(shotlist=shotlist, xp=xp, date=date)
 
     def __getattr__(self, name):
+        if VERBOSE: print('{}.__getattr__({})'.format(self._name, name))
         try:
             shot = int(name.split('s')[1])
         except:
             raise AttributeError("'{}' object has no attribute '{}'".format(
                                  type(self), name))
         if (shot not in self._shots):
+            if VERBOSE: print('{}.__getattr__: loading shot {}'.
+                              format(self._name, shot))
             self._shots[shot] = Shot(shot, root=self, parent=self)
         return self._shots[shot]
 
@@ -93,6 +96,7 @@ class Machine(MutableMapping):
         self._shots.__delitem__(item)
 
     def __getitem__(self, item):
+        if VERBOSE: print('{}.__getitem__({})'.format(self._name, item))
         if item == 0:
             return self.s0
         return self._shots[item]
@@ -102,7 +106,7 @@ class Machine(MutableMapping):
 
     def __dir__(self):
         shotlist = ['s0']
-        shotlist.extend(['s{}'.format(shot) for shot in self._shots])
+        shotlist.extend(['s{}'.format(shot) for shot in self._shots.keys.sort()])
         return shotlist
 
     def _get_connection(self, shot, tree):
@@ -157,15 +161,17 @@ class Machine(MutableMapping):
         return data
 
     def _get_modules(self):
-
+        if VERBOSE: print('{}._get_modules()'.format(self._name))
         if self._modules is None:
+            if VERBOSE: print('{}._get_modules() Surveying diagnostic modules'.
+                              format(self._name))
             module_dir = os.path.join(FDP_DIR, 'modules', self._name)
             self._modules = [module for module in os.listdir(module_dir)
                         if os.path.isdir(os.path.join(module_dir, module)) and
                         module[0] is not '_']
         return self._modules
 
-    def addshot(self, shotlist=[], date=[], xp=[], verbose=False):
+    def addshot(self, shotlist=None, date=None, xp=None, verbose=False):
         """
         Load shots into the Machine class
 
@@ -178,11 +184,11 @@ class Machine(MutableMapping):
         Note: You can reference shots even if the shots have not been loaded.
 
         """
-        if not iterable(shotlist):
+        if shotlist and not iterable(shotlist):
             shotlist = [shotlist]
-        if not iterable(xp):
+        if xp and not iterable(xp):
             xp = [xp]
-        if not iterable(date):
+        if date and not iterable(date):
             date = [date]
         shots = []
         if shotlist:
@@ -201,7 +207,9 @@ class Machine(MutableMapping):
         self.addshot(date=date)
 
     def listshot(self):
-        for shotkey in self._shots:
+        keys = self._shots.keys()
+        keys.sort()
+        for shotkey in keys:
             shot = self._shots[shotkey]
             print('{} in XP {} on {}'.format(shot.shot, shot.xp, shot.date))
 
@@ -272,7 +280,7 @@ class Machine(MutableMapping):
 
     def filter_shots(self, date=[], xp=[]):
         """
-        Get a Machine-like object with an immutable shotlist for XP(s) 
+        Get a Machine-like object with an immutable shotlist for XP(s)
         or date(s)
         """
         self.addshot(xp=xp, date=date)
@@ -282,21 +290,21 @@ class Machine(MutableMapping):
 class ImmutableMachine(Mapping):
     """
     An immutable Machine-like class for dates and XPs.
-    
+
     The shotlist is auto-loaded based on date or XP, and the shotlist
     can not be modified.
-    
+
     Machine.filter_shots() returns an ImmutableMachine object.
-    
+
     **Usage**::
-    
+
         >>> xp1013 = fdp.nstxu.filter_shots(xp=1013)
         >>> for shot in xp1013:
         ...     shot.mpts.te.plot()
-        ... 
-        
+        ...
+
     """
-    
+
     def __init__(self, xp=[], date=[], parent=None):
         self._shots = {}
         self._parent = parent
@@ -311,7 +319,7 @@ class ImmutableMachine(Mapping):
         except:
             raise AttributeError("'{}' object has no attribute '{}'".format(
                 type(self), name))
-                
+
     def __repr__(self):
         return '<immutable machine {}>'.format(self._name.upper())
 
@@ -334,7 +342,7 @@ class ImmutableMachine(Mapping):
         for shotnum in self._shots:
             shotObj = self._shots[shotnum]
             shotObj.logbook()
-            
+
     def list_shots(self):
         for shotnum in self._shots:
             shotObj = self._shots[shotnum]

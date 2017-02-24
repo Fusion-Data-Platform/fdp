@@ -96,27 +96,25 @@ class Logbook(object):
                                                    int(day))
                 self.logbook[sh] = rows
 
-    def get_shotlist(self, date=[], xp=[], verbose=False):
+    def get_shotlist(self, date=None, xp=None, verbose=False):
         # return list of shots for date and/or XP
         cursor = self._get_cursor()
         rows = []
         shotlist = []   # start with empty shotlist
 
-        date_list = date
-        if not iterable(date_list):      # if it's just a single date
-            date_list = [date_list]   # put it into a list
-        for date in date_list:
+        if date and not iterable(date):      # if it's just a single date
+            date = [date]   # put it into a list
+        for d in date:
             query = ('{0} and rundate={1} ORDER BY shot ASC'.
-                     format(self._shotlist_query_prefix, date))
+                     format(self._shotlist_query_prefix, d))
             cursor.execute(query)
             rows.extend(cursor.fetchall())
 
-        xp_list = xp
-        if not iterable(xp_list):           # if it's just a single xp
-            xp_list = [xp_list]             # put it into a list
-        for xp in xp_list:
+        if xp and not iterable(xp):           # if it's just a single xp
+            xp = [xp]             # put it into a list
+        for x in xp:
             query = ('{0} and xp={1} ORDER BY shot ASC'.
-                     format(self._shotlist_query_prefix, xp))
+                     format(self._shotlist_query_prefix, x))
             cursor.execute(query)
             rows.extend(cursor.fetchall())
 
@@ -137,16 +135,19 @@ class Logbook(object):
         cursor.close()
         return np.unique(shotlist)
 
-    def get_entries(self, shot=[], date=[], xp=[]):
+    def get_entries(self, shot=None, date=None, xp=None):
         # return list of lobgook entries (dictionaries) for shot(s)
+        shotlist=[]
         if shot and not iterable(shot):
             shot = [shot]
-        if xp or date:
-            shot.extend(self.get_shotlist(date=date, xp=xp))
         if shot:
-            self._shot_query(shot=shot)
+            shotlist.extend(shot)
+        if xp or date:
+            shotlist.extend(self.get_shotlist(date=date, xp=xp))
+        if shotlist:
+            self._shot_query(shot=shotlist)
         entries = []
-        for sh in np.unique(shot):
+        for sh in np.unique(shotlist):
             if sh in self.logbook:
                 entries.extend(self.logbook[sh])
         return entries

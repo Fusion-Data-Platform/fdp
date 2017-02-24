@@ -4,38 +4,29 @@ Created on Wed Nov 25 19:35:36 2015
 
 @author: ktritz
 """
-from . import fdp_globals
-from . import factory
-from .machine import Machine
+from . import fdp_globals, factory, machine
+
+VERBOSE = fdp_globals.VERBOSE
 
 
 class Fdp(object):
     """
     The primary data object in FDP and the top-level container for machines.
-    
-    An instance of ``fdp.classes.fdp.Fdp`` is mapped to the top-level ``fdp``
-    package in ``fdp.__init__.py``.
-    
-    **Usage**::
-    
-        >>> import fdp
-        >>> dir(fdp)
-        ['cmod', 'diiid', 'nstxu']
-        >>> nstxu = fdp.nstxu
-        
     """
     def __getattr__(self, attribute):
+        if VERBOSE: print('{}.__getattr__({})'.
+                          format(self.__class__, attribute))
         machine_name = fdp_globals.machineAlias(attribute)
-        if machine_name in fdp_globals.MACHINES:
-            MachineClassName = ''.join(['Machine', machine_name.capitalize()])
-            MachineClass = type(MachineClassName, (Machine, ), {})
-            MachineClass._name = machine_name
-            factory.parse_method(MachineClass, level='top')
-            factory.parse_method(MachineClass, level=machine_name)
-            machine = MachineClass(machine_name)
-            setattr(self, machine_name, machine)
-            return getattr(self, machine_name)
-        raise
+        if machine_name not in fdp_globals.MACHINES:
+            raise fdp_globals.FdpError('Invalid machine name')
+        # subclass machine.Machine() for <machine_name>
+        MachineClassName = ''.join(['Machine', machine_name.capitalize()])
+        MachineClass = type(MachineClassName, (machine.Machine, ), {})
+        MachineClass._name = machine_name
+        # parse fdp/methods and fdp/methods/<machine_name>
+        factory.parse_method(MachineClass, level='top')
+        factory.parse_method(MachineClass, level=machine_name)
+        return MachineClass(machine_name)
 
     def __dir__(self):
         return fdp_globals.MACHINES

@@ -12,9 +12,7 @@ VERBOSE = False
 
 MACHINES = ['nstxu', 'diiid', 'cmod']
 
-FDP_DIR = os.path.dirname(os.path.abspath(__file__))
-FDP_DIR = os.path.join(FDP_DIR, os.path.pardir)
-"""Path string: top-level directory for FDF package"""
+FDP_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MDS_SERVERS = {
     'nstxu': 'skylark.pppl.gov:8501'

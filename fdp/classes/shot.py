@@ -8,15 +8,17 @@ import inspect
 import types
 import numpy as np
 from collections import MutableMapping
-from . import factory
-from .container import Container
+from . import factory, fdp_globals, container
+
+VERBOSE = fdp_globals.VERBOSE
 
 
 class Shot(MutableMapping):
 
     def __init__(self, shot, root=None, parent=None):
         self.shot = shot
-        self._shotobj = self
+        if VERBOSE: print('  s{}.__init__'.format(self.shot))
+        #self._shotobj = self
         self._root = root
         self._parent = parent
         self._logbook = root._logbook
@@ -27,13 +29,16 @@ class Shot(MutableMapping):
         self._efits = []
 
     def __getattr__(self, attribute):
-        # first see if the attribute is in the Machine object
-        # except:
-        #     raise  # failed, so check other locations
+        if VERBOSE: print('  s{}.__getattr__({})'.format(self.shot, attribute))
         if attribute in self._modules:
             if self._modules[attribute] is None:
-                self._modules[attribute] = factory.Factory(attribute, Container, root=self._root,
-                                                   shot=self.shot, parent=self)
+                if VERBOSE: print('  s{}.__getattr__({}) calling Factory()'.
+                                  format(self.shot, attribute))
+                self._modules[attribute] = factory.Factory(attribute,
+                                                           container.Container,
+                                                           root=self._root,
+                                                           shot=self.shot,
+                                                           parent=self)
             return self._modules[attribute]
         try:
             attr = getattr(self._parent, attribute)
@@ -63,6 +68,7 @@ class Shot(MutableMapping):
         pass
 
     def __getitem__(self, item):
+        if VERBOSE: print('  s{}.__getitem__({})'.format(self.shot, item))
         return self._modules[item]
 
     def __setitem__(self, item, value):
