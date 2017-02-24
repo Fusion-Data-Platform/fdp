@@ -40,10 +40,12 @@ def machineAlias(machine):
         'cmod': ['cmod', 'c-mod']
     }
 
-    for key, value in iter(aliases.items()):
+    for key, value in aliases.iteritems():
         if machine.lower() in value:
             return key
-    txt = '{} is not a valid machine; valid machines are:\n'.format(machine)
-    for machinekey in aliases:
-        txt = txt + '  {}\n'.format(machinekey)
+    # invalid machine name
+    txt = '"{}" is not a valid machine name\n'.format(machine)
+    txt = txt + 'Valid machines are:\n'
+    for values in aliases.itervalues():
+        txt = txt + '  {}\n'.format(values)
     raise FdpError(txt)

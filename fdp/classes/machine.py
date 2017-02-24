@@ -11,7 +11,6 @@ from warnings import warn
 import MDSplus as mds
 from .logbook import Logbook
 from .shot import Shot
-from .factory import iterable
 from .fdp_globals import FDP_DIR, FdpError, FdpWarning, VERBOSE
 from .datasources import machineAlias, MDS_SERVERS, EVENT_SERVERS
 
@@ -123,7 +122,6 @@ class Machine(MutableMapping):
         return connection
 
     def _get_mdsdata(self, signal):
-        # shot = base_container(signal)._parent.shot
         shot = signal.shot
         if shot is 0:
             print('No MDS data exists for model tree')
@@ -177,11 +175,11 @@ class Machine(MutableMapping):
         Note: You can reference shots even if the shots have not been loaded.
 
         """
-        if shotlist and not iterable(shotlist):
+        if shotlist and not isinstance(shotlist, list):
             shotlist = [shotlist]
-        if xp and not iterable(xp):
+        if xp and not isinstance(xp, list):
             xp = [xp]
-        if date and not iterable(date):
+        if date and not isinstance(date, list):
             date = [date]
         shots = []
         if shotlist:

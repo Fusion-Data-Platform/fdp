@@ -14,7 +14,6 @@ from .fdp_globals import FDP_DIR, VERBOSE
 _tree_dict = {}
 
 
-# TODO: what is class Container from __init__.py in function definition?
 def Factory(module_branch, Container, root=None, shot=None, parent=None):
     global _tree_dict
 
@@ -51,16 +50,6 @@ def Factory(module_branch, Container, root=None, shot=None, parent=None):
 
     except:
         raise
-
-
-def iterable(obj):
-    try:
-        iter(obj)
-        if type(obj) is str:
-            return False
-        return True
-    except TypeError:
-        return False
 
 
 def init_class(cls, module_tree, **kwargs):
@@ -119,13 +108,6 @@ def parse_method(obj, level=None):
         pass
     sys.path.pop(0)
     if VERBOSE: print('End parse_method({}, {})'.format(obj, level))
-
-
-def base_container(container):
-    parent_container = container
-    while hasattr(parent_container, '_parent'):
-        parent_container = parent_container._parent
-    return parent_container
 
 
 def parse_defaults(element):
