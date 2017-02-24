@@ -17,11 +17,7 @@ if sys.version_info > (3,):
 import inspect
 import types
 import numpy as np
-from . import fdp_globals
-
-MDS_SERVERS = fdp_globals.MDS_SERVERS
-FdpError = fdp_globals.FdpError
-VERBOSE = fdp_globals.VERBOSE
+from .fdp_globals import FdpError, VERBOSE
 
 
 class Signal(np.ndarray):

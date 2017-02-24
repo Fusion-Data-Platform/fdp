@@ -7,11 +7,9 @@ Created on Wed Nov 25 12:19:00 2015
 import datetime
 import numpy as np
 import pymssql
-from . import fdp_globals
+from .fdp_globals import FdpError
 from .factory import iterable
-
-FdpError = fdp_globals.FdpError
-LOGBOOK_CREDENTIALS = fdp_globals.LOGBOOK_CREDENTIALS
+from .datasources import LOGBOOK_CREDENTIALS
 
 
 class Logbook(object):

@@ -4,9 +4,9 @@ Created on Wed Nov 25 19:35:36 2015
 
 @author: ktritz
 """
-from . import fdp_globals, factory, machine
-
-VERBOSE = fdp_globals.VERBOSE
+from . import factory, machine
+from .fdp_globals import VERBOSE, FdpError
+from .datasources import machineAlias, MACHINES
 
 
 class Fdp(object):
@@ -16,9 +16,9 @@ class Fdp(object):
     def __getattr__(self, attribute):
         if VERBOSE: print('{}.__getattr__({})'.
                           format(self.__class__, attribute))
-        machine_name = fdp_globals.machineAlias(attribute)
-        if machine_name not in fdp_globals.MACHINES:
-            raise fdp_globals.FdpError('Invalid machine name')
+        machine_name = machineAlias(attribute)
+        if machine_name not in MACHINES:
+            raise FdpError('Invalid machine name')
         # subclass machine.Machine() for <machine_name>
         MachineClassName = ''.join(['Machine', machine_name.capitalize()])
         MachineClass = type(MachineClassName, (machine.Machine, ), {})
@@ -29,4 +29,4 @@ class Fdp(object):
         return MachineClass(machine_name)
 
     def __dir__(self):
-        return fdp_globals.MACHINES
+        return MACHINES

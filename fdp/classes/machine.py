@@ -9,18 +9,20 @@ import os
 import numpy as np
 from warnings import warn
 import MDSplus as mds
-from . import fdp_globals
 from .logbook import Logbook
 from .shot import Shot
 from .factory import iterable
+from .fdp_globals import FDP_DIR, FdpError, FdpWarning, VERBOSE
+from .datasources import machineAlias, MDS_SERVERS, EVENT_SERVERS
 
-FDP_DIR = fdp_globals.FDP_DIR
-MDS_SERVERS = fdp_globals.MDS_SERVERS
-EVENT_SERVERS = fdp_globals.EVENT_SERVERS
-FdpError = fdp_globals.FdpError
-FdpWarning = fdp_globals.FdpWarning
-machineAlias = fdp_globals.machineAlias
-VERBOSE = fdp_globals.VERBOSE
+#machineAlias = datasources.machineAlias
+#MDS_SERVERS = datasources.MDS_SERVERS
+#EVENT_SERVERS = datasources.EVENT_SERVERS
+#
+#FDP_DIR = fdp_globals.FDP_DIR
+#FdpError = fdp_globals.FdpError
+#FdpWarning = fdp_globals.FdpWarning
+#VERBOSE = fdp_globals.VERBOSE
 
 
 class Machine(MutableMapping):
