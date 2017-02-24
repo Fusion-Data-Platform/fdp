@@ -20,7 +20,7 @@ class Fdp(object):
         if machine_name not in MACHINES:
             raise FdpError('Invalid machine name')
         # subclass machine.Machine() for <machine_name>
-        MachineClassName = ''.join(['Machine', machine_name.capitalize()])
+        MachineClassName = 'Machine' + machine_name.capitalize()
         MachineClass = type(MachineClassName, (machine.Machine, ), {})
         MachineClass._name = machine_name
         # parse fdp/methods and fdp/methods/<machine_name>

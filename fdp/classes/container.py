@@ -8,13 +8,11 @@ import os
 import inspect
 import types
 import numpy as np
-from . import fdp_globals
+from .fdp_globals import FDP_DIR, VERBOSE
 from . import factory
 from .node import Node
 from .fdpsignal import Signal
 
-FDP_DIR = fdp_globals.FDP_DIR
-VERBOSE = fdp_globals.VERBOSE
 
 class Container(object):
     """

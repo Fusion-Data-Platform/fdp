@@ -8,10 +8,8 @@ Created on Tue Jul  5 12:11:09 2016
 import fdp
 
 nstxu = fdp.nstxu()
-
-#shotlist = [nstxu.s140000, nstxu.s141000, nstxu.s141001, nstxu.s204620]
-
 nstxu.addshot([140000, 141000, 141001, 204620])
+print(dir(nstxu))
 
 # diagnostic containers
 print(dir(nstxu.s204620))

@@ -9,10 +9,7 @@ import os
 import importlib
 import xml.etree.ElementTree as ET
 import numpy as np
-from . import fdp_globals
-
-FDP_DIR = fdp_globals.FDP_DIR
-VERBOSE = fdp_globals.VERBOSE
+from .fdp_globals import FDP_DIR, VERBOSE
 
 _tree_dict = {}
 

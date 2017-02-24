@@ -8,9 +8,8 @@ import inspect
 import types
 import numpy as np
 from collections import MutableMapping
-from . import factory, fdp_globals, container
-
-VERBOSE = fdp_globals.VERBOSE
+from . import factory, container
+from .fdp_globals import VERBOSE
 
 
 class Shot(MutableMapping):

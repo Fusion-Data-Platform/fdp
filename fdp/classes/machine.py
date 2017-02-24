@@ -15,15 +15,6 @@ from .factory import iterable
 from .fdp_globals import FDP_DIR, FdpError, FdpWarning, VERBOSE
 from .datasources import machineAlias, MDS_SERVERS, EVENT_SERVERS
 
-#machineAlias = datasources.machineAlias
-#MDS_SERVERS = datasources.MDS_SERVERS
-#EVENT_SERVERS = datasources.EVENT_SERVERS
-#
-#FDP_DIR = fdp_globals.FDP_DIR
-#FdpError = fdp_globals.FdpError
-#FdpWarning = fdp_globals.FdpWarning
-#VERBOSE = fdp_globals.VERBOSE
-
 
 class Machine(MutableMapping):
     """
@@ -108,7 +99,7 @@ class Machine(MutableMapping):
 
     def __dir__(self):
         shotlist = ['s0']
-        shotlist.extend(['s{}'.format(shot) for shot in self._shots.keys.sort()])
+        shotlist.extend(['s{}'.format(shot) for shot in self._shots.iterkeys()])
         return shotlist
 
     def _get_connection(self, shot, tree):
