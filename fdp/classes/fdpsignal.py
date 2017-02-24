@@ -48,6 +48,7 @@ class Signal(np.ndarray):
         if VERBOSE: print('      {}.__new__ BEGIN'.format(kwargs['_name']))
         obj = np.asanyarray(input_array).view(cls).copy()
         obj._empty = True
+        obj.point_axes = []
         for key, value in kwargs.iteritems():
             setattr(obj, key, value)
             #if VERBOSE and key is '_name':
@@ -122,20 +123,20 @@ class Signal(np.ndarray):
                         if VERBOSE: print('      {}.__arrayfinalize__: _slicaxis is {}'.
                                           format(self._name, _slicaxis))
                         if isinstance(_slicaxis[0], (int,long,float,np.generic)):
-                            setattr(self, axis, obj_axis[_slicaxis])
                             if VERBOSE: print('      {}.__arrayfinalize__: single-point slice'.
                                               format(self._name))
+                            # "point_axes" is a dict with axis keys and dict values
+                            if axis in self.point_axes:
+                                raise FdpError('Point axis already present')
+                            self.point_axes.append({'axis': axis,
+                                                   'value': obj_axis[_slicaxis],
+                                                   'units': obj_axis.units})
                         elif isinstance(_slicaxis[0], slice):
-                            setattr(self, axis, obj_axis[_slicaxis])
                             if VERBOSE: print('      {}.__arrayfinalize__: multi-point slice'.
                                               format(self._name))
+                            setattr(self, axis, obj_axis[_slicaxis])
                         else:
                             raise FdpError()
-                        #if VERBOSE:
-                        #    print('      {}.__arrayfinalize__: _slicaxis is {}'.
-                        #          format(self._name, _slicaxis))
-                        #    print('      {}.__arrayfinalize__: Fixing {} axes'.
-                        #          format(self._name, axis))
                         for axisaxis in obj_axis.axes:
                             if isinstance(obj._slic[obj.axes.index(axisaxis)], (int, long, float, np.generic)):
                                 if VERBOSE: print('      {}.__arrayfinalize__: Removing {} axis from {}'.
@@ -148,8 +149,19 @@ class Signal(np.ndarray):
                         raise FdpError()
                     if VERBOSE: print('      {}.__arrayfinalize__: end axis {}'.
                                       format(self._name, axis))
-                    #except:#must not have a len(), e.g. int type
-                    #    if VERBOSE: print('Exception: Axes parsing for ',axis,' failed')
+
+            # remove all 'point_axes' keys from 'axes' list
+            point_axes = getattr(self, 'point_axes')
+            if point_axes:
+                axes = getattr(self, 'axes')
+                for pa in point_axes:
+                    axis = pa['axis']
+                    if axis in axes:
+                        axes.remove(axis)
+                setattr(self, 'axes', axes)
+
+        # end "if objaxes" block
+
 
         #clean-up temp attributes
         def delattrtry(ob,at):
@@ -290,10 +302,7 @@ class Signal(np.ndarray):
 
 
     def __getattr__(self, attribute):
-        if attribute is '_parent':
-            raise AttributeError("'{}' object has no attribute '{}'".format(
-                                 type(self), attribute))
-        if self._parent is None:
+        if attribute is '_parent' or self._parent is None:
             raise AttributeError("'{}' object has no attribute '{}'".format(
                                  type(self), attribute))
         attr = getattr(self._parent, attribute)

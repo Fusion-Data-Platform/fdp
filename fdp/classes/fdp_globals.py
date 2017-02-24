@@ -8,7 +8,7 @@ Created on Thu Jun 18 11:18:16 2015
 """
 import os
 
-VERBOSE = True
+VERBOSE = False
 
 MACHINES = ['nstxu', 'diiid', 'cmod']
 
