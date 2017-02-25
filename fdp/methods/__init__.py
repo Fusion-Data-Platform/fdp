@@ -10,10 +10,10 @@ Created on Thu Oct 29 10:20:43 2015
 """
 from .plot import plot
 from ._netcat import _netcat
-from .utilities import listSignals, listMethods, listContainers, listAttributes
+from .listmethods import listSignals, listMethods, listContainers, listAttributes
 from .info import info
 from .fft import fft, plotfft
 
-__all__ = ['plot', '_netcat', 'listSignals', 'listMethods', 
-           'listContainers', 'listAttributes', 'info',
-           'fft', 'plotfft']
+__all__ = ['plot', '_netcat',
+           'listSignals', 'listMethods', 'listContainers', 'listAttributes',
+           'info', 'fft', 'plotfft']

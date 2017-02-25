@@ -5,13 +5,13 @@ Created on Thu Jul  7 19:10:56 2016
 @author: drsmith
 """
 
-from fdp.classes.utilities import isSignal, isContainer, isAxis, isShot
+from  ..classes import utilities
 
 
 def info(obj, *args, **kwargs):
-    if isSignal(obj):
+    if utilities.isSignal(obj):
         infoSignal(obj, *args, **kwargs)
-    elif isContainer(obj) or isShot(obj):
+    elif utilities.isContainer(obj) or utilities.isShot(obj):
         infoContainer(obj, *args, **kwargs)
     return
 
@@ -30,7 +30,7 @@ def infoSignal(obj, verbose=False, *args, **kwargs):
         print('  Shape:  {}'.format(obj.shape))
         for attrname in obj.listAttributes():
             attr = getattr(obj, attrname)
-            if isAxis(attr):
+            if utilities.isAxis(attr):
                 print('    Axis {}:  {} points'.format(attr._name, attr.size))
             else:
                 print('  {}:  {}'.format(attrname, attr))

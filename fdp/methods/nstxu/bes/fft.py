@@ -5,10 +5,9 @@ from warnings import warn
 import numpy as np
 import matplotlib.pyplot as plt
 
-from fdp.classes.utilities import isSignal, isContainer
-from fdp.classes.fdp_globals import FdpWarning
-from fdp.classes.fft import Fft
-from . import utilities as UT
+from ....classes.utilities import isSignal, isContainer
+from ....classes.fdp_globals import FdpWarning
+from ....classes.fft import Fft
 
 
 def fft(obj, *args, **kwargs):
@@ -26,7 +25,7 @@ def fft(obj, *args, **kwargs):
                    normalizetodc=normalizetodc,
                    *args, **kwargs)
     elif isContainer(obj):
-        signalnames = UT.get_signals_in_container(obj)
+        signalnames = obj.listSignals()
         ffts = []
         for sname in signalnames:
             signal = getattr(obj, sname)

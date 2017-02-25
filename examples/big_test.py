@@ -19,11 +19,13 @@ nstxu.s141000.logbook()
 
 # BES 1D plot and fft plot
 bes = nstxu.s204620.bes
+bes.ch01[:]
 bes.ch01.plot()
 bes.ch10.plotfft()
 
 # MPTS 2d plot, point-axes for 2d, list signals, list containers, info
 mpts = nstxu.s140000.mpts
+spline = mpts.spline
 mpts.ne.plot()
 b = mpts.ne[0,0:12]
 print(dir(b))

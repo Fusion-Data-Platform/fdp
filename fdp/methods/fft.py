@@ -9,21 +9,21 @@ from warnings import warn
 
 import matplotlib.pyplot as plt
 
-from fdp.classes.utilities import isSignal, isContainer
-from fdp.classes.fdp_globals import FdpWarning
-from fdp.classes.fft import Fft
-from . import utilities as UT
+from ..classes.utilities import isSignal, isContainer
+from ..classes.fdp_globals import FdpWarning
+from ..classes.fft import Fft
+from .listmethods import listSignals
 
 def fft(obj, *args, **kwargs):
     """
     Calculate FFT(s) for signal or container.
     Return Fft instance from classes/fft.py
     """
-    
+
     if isSignal(obj):
         return Fft(obj, *args, **kwargs)
     elif isContainer(obj):
-        signalnames = UT.get_signals_in_container(obj)
+        signalnames = listSignals(obj)
         ffts = []
         for sname in signalnames:
             signal = getattr(obj, sname)
@@ -40,9 +40,9 @@ def plotfft(signal, fmax=None, *args, **kwargs):
     sigfft = fft(signal, *args, **kwargs)
     fig = plt.figure()
     ax = fig.add_subplot(1,1,1)
-    pcm = ax.pcolormesh(sigfft.time, 
-                        sigfft.freq, 
-                        sigfft.logpsd.transpose(), 
+    pcm = ax.pcolormesh(sigfft.time,
+                        sigfft.freq,
+                        sigfft.logpsd.transpose(),
                         cmap=plt.cm.YlGnBu)
     pcm.set_clim([sigfft.logpsd.max()-100, sigfft.logpsd.max()-20])
     cb = plt.colorbar(pcm, ax=ax)
@@ -58,7 +58,7 @@ def plotfft(signal, fmax=None, *args, **kwargs):
         else:
             ax.set_ylim([0,fmax])
     ax.set_title('{} | {} | {}'.format(
-                 sigfft.shot, 
-                 sigfft.parentname.upper(), 
+                 sigfft.shot,
+                 sigfft.parentname.upper(),
                  sigfft.signalname.upper()))
     return sigfft

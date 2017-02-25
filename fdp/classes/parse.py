@@ -4,45 +4,50 @@ Created on Thu Jun 18 10:38:40 2015
 @author: ktritz
 """
 
-import sys
 import os
-import importlib
 import numpy as np
 from .fdp_globals import FDP_DIR, VERBOSE
 
 
 def parse_method(obj, level=None):
-    if VERBOSE: print('Begin parse_method({}, {})'.format(obj, level))
-    if level is None:
-        branch = obj._get_branch()
-        branch_list = branch.split('.')
-        module = branch_list.pop()
-        method_path = os.path.join(FDP_DIR,
-                                   'methods',
-                                   obj._root._name,
-                                   *branch_list)
-    elif level is 'top':
+    if VERBOSE: print('Begin parse_method()')
+    if level is 'top':
+        # logic for initial parse of fdp/methods
         module = 'methods'
         method_path = FDP_DIR
-    else:
+        module_chain = module
+    elif level is not None:
+        # logic for parsing fdp/methods/<machine>
         module = obj._name
         method_path = os.path.join(FDP_DIR, 'methods')
-    if VERBOSE: print('->parsing module "{}" in {}'.format(module, method_path))
-    sys.path.insert(0, method_path)
-    try:
-        if VERBOSE: print('->Importing module {}'.format(module))
-        method_object = importlib.import_module(module)
-        if not hasattr(method_object, '__all__'):
-            if VERBOSE: print('->No methods to attach\nEnd parse_method()')
-            return
-        for method in method_object.__all__:
-            if VERBOSE: print('->Attaching method {}'.format(method))
-            method_from_object = getattr(method_object, method)
-            setattr(obj, method, method_from_object)
-    except ImportError:
-        pass
-    sys.path.pop(0)
-    if VERBOSE: print('End parse_method({}, {})'.format(obj, level))
+        module_chain = 'methods.'+module
+    else:
+        # logic for parsing everything below fdp/methods/<machine>
+        branch = obj._get_branch()
+        if VERBOSE: print('-> branch {}'.format(branch))
+        branch_list = branch.split('.')
+        module = branch_list.pop()
+        machine = obj._root._name
+        method_path = os.path.join(FDP_DIR,
+                                   'methods',
+                                   machine,
+                                   *branch_list)
+        module_chain = '.'.join(['methods', machine, branch])
+    if VERBOSE: print('-> Finding {}'.format(module_chain))
+    if os.path.exists(os.path.join(method_path, module)):
+        if VERBOSE: print('-> Importing {}'.format(module_chain))
+        method_object = __import__(module_chain, globals(), locals(), ['__file__'], 2)
+        if hasattr(method_object, '__all__') and method_object.__all__:
+            if VERBOSE: print('-> {}.__all__ exists'.format(module_chain))
+            for method in method_object.__all__:
+                if VERBOSE: print('-> Attaching method {}'.format(method))
+                method_from_object = getattr(method_object, method)
+                setattr(obj, method, method_from_object)
+        else:
+            if VERBOSE: print('-> {} has no methods'.format(module_chain))
+    else:
+        if VERBOSE: print('-> {} does not exist'.format(module_chain))
+    if VERBOSE: print('End parse_method()')
 
 
 def parse_defaults(element):

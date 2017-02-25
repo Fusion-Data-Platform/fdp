@@ -5,8 +5,8 @@ Created on Fri Apr 15 15:33:23 2016
 @author: drsmith
 """
 
-from fdp.classes.fdp_globals import FdpError
-from fdp.classes.utilities import isSignal, isContainer
+from ....classes.fdp_globals import FdpError
+from ....classes.utilities import isSignal, isContainer
 
 def get_signals_in_container(container):
     """Return list of attribute names corresponding to valid signals"""
