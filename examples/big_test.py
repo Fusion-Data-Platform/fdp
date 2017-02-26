@@ -5,9 +5,12 @@ Created on Tue Jul  5 12:11:09 2016
 @author: drsmith
 """
 
+#from fdp.classes.fdp_globals import VERBOSE
+#VERBOSE = True
+
 import fdp
 
-nstxu = fdp.nstxu()
+nstxu = fdp.nstxu(verbose=True)
 nstxu.addshot([140000, 141000, 141001, 204620])
 print(dir(nstxu))
 
