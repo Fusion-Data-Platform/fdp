@@ -3,7 +3,7 @@
     <node name='comment' mdsnode='comment'></node>
     <axis name='radius' units='cm' error='fit_r_width' mdsnode='fit_radii'></axis>
     <axis name='time' units='s' mdsnode='ts_times'></axis>
-    <defaults method='plot' stack='1,2'></defaults>
+    <defaults method='plot' stack='1,2' signals='te,ne'></defaults>
     <signal name='te' units='keV' axes='radius, time' error='fit_te_err' mdsnode='fit_te' title='Electron Temperature'>
         <defaults method='plot' maxrange='0.95'></defaults>
     </signal>
