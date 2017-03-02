@@ -20,23 +20,24 @@ from ..classes.fdp_globals import FdpWarning
 #pg.mkQApp()
 
 
-def plot1d(signal, tmin=0.0, tmax=2.0, **kwargs):
+def plot1d(signal, tmin=0.0, tmax=None, **kwargs):
     xaxis = getattr(signal, signal.axes[0])
     kwargs.pop('stack', None)
+    kwargs.pop('signals', None)
     kwargs.pop('maxrange', None)
     kwargs.pop('minrange', None)
     ax = kwargs.pop('axes', None)
-
     ax.plot(xaxis, signal, **kwargs)
     ax.set_ylabel('{} ({})'.format(signal._name, signal.units))
     ax.set_xlabel('{} ({})'.format(xaxis._name, xaxis.units))
     ax.set_title('{} -- {} -- {}'.format(signal._parent._name.upper(),
                                          signal._name,
                                          signal.shot))
-    ax.set_xlim(tmin, tmax)
+    if tmax is not None:
+        ax.set_xlim(tmin, tmax)
 
 
-def plot2d(signal, tmin=0.0, tmax=2.0, **kwargs):
+def plot2d(signal, tmin=0.0, tmax=None, **kwargs):
     plot_type = kwargs.pop('type', 'contourf')
     nlevels = int(kwargs.pop('nlevels', 100))
     default_min = float(kwargs.pop('minrange', 0.))
@@ -47,16 +48,21 @@ def plot2d(signal, tmin=0.0, tmax=2.0, **kwargs):
     yaxis = getattr(signal, signal.axes[0])
     xaxis[:]
     yaxis[:]
+    if tmax is None:
+        tmax = yaxis[-1]  # this should be yaxis.max() when fixed
     plot_range = set_range(signal, default_min, default_max)
     levels = np.linspace(plot_range[0], plot_range[1], nlevels)
     artist = plot_func(np.array(xaxis), np.array(yaxis), np.array(signal),
                        levels=levels, **kwargs)
     plt.ylabel('{} ({})'.format(yaxis._name, yaxis.units))
     plt.xlabel('{} ({})'.format(xaxis._name, xaxis.units))
+    plt.title('{} -- {} -- {}'.format(signal._parent._name.upper(),
+                                      signal._name,
+                                      signal.shot))
     plt.ylim(tmin, tmax)
     if plot_type == 'contourf':
-        plt.colorbar(artist)
-
+        cbar = plt.colorbar(artist, format='%.1e')
+        cbar.set_label(signal.units, rotation=270)
 
 def set_range(data, default_min, default_max):
     max_range = np.array(data).max()
@@ -143,6 +149,7 @@ def plot_multi(signal, ax=None, **kwargs):
     axis_name = kwargs.pop('multi', None)
     kwargs.pop('type', None)
     kwargs.pop('stack', '1,1')
+    kwargs.poop('signals', None)
     axes = [getattr(signal, axis) for axis in signal.axes]
     axis_index = signal.axes.index(axis_name)
     multi_axis = axes.pop(axis_index)
@@ -166,23 +173,30 @@ def plot_multi(signal, ax=None, **kwargs):
 
 def plot_container(container, **kwargs):
     stack = kwargs.pop('stack', '1,1')
+    plot_sigs = kwargs.pop('signals', None)
+    if plot_sigs is not None:
+        plot_sigs = plot_sigs.split(',')
     vstack, hstack = tuple(map(int, stack.split(',')))
     num = hstack*vstack
     index = 0
-    fig = plt.figure()
-    title = container._get_branch().upper()
-    plt.suptitle('Shot #{} {}'.format(container.shot, title),
-                 x=0.5, y=1.00, fontsize=20, horizontalalignment='center')
+    fig = plt.figure(figsize=(2+3*hstack, 4+2*vstack))
+    # title = container._get_branch().upper()
+    # plt.suptitle('Shot #{} {}'.format(container.shot, title),
+    #              x=0.5, y=1.00, fontsize=20, horizontalalignment='center')
     for signal in container._signals.values():
+        if plot_sigs:
+            if signal._name not in plot_sigs:
+                continue
         index += 1
         if index > num:
             fig = plt.figure()
             index = 1
         if index == 1:
-            plt.subplot(vstack, hstack, index)
+            ax = plt.subplot(vstack, hstack, index)
         else:
-            plt.subplot(vstack, hstack, index)  # , sharex=ax, sharey=ax)
-        signal.plot(fig=fig, ax=None, **kwargs)
+            ax = plt.subplot(vstack, hstack, index)  # , sharex=ax, sharey=ax)
+        signal.plot(fig=fig, ax=ax, **kwargs)
+    plt.tight_layout()
 
 
 class PlotAxes(plt.Axes):
