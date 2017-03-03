@@ -10,6 +10,6 @@ import fdp
 
 nstxu = fdp.nstxu()
 
-# BES 1D plot and fft plot
-bes = nstxu.s204620.bes
-bes.ch01.plot()
+nstxu.s204620.bes.ch01.plot()
+nstxu.s204620.mpts.ne.plot()
+nstxu.s204620.mpts.plot()
