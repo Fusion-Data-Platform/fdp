@@ -7,23 +7,21 @@ Created on Mon Oct 19 15:42:07 2015
 import sys
 import xml.etree.ElementTree as ET
 import os
-import importlib
 
 module_dir = os.path.dirname(os.path.abspath(__file__))
 FDP_DIR = os.path.join(module_dir, os.pardir, os.pardir, os.pardir)
 class_dir = os.path.join(FDP_DIR, 'classes')
 sys.path.insert(0, class_dir)
-from fdp import container
-from fdp import factory
+from fdp.classes import container
 sys.path.pop(0)
 
 Container = container.Container
-_tree_dict = factory._tree_dict
-init_class = factory.init_class
+_tree_dict = container._tree_dict
+init_class = container.init_class
 
 
 def create_efit_objs(self):
-
+    print('begin create_efit_objs')
     ContainerClassName = 'ContainerEquilibria'
     for efit in self.check_efit():
         branch = '.'.join(['equilibria', efit])
@@ -52,3 +50,4 @@ def create_efit_objs(self):
         efitobj._title = efit
         setattr(self, efit, efitobj)
         self._containers[efit] = efitobj
+        print('end create_efit_objs')

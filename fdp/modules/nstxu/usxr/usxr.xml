@@ -5,7 +5,7 @@
         <axis name='time' units='s' mdsnode='dim_of(\usxr_vtop_00.raw)'></axis>
         <signal name='vtop{}' title='Vertical Top Channel {}' units='DN' axes='time' mdsnode='\usxr_vtop_{}.raw' range='16'></signal>
     </container>
-    <container name='hup' title='Horizontal Down'>
+    <container name='hup' title='Horizontal Up'>
         <axis name='time' units='s' mdsnode='dim_of(\usxr_hup_00.raw)'></axis>
         <signal name='hup{}' title='Channel {}' units='DN' axes='time' mdsnode='\usxr_hup_{}.raw' range='16'></signal>
     </container>

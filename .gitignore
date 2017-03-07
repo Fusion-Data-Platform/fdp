@@ -1,7 +1,8 @@
 docs/build
 *.pyc
-*.ipynb
+./*.ipynb
 *~
 .spyderproject
+.ipynb_checkpoints
 anaconda
 .DS_Store

@@ -7,117 +7,42 @@ Created on Thu Jun 18 10:38:40 2015
 import sys
 import os
 import importlib
-import xml.etree.ElementTree as ET
 import numpy as np
-from . import fdp_globals
-
-FDP_DIR = fdp_globals.FDP_DIR
-VERBOSE = fdp_globals.VERBOSE
-
-_tree_dict = {}
-
-
-def Factory(module_branch, Container, root=None, shot=None, parent=None):
-    global _tree_dict
-
-    """
-    Factory method
-    """
-
-    try:
-        module_branch = module_branch.lower()
-        module_list = module_branch.split('.')
-        module = module_list[-1]
-        branch_str = ''.join([word.capitalize() for word in module_list])
-        if module_branch not in _tree_dict:
-            module_path = os.path.join(FDP_DIR, 'modules', root._name,
-                                       *module_list)
-            parse_tree = ET.parse(os.path.join(module_path,
-                                               ''.join([module, '.xml'])))
-            module_tree = parse_tree.getroot()
-            _tree_dict[module_branch] = module_tree
-        ContainerClassName = ''.join(['Container', branch_str])
-        if ContainerClassName not in Container._classes:
-            ContainerClass = type(ContainerClassName, (Container,), {})
-            init_class(ContainerClass, _tree_dict[module_branch], root=root,
-                       container=module, classparent=parent.__class__)
-            Container._classes[ContainerClassName] = ContainerClass
-        else:
-            ContainerClass = Container._classes[ContainerClassName]
-
-        return ContainerClass(_tree_dict[module_branch], shot=shot,
-                              parent=parent, top=True)
-
-    except:
-        print("{} not found in modules directory".format(module))
-        raise
-
-
-def iterable(obj):
-    try:
-        iter(obj)
-        if type(obj) is str:
-            return False
-        return True
-    except TypeError:
-        return False
-
-
-def init_class(cls, module_tree, **kwargs):
-    cls._name = module_tree.get('name')
-    if cls not in cls._instances:
-        cls._instances[cls] = {}
-
-    for read_only in ['root', 'container', 'classparent']:
-        try:
-            setattr(cls, '_'+read_only, kwargs[read_only])
-            # print(cls._name, read_only, kwargs.get(read_only, 'Not there'))
-        except:
-            pass
-
-    for item in ['mdstree', 'mdspath', 'units']:
-        getitem = module_tree.get(item)
-        if getitem is not None:
-            setattr(cls, '_'+item, getitem)
-
-    cls._base_items = set(cls.__dict__.keys())
-    parse_method(cls)
+from .fdp_globals import FDP_DIR, VERBOSE
 
 
 def parse_method(obj, level=None):
-    if level is not None:
-        if level is 'top':
-            method_path = FDP_DIR
-            module = 'methods'
-        else:
-            method_path = os.path.join(FDP_DIR, 'methods')
-            module = obj._name
-    else:
+    if VERBOSE: print('Begin parse_method({}, {})'.format(obj, level))
+    if level is None:
         branch = obj._get_branch()
         branch_list = branch.split('.')
         module = branch_list.pop()
-        method_path = os.path.join(FDP_DIR, 'methods', obj._root._name,
+        method_path = os.path.join(FDP_DIR,
+                                   'methods',
+                                   obj._root._name,
                                    *branch_list)
-    if VERBOSE: print('Inserting path {}.'.format(method_path))
+    elif level is 'top':
+        module = 'methods'
+        method_path = FDP_DIR
+    else:
+        module = obj._name
+        method_path = os.path.join(FDP_DIR, 'methods')
+    if VERBOSE: print('->parsing module "{}" in {}'.format(module, method_path))
     sys.path.insert(0, method_path)
     try:
+        if VERBOSE: print('->Importing module {}'.format(module))
         method_object = importlib.import_module(module)
         if not hasattr(method_object, '__all__'):
+            if VERBOSE: print('->No methods to attach\nEnd parse_method()')
             return
         for method in method_object.__all__:
+            if VERBOSE: print('->Attaching method {}'.format(method))
             method_from_object = getattr(method_object, method)
-            if VERBOSE: print('Attaching method {}.'.format(method))
             setattr(obj, method, method_from_object)
     except ImportError:
         pass
     sys.path.pop(0)
-
-
-def base_container(container):
-    parent_container = container
-    while hasattr(parent_container, '_parent'):
-        parent_container = parent_container._parent
-    return parent_container
+    if VERBOSE: print('End parse_method({}, {})'.format(obj, level))
 
 
 def parse_defaults(element):
@@ -129,6 +54,8 @@ def parse_defaults(element):
 
 
 def parse_signal(obj, element):
+    if VERBOSE: print('Begin parse_signal({}, {})'.
+                      format(obj._name, element.get('name')))
     units = parse_units(obj, element)
     axes, transpose = parse_axes(obj, element)
     number_range = element.get('range')
@@ -186,6 +113,8 @@ def parse_signal(obj, element):
                                 '_dim_of': dim_of, '_error': error,
                                 '_parent': obj, '_transpose': transpose,
                                 '_title': title, '_desc': desc})
+    if VERBOSE: print('End parse_signal({}, {})'.
+                      format(obj._name, element.get('name')))
     return signal_dict
 
 
