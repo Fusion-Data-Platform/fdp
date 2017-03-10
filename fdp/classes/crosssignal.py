@@ -557,10 +557,11 @@ class CrossSignal(object):
         iend = np.searchsorted(self.freqs, fend)
         
         # Calculate crossphase slope over specified frequency range
-        slope, _, _, _, _ = linregress(self.freqs[istart:iend+1] * 1000,
+        slope, intercept, _, _, _ = linregress(self.freqs[istart:iend+1] * 1000,
                                        self.crossphase_binavg[istart:iend+1])
         
-        # Convert slope units to rad/s and return
+        # Convert slope units to rad/Hz and return
         if self.degrees:
             slope = np.deg2rad(slope)
-        return slope
+            intercept = np.deg2rad(intercept)
+        return slope, intercept
