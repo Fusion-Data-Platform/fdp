@@ -58,6 +58,28 @@ def parse_defaults(element):
     return method_defaults, defaults_dict
 
 
+def fill_signal_dict(name=None, units=None, axes=None,
+                     mdspath=None, mdstree=None,
+                     dim_of=None, error=None, parent=None,
+                     transpose=None, title=None, desc=None):
+    """
+    Default dictionary of signal attributes
+    """
+    # TODO: consider exposing mdsnode and mdstree in dir()
+    return {'_name': name,
+            'units': units,
+            'axes': axes,
+            '_mdsnode': mdspath,
+            '_mdstree': mdstree,
+            '_dim_of': dim_of,
+            '_error': error,
+            '_parent': parent,
+            '_transpose': transpose,
+            '_title': title,
+            '_desc': desc,
+            '_empty': True,
+            'point_axes': []}
+
 def parse_signal(obj, element):
     if VERBOSE: print('Begin parse_signal({}, {})'.
                       format(obj._name, element.get('name')))
@@ -71,11 +93,17 @@ def parse_signal(obj, element):
         mdspath, dim_of = parse_mdspath(obj, element)
         mdstree = parse_mdstree(obj, element)
         error = parse_error(obj, element)
-        signal_dict = [{'_name': name, 'units': units, 'axes': axes,
-                        '_mdsnode': mdspath, '_mdstree': mdstree,
-                        '_dim_of': dim_of, '_error': error, '_parent': obj,
-                        '_transpose': transpose, '_title': title,
-                        '_desc': desc}]
+        signal_dict = [fill_signal_dict(name=name,
+                                        units=units,
+                                        axes=axes,
+                                        mdspath=mdspath,
+                                        mdstree=mdstree,
+                                        dim_of=dim_of,
+                                        error=error,
+                                        parent=obj,
+                                        transpose=transpose,
+                                        title=title,
+                                        desc=desc)]
     else:
         number_list = number_range.split(',')
         name_range = element.get('namerange')
@@ -113,11 +141,17 @@ def parse_signal(obj, element):
             mdspath = mdspath.format(str(index).zfill(digits))
             mdstree = parse_mdstree(obj, element)
             error = parse_error(obj, element)
-            signal_dict.append({'_name': name, 'units': units, 'axes': axes,
-                                '_mdsnode': mdspath, '_mdstree': mdstree,
-                                '_dim_of': dim_of, '_error': error,
-                                '_parent': obj, '_transpose': transpose,
-                                '_title': title, '_desc': desc})
+            signal_dict.append(fill_signal_dict(name=name,
+                                                units=units,
+                                                axes=axes,
+                                                mdspath=mdspath,
+                                                mdstree=mdstree,
+                                                dim_of=dim_of,
+                                                error=error,
+                                                parent=obj,
+                                                transpose=transpose,
+                                                title=title,
+                                                desc=desc))
     if VERBOSE: print('End parse_signal({}, {})'.
                       format(obj._name, element.get('name')))
     return signal_dict
