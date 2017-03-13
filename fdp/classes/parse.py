@@ -14,6 +14,7 @@ from .fdp_globals import FDP_DIR, VERBOSE
 def parse_method(obj, level=None):
     if VERBOSE: print('Begin parse_method({}, {})'.format(obj, level))
     if level is None:
+        # parse fdp/methods/<machine>/<container-tree>
         branch = obj._get_branch()
         branch_list = branch.split('.')
         module = branch_list.pop()
@@ -22,9 +23,11 @@ def parse_method(obj, level=None):
                                    obj._root._name,
                                    *branch_list)
     elif level is 'top':
+        # parse fdp/methods/
         module = 'methods'
         method_path = FDP_DIR
     else:
+        # parse fdp/methods/<machine>
         module = obj._name
         method_path = os.path.join(FDP_DIR, 'methods')
     if VERBOSE: print('->parsing module "{}" in {}'.format(module, method_path))
@@ -60,6 +63,7 @@ def fill_signal_dict(name=None, units=None, axes=None,
     """
     Default dictionary of signal attributes
     """
+    # TODO: consider exposing mdsnode and mdstree in dir()
     return {'_name': name,
             'units': units,
             'axes': axes,
@@ -72,7 +76,7 @@ def fill_signal_dict(name=None, units=None, axes=None,
             '_title': title,
             '_desc': desc,
             '_empty': True,
-            'point_axes': None}
+            'point_axes': []}
 
 def parse_signal(obj, element):
     if VERBOSE: print('Begin parse_signal({}, {})'.
@@ -95,7 +99,7 @@ def parse_signal(obj, element):
                                         dim_of=dim_of,
                                         error=error,
                                         parent=obj,
-                                        transport=transpose,
+                                        transpose=transpose,
                                         title=title,
                                         desc=desc)]
     else:
@@ -143,7 +147,7 @@ def parse_signal(obj, element):
                                                 dim_of=dim_of,
                                                 error=error,
                                                 parent=obj,
-                                                transport=transpose,
+                                                transpose=transpose,
                                                 title=title,
                                                 desc=desc))
     if VERBOSE: print('End parse_signal({}, {})'.
