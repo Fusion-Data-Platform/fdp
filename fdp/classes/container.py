@@ -178,7 +178,7 @@ class Container(object):
         try:
             if self._dynamic_containers[attribute] is None:
                 branch_path = '.'.join([self._get_branch(), attribute])
-                if VERBOSE and True:
+                if VERBOSE:
                     print('    {}.__getattr__({}) calling Factory()'.
                           format(self._name, attribute))
                 self._dynamic_containers[attribute] = \
@@ -202,12 +202,12 @@ class Container(object):
         if Container in attr.__class__.mro() and attribute[0] is not '_':
             raise AttributeError("Attribute '{}' not found".format(attribute))
         if inspect.ismethod(attr):
-            if VERBOSE and True:
+            if VERBOSE:
                 print('    {}.__getattr__({}) returning parent method'.
                       format(self._name, attribute))
             return types.MethodType(attr.__func__, self)
         else:
-            if VERBOSE and True:
+            if VERBOSE:
                 print('    {}.__getattr__({}) returning parent attr'.
                       format(self._name, attribute))
             return attr

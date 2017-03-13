@@ -122,7 +122,7 @@ class Machine(MutableMapping):
         return connection
 
     def _get_mdsdata(self, signal):
-        if VERBOSE and True:
+        if VERBOSE:
             print('{}._get_mdsdata({}): BEGIN'.
                   format(self._name, signal._name))
         shot = signal.shot
@@ -139,30 +139,30 @@ class Machine(MutableMapping):
             return np.zeros(0)
         try:
             if hasattr(signal, '_raw_of') and signal._raw_of is not None:
-                if VERBOSE and True:
+                if VERBOSE:
                     print('{}._get_mdsdata({}): trying data.raw_of()'.
                           format(self._name, signal._name))
                 data = data.raw_of()
             else:
-                if VERBOSE and True:
+                if VERBOSE:
                     print('{}._get_mdsdata({}): no data.raw_of()'.
                           format(self._name, signal._name))
         except:
-            if VERBOSE and True:
+            if VERBOSE:
                 print('{}._get_mdsdata({}): threw exception'.
                       format(self._name, signal._name))
         try:
             if hasattr(signal, '_dim_of') and signal._dim_of is not None:
-                if VERBOSE and True:
+                if VERBOSE:
                     print('{}._get_mdsdata({}): trying data.dim_of()'.
                           format(self._name, signal._name))
                 data = data.dim_of()
             else:
-                if VERBOSE and True:
+                if VERBOSE:
                     print('{}._get_mdsdata({}): no data.dim_of()'.
                           format(self._name, signal._name))
         except:
-            if VERBOSE and True:
+            if VERBOSE:
                 print('{}._get_mdsdata({}): threw exception'.
                       format(self._name, signal._name))
         data = data.value_of().value
@@ -170,7 +170,7 @@ class Machine(MutableMapping):
             data = data.transpose(signal._transpose)
         if hasattr(signal, '_postprocess'):
             data = signal._postprocess(data)
-        if VERBOSE and True:
+        if VERBOSE:
             print('{}._get_mdsdata({}): END with type(data) {}'.
                   format(self._name, signal._name, type(data)))
         return data
