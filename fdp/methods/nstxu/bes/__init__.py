@@ -18,12 +18,13 @@ configuration with channels 1-8 spanning the radial range R = 129-146 cm.
 from .gui import gui
 from .fft import fft, plotfft, powerspectrum
 from .animation import animate
+from .movie import movie
 from .configuration import loadConfig
 from .crosspower import plotcrosspower, plotcrossphase, plotcoherence
 from .crosspower import crosssignal, plotcorrelation
 
 __all__ = ['fft', 'plotfft', 'powerspectrum',
-           'animate', 'loadConfig',
+           'animate', 'loadConfig', 'movie',
            'gui',
            'crosssignal','plotcrosspower', 'plotcoherence', 'plotcrossphase',
            'plotcorrelation']
