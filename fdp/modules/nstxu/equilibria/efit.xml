@@ -6,8 +6,8 @@
     <signal name='ipmhd' title='Stored Energy' units='J' axes='time' mdsnode='\ipmhd'></signal>
     <signal name='rmaxis' title='Stored Energy' units='J' axes='time' mdsnode='\rmaxis'></signal>
     <signal name='zmaxis' title='Stored Energy' units='J' axes='time' mdsnode='\zmaxis'></signal>
-    <signal name='bcentr' title='Stored Energy' units='J' axes='time' mdsnode='\bcentr'></signal>
-    <signal name='bt0' title='Stored Energy' units='J' axes='time' mdsnode='\bt0'></signal>
+    <signal name='bcentr' title='Vacuum toroidal field at RCENTR' units='T' axes='time' mdsnode='\bcentr'></signal>
+    <signal name='bt0' title='Toroidal field at magnetic axis' units='T' axes='time' mdsnode='\bt0'></signal>
     <signal name='q0' title='Stored Energy' units='J' axes='time' mdsnode='\q0'></signal>
     <signal name='q95' title='Stored Energy' units='J' axes='time' mdsnode='\q95'></signal>
     <signal name='kappa' title='Stored Energy' units='J' axes='time' mdsnode='\kappa'></signal>
@@ -21,6 +21,8 @@
     <signal name='wdia' title='Stored Energy' units='J' axes='time' mdsnode='\wdia'></signal>
     <signal name='wbdot' title='Stored Energy' units='J' axes='time' mdsnode='\wbdot'></signal>
     <signal name='taumhd' title='Stored Energy' units='J' axes='time' mdsnode='\taumhd'></signal>
+    <signal name='psi0' title='Stored Energy' units='J' axes='time' mdsnode='\psi0'></signal>
+    <signal name='psibdy' title='Stored Energy' units='J' axes='time' mdsnode='\psibdy'></signal>
 
     <axis name='R' units='m' axes='time' mdsnode='\R'></axis>
     <axis name='z' units='m' axes='time' mdsnode='\z'></axis>
@@ -30,6 +32,9 @@
 
     <axis name='psin' title='Psi_N' axes='time' mdsnode='\psin'></axis>
     <signal name='qpsi' title='Q_psi' axes='time, psin' mdsnode='\qpsi'></signal>
+    <signal name='brz0' title='Radial magnetic field on midplane' units='T' axes='time, R' mdsnode='\brz0'></signal>
+    <signal name='btz0' title='Toroidal magnetic field on midplane' units='T' axes='time, R' mdsnode='\btz0'></signal>
+    <signal name='bzz0' title='Vertical magnetic field on midplane' units='T' axes='time, R' mdsnode='\bzz0'></signal>
 
     <node name='userid' mdsnode='\[efit]::userid'></node>
 </container>

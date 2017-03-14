@@ -16,16 +16,21 @@ from fdp.classes.fdp_globals import FdpWarning
 
 
 def crosssignal(container, sig1name='ch01', sig2name='ch02',
-             tmin=0.5, tmax=0.55, nperseg=None, degrees=True, fmin=None,
-             fmax=None):
+             tmin=0.5, tmax=0.55, window='hann', nperseg=None,
+             forcepower2=False, offsetminimum=True, offsetdc=False,
+             normalizetodc=True, degrees=True, fmin=None, fmax=None,
+             numfilttaps=None, removesawteeth=False):
     if not isContainer(container):
         warn("Method valid only at container-level", FdpWarning)
         return
     sig1 = getattr(container, sig1name)
     sig2 = getattr(container, sig2name)
-    cs = CrossSignal(sig1, sig2, tmin=tmin, tmax=tmax, nperseg=nperseg,
-                     offsetminimum=True, normalizetodc=True, degrees=degrees,
-                     fmin=fmin, fmax=fmax)
+    cs = CrossSignal(sig1, sig2, tmin=tmin, tmax=tmax, window=window,
+                     nperseg=nperseg, forcepower2=forcepower2,
+                     offsetminimum=offsetminimum, offsetdc=offsetdc, 
+                     normalizetodc=normalizetodc, degrees=degrees, fmin=fmin,
+                     fmax=fmax, numfilttaps=numfilttaps,
+                     removesawteeth=removesawteeth)
     return cs
 
 
@@ -37,6 +42,10 @@ def plotcrosspower(container, *args, **kwargs):
     fmin = kwargs.get('fmin', 0)
     fmax = kwargs.get('fmax', 200)
     cs = crosssignal(container, *args, **kwargs)
+    if fmin is None:
+        fmin = 0
+    if fmax is None:
+        fmax = 200
     mask = np.logical_and(fmin <= cs.freqs, cs.freqs <= fmax)
  
     if spectrum:
@@ -58,16 +67,15 @@ def plotcrosspower(container, *args, **kwargs):
                 cs.signal1name.upper(),
                 cs.signal2name.upper()))
     else:
-        logcrosspower = 10*np.log10(cs.crosspower_binavg[mask])
-#        logstdevupper = 10*np.log10(cs.crosspower_binavg[mask]
-#                      + np.sqrt(cs.crosspower_var[mask]))
-#        logstdevlower = 10*np.log10(cs.crosspower_binavg[mask]
-#                      - np.sqrt(cs.crosspower_var[mask]))
+        crosspower = cs.crosspower_binavg[mask]
+        stdev = cs.crosspower_error[mask]
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        ax.plot(cs.freqs[mask], logcrosspower)
-#        ax.fill_between(cs.freqs[mask], logstdevlower, logstdevupper,
-#                        alpha=0.5, linewidth=0)
+        ax.plot(cs.freqs[mask], crosspower, 'k-')
+        ax.fill_between(cs.freqs[mask], crosspower-stdev,
+                        crosspower+stdev, alpha=0.5, linewidth=0,
+                        facecolor='black')
+        ax.set_yscale('log')
         ax.set_xlabel('Frequency (kHz)')
         ax.set_ylabel(r'$10\,\log_{10}(Crosspower)$ $(V^2/Hz)$')
         ax.set_title('{} -- {} -- {}/{} -- Crosspower'.format(
@@ -75,7 +83,7 @@ def plotcrosspower(container, *args, **kwargs):
                 container._name.upper(),
                 cs.signal1name.upper(),
                 cs.signal2name.upper()))
-    
+    plt.tight_layout()
     return cs
                  
 def plotcrossphase(container, *args, **kwargs):
@@ -92,6 +100,10 @@ def plotcrossphase(container, *args, **kwargs):
         units = 'radians'
     
     cs = crosssignal(container, *args, **kwargs)
+    if fmin is None:
+        fmin = 0
+    if fmax is None:
+        fmax = 200
     mask = np.logical_and(fmin <= cs.freqs, cs.freqs <= fmax)
  
     if spectrum:
@@ -118,9 +130,9 @@ def plotcrossphase(container, *args, **kwargs):
         stdev = cs.crossphase_error[mask]
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        ax.plot(cs.freqs[mask], crossphase)
+        ax.plot(cs.freqs[mask], crossphase, 'k-')
         ax.fill_between(cs.freqs[mask], crossphase-stdev, crossphase+stdev,
-                        alpha=0.5, linewidth=0)
+                        alpha=0.5, linewidth=0, facecolor='black')
         ax.set_xlabel('Frequency (kHz)')
         ax.set_ylabel('Angle (' + units + ')')
         ax.set_title('{} -- {} -- {}/{} -- Crossphase'.format(
@@ -128,6 +140,7 @@ def plotcrossphase(container, *args, **kwargs):
                 container._name.upper(),
                 cs.signal1name.upper(),
                 cs.signal2name.upper()))
+    plt.tight_layout()
     return cs
 
 def plotcoherence(container, *args, **kwargs):
@@ -137,16 +150,20 @@ def plotcoherence(container, *args, **kwargs):
     fmin = kwargs.get('fmin', 0)
     fmax = kwargs.get('fmax', 200)
     cs = crosssignal(container, *args, **kwargs)
+    if fmin is None:
+        fmin = 0
+    if fmax is None:
+        fmax = 200
     mask = np.logical_and(fmin <= cs.freqs, cs.freqs <= fmax)
     coherence = cs.coherence[mask]
     stdev = cs.coherence_error[mask]
     
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.plot(cs.freqs[mask], coherence)
-    ax.plot((fmin, fmax),(cs.minsig_coherence, cs.minsig_coherence), 'k-')
+    ax.plot(cs.freqs[mask], coherence, 'k-')
+    ax.plot((fmin, fmax),(cs.minsig_coherence, cs.minsig_coherence), 'k--')
     ax.fill_between(cs.freqs[mask], coherence-stdev, coherence+stdev,
-                    alpha=0.5, linewidth=0)
+                    alpha=0.5, linewidth=0, facecolor='black')
     ax.set_ylim([0,1])
     ax.set_xlabel('Frequency (kHz)')
     ax.set_title('{} -- {} -- {}/{} -- Coherence'.format(
@@ -154,7 +171,7 @@ def plotcoherence(container, *args, **kwargs):
             container._name.upper(),
             cs.signal1name.upper(),
             cs.signal2name.upper()))
-    
+    plt.tight_layout()
     return cs
 
 def plotcorrelation(container, *args, **kwargs):
@@ -166,15 +183,17 @@ def plotcorrelation(container, *args, **kwargs):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     if envelope:
-        ax.plot(cs.time_delays * 1000000., cs.correlation_coef_envelope)
+        ax.plot(cs.time_delays * 1000000., cs.correlation_coef_envelope, 'k-')
         ax.plot((0,0),(0,1), 'k-')
     else:
-        ax.plot(cs.time_delays * 1000000., cs.correlation_coef)
+        ax.plot(cs.time_delays * 1000000., cs.correlation_coef, 'k-')
         ax.plot((0,0),(-1,1), 'k-')
+    ax.set_xlim([-250,250])
     ax.set_xlabel('Time delay (us)')
     ax.set_title('{} -- {} -- {}/{} -- Time-lag cross-correlation'.format(
             container.shot,
             container._name.upper(),
             cs.signal1name.upper(),
             cs.signal2name.upper()))
+    plt.tight_layout()
     return cs
