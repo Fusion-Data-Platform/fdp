@@ -9,9 +9,9 @@ import os.path
 import xml.etree.ElementTree as ET
 from warnings import warn
 
-from fdp.classes.fdp_globals import FdpError
-from fdp.classes.utilities import isContainer
-from fdp.classes.fdp_globals import FdpWarning
+from ....classes.fdp_globals import FdpError
+from ....classes.utilities import isContainer
+from ....classes.fdp_globals import FdpWarning
 
 def loadConfig(container=None):
     """

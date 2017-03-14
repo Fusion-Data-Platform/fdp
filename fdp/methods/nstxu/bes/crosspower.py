@@ -10,9 +10,9 @@ from warnings import warn
 import numpy as np
 import matplotlib.pyplot as plt
 
-from fdp.classes.crosssignal import CrossSignal
-from fdp.classes.utilities import isContainer
-from fdp.classes.fdp_globals import FdpWarning
+from ....classes.crosssignal import CrossSignal
+from ....classes.utilities import isContainer
+from ....classes.fdp_globals import FdpWarning
 
 
 def crosssignal(container, sig1name='ch01', sig2name='ch02',
@@ -27,7 +27,7 @@ def crosssignal(container, sig1name='ch01', sig2name='ch02',
     sig2 = getattr(container, sig2name)
     cs = CrossSignal(sig1, sig2, tmin=tmin, tmax=tmax, window=window,
                      nperseg=nperseg, forcepower2=forcepower2,
-                     offsetminimum=offsetminimum, offsetdc=offsetdc, 
+                     offsetminimum=offsetminimum, offsetdc=offsetdc,
                      normalizetodc=normalizetodc, degrees=degrees, fmin=fmin,
                      fmax=fmax, numfilttaps=numfilttaps,
                      removesawteeth=removesawteeth)
@@ -47,7 +47,7 @@ def plotcrosspower(container, *args, **kwargs):
     if fmax is None:
         fmax = 200
     mask = np.logical_and(fmin <= cs.freqs, cs.freqs <= fmax)
- 
+
     if spectrum:
         logcrosspower = 10*np.log10(cs.crosspower[mask,:])
         fig = plt.figure()
@@ -85,7 +85,7 @@ def plotcrosspower(container, *args, **kwargs):
                 cs.signal2name.upper()))
     plt.tight_layout()
     return cs
-                 
+
 def plotcrossphase(container, *args, **kwargs):
     if not isContainer(container):
         warn("Method valid only at container-level", FdpWarning)
@@ -98,14 +98,14 @@ def plotcrossphase(container, *args, **kwargs):
         units = 'degrees'
     else:
         units = 'radians'
-    
+
     cs = crosssignal(container, *args, **kwargs)
     if fmin is None:
         fmin = 0
     if fmax is None:
         fmax = 200
     mask = np.logical_and(fmin <= cs.freqs, cs.freqs <= fmax)
- 
+
     if spectrum:
         crossphase = cs.crossphase[mask,:]
         fig = plt.figure()
@@ -157,7 +157,7 @@ def plotcoherence(container, *args, **kwargs):
     mask = np.logical_and(fmin <= cs.freqs, cs.freqs <= fmax)
     coherence = cs.coherence[mask]
     stdev = cs.coherence_error[mask]
-    
+
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.plot(cs.freqs[mask], coherence, 'k-')
@@ -171,7 +171,11 @@ def plotcoherence(container, *args, **kwargs):
             container._name.upper(),
             cs.signal1name.upper(),
             cs.signal2name.upper()))
+<<<<<<< HEAD
+
+=======
     plt.tight_layout()
+>>>>>>> master
     return cs
 
 def plotcorrelation(container, *args, **kwargs):

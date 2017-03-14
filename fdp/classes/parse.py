@@ -4,48 +4,52 @@ Created on Thu Jun 18 10:38:40 2015
 @author: ktritz
 """
 
-import sys
 import os
-import importlib
 import numpy as np
 from .fdp_globals import FDP_DIR, VERBOSE
 
 
 def parse_method(obj, level=None):
-    if VERBOSE: print('Begin parse_method({}, {})'.format(obj, level))
-    if level is None:
-        # parse fdp/methods/<machine>/<container-tree>
-        branch = obj._get_branch()
-        branch_list = branch.split('.')
-        module = branch_list.pop()
-        method_path = os.path.join(FDP_DIR,
-                                   'methods',
-                                   obj._root._name,
-                                   *branch_list)
-    elif level is 'top':
-        # parse fdp/methods/
+    def debug(msg=''):
+        if VERBOSE: print('parse_method(): {}'.format(msg))
+    debug('begin')
+    if level is 'top':
+        # logic for initial parse of fdp/methods
         module = 'methods'
         method_path = FDP_DIR
-    else:
-        # parse fdp/methods/<machine>
+        module_chain = module
+    elif level is not None:
+        # logic for parsing fdp/methods/<machine>
         module = obj._name
         method_path = os.path.join(FDP_DIR, 'methods')
-    if VERBOSE: print('->parsing module "{}" in {}'.format(module, method_path))
-    sys.path.insert(0, method_path)
-    try:
-        if VERBOSE: print('->Importing module {}'.format(module))
-        method_object = importlib.import_module(module)
-        if not hasattr(method_object, '__all__'):
-            if VERBOSE: print('->No methods to attach\nEnd parse_method()')
-            return
-        for method in method_object.__all__:
-            if VERBOSE: print('->Attaching method {}'.format(method))
-            method_from_object = getattr(method_object, method)
-            setattr(obj, method, method_from_object)
-    except ImportError:
-        pass
-    sys.path.pop(0)
-    if VERBOSE: print('End parse_method({}, {})'.format(obj, level))
+        module_chain = 'methods.'+module
+    else:
+        # logic for parsing everything below fdp/methods/<machine>
+        branch = obj._get_branch()
+        debug('branch {}'.format(branch))
+        branch_list = branch.split('.')
+        module = branch_list.pop()
+        machine = obj._root._name
+        method_path = os.path.join(FDP_DIR,
+                                   'methods',
+                                   machine,
+                                   *branch_list)
+        module_chain = '.'.join(['methods', machine, branch])
+    debug('finding {}'.format(module_chain))
+    if os.path.exists(os.path.join(method_path, module)):
+        debug('importing {}'.format(module_chain))
+        method_object = __import__(module_chain, globals(), locals(), ['__file__'], 2)
+        if hasattr(method_object, '__all__') and method_object.__all__:
+            debug('{}.__all__ exists'.format(module_chain))
+            for method in method_object.__all__:
+                debug('Attaching method {}'.format(method))
+                method_from_object = getattr(method_object, method)
+                setattr(obj, method, method_from_object)
+        else:
+            debug('{} has no methods'.format(module_chain))
+    else:
+        debug('{} does not exist'.format(module_chain))
+    debug('end')
 
 
 def parse_defaults(element):
@@ -79,8 +83,10 @@ def fill_signal_dict(name=None, units=None, axes=None,
             'point_axes': []}
 
 def parse_signal(obj, element):
-    if VERBOSE: print('Begin parse_signal({}, {})'.
-                      format(obj._name, element.get('name')))
+    def debug(msg=''):
+        if VERBOSE: print('parse_signal(): {}'.format(msg))
+    debug('begin with obj {} and element {}'.
+          format(obj._name, element.get('name')))
     units = parse_units(obj, element)
     axes, transpose = parse_axes(obj, element)
     number_range = element.get('range')
@@ -150,8 +156,7 @@ def parse_signal(obj, element):
                                                 transpose=transpose,
                                                 title=title,
                                                 desc=desc))
-    if VERBOSE: print('End parse_signal({}, {})'.
-                      format(obj._name, element.get('name')))
+    debug('end')
     return signal_dict
 
 

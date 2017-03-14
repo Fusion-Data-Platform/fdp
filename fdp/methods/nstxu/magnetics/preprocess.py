@@ -5,7 +5,7 @@ Created on Tue Jul 12 08:43:55 2016
 @author: drsmith
 """
 
-from fdp.classes.utilities import isContainer
+from ....classes.utilities import isContainer
 
 
 def preprocess(self):

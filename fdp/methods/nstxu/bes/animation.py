@@ -13,25 +13,24 @@ import scipy.interpolate
 from matplotlib import animation
 import matplotlib.pyplot as plt
 
-from fdp.classes.fdp_globals import FdpError
-from fdp.classes.utilities import isContainer
-from . import utilities as UT
+from ....classes.fdp_globals import FdpError
+from ....classes.utilities import isContainer
 
 def animate(*args, **kwargs):
     """Plot 2D signals"""
     return Animation(*args, **kwargs)
-    
+
 
 class Animation(object):
     """
     """
-    
-    def __init__(self, container, 
+
+    def __init__(self, container,
                  tmin=0.0, tmax=5.0,
                  savemovie=False,
                  hightimeres=False,
                  saveeps = False):
-        
+
         if not isContainer(container):
             raise FdpError("Use at container level, not signal level")
         self.container = container
@@ -44,20 +43,20 @@ class Animation(object):
         self.hightimeres = hightimeres
         self.saveeps = saveeps
         self.savemovie = savemovie
-        
+
         self.signals = None
         self.data = None
         self.time = None
         self.istart = None
         self.istop = None
-        
+
         self.writer = None
-        
+
         self.filter = None
         self.fdata = None
         self.ftime = None
         self.cdata = None
-        
+
         self.getSignals()
         self.loadConfig()
         self.setTimeIndices()
@@ -68,13 +67,13 @@ class Animation(object):
         self.makeAnimation()
         if self.savemovie:
             self.saveAnimationVideo()
-        
+
     def getSignals(self):
-        self.signals = UT.get_signals_in_container(self.container)
-    
+        self.signals = self.container.listSignals()
+
     def loadConfig(self):
         self.container.loadConfig()
-    
+
     def setTimeIndices(self):
         time = self.signals[0].time
         self.shot = self.signals[0].shot
@@ -82,7 +81,7 @@ class Animation(object):
                                                time<=self.tmax))[0]
         self.istart = time_indices[0]
         self.istop = time_indices[time_indices.size-1]
-        
+
         self.time = time[self.istart:self.istop+1]
         self.ntime = self.time.size
         print('Data points: {}'.format(self.ntime))
@@ -99,7 +98,7 @@ class Animation(object):
             self.data[row-1,column-1,:] = signal[self.istart:self.istop+1] - zerosignal
             #self.data[row-1,column-1,:] = signal[self.istart:self.istop+1]
             self.datamask[row-1,column-1] = True
-        
+
     def applyNormalization(self):
         nrow,ncol,_ = self.data.shape
         # column-wise normalization factor
@@ -124,17 +123,17 @@ class Animation(object):
             for col in np.arange(ncol):
                 if self.datamask[row,col]:
                     self.data[row,col,:] = self.data[row,col,:] * self.colcal[col] / np.mean(self.data[row,col,0:self.ntime/20])
-        
+
     def filterData(self):
         self.filter = scipy.signal.daub(4)
         self.filter = self.filter/np.sum(self.filter)
-        self.fdata = scipy.signal.lfilter(self.filter, [1], 
+        self.fdata = scipy.signal.lfilter(self.filter, [1],
             self.data,
             axis=2)
         #self.fdata = scipy.signal.decimate(self.fdata, 2, axis=2)
         #self.ftime = self.time[::2]
         self.ftime = self.time
-        
+
     def gridData(self):
         nrad = 9
         npol = 7
@@ -154,20 +153,20 @@ class Animation(object):
                                            self.fdata[:,:,i].squeeze(),
                                            kind='linear')
             self.gdata[:,:,i] = f(rnew,pnew)
-        
-        
+
+
     def plotContourf(self, axes=None, index=None):
         return axes.contourf(np.arange(1,10.1),
                              np.arange(1,8.1),
                              self.fdata[::-1,:,index],
                              cmap=plt.cm.YlGnBu)
-                           
+
     def plotPColorMesh(self, axes=None, index=None):
         return axes.pcolormesh(np.arange(1,10.1),
                                np.arange(1,8.1),
                                self.fdata[::-1,:,index],
                                cmap=plt.cm.YlGnBu)
-        
+
     def makeAnimation(self):
         ims = []
         if self.hightimeres:
@@ -205,12 +204,12 @@ class Animation(object):
             ax1_title = ax1.annotate('BES | {} | t={:.3f} ms'.format(
                 self.shot,
                 self.ftime[i*frameint]*1e3),
-                xy=(0.5, 1.04), 
+                xy=(0.5, 1.04),
                 xycoords='axes fraction',
                 horizontalalignment ='center',
                 size='large')
             ln = ax2.plot(np.ones(2)*self.ftime[i*frameint]*1e3,
-                          ax2.get_ylim(), 
+                          ax2.get_ylim(),
                           'r')
             an_l0 = ax2.annotate('Core Top',
                                   xy=(self.ftime[0]*1e3+0.01,
@@ -229,7 +228,7 @@ class Animation(object):
                                       self.fdata[5,6,15]-0.6),
                                   color='m')
             ax2_title = ax2.annotate('BES | {}'.format(self.shot),
-                xy=(0.5, 1.04), 
+                xy=(0.5, 1.04),
                 xycoords='axes fraction',
                 horizontalalignment ='center',
                 size='large')
@@ -242,7 +241,7 @@ class Animation(object):
                 ax1.cla()
                 ax2.cla()
             if self.savemovie:
-                artists = [cb.solids, pt[0], pt[1], pt[2], pt[3], ln[0], ax1_title, 
+                artists = [cb.solids, pt[0], pt[1], pt[2], pt[3], ln[0], ax1_title,
                            an_l0, an_l1, an_l2, an_l3, ax2_title]
                 gc.disable()  # disable garbage collection to keep list appends fast
                 if hasattr(im, 'collections'):
@@ -250,14 +249,14 @@ class Animation(object):
                 else:
                     ims.append([im]+artists)
                 gc.enable()
-            
+
         if self.savemovie:
             print('calling ArtistAnimation')
-            self.animation = animation.ArtistAnimation(self.fig, ims, 
+            self.animation = animation.ArtistAnimation(self.fig, ims,
                                                        blit=False,
                                                        interval=50,
                                                        repeat=False)
-                                                   
+
     def saveAnimationVideo(self):
         print('calling ArtistAnimation.save()')
         filename = 'Bes2d_{}_{}ms.mp4'.format(

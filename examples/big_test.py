@@ -5,6 +5,9 @@ Created on Tue Jul  5 12:11:09 2016
 @author: drsmith
 """
 
+#from fdp.classes.fdp_globals import VERBOSE
+#VERBOSE = True
+
 import fdp
 
 nstxu = fdp.nstxu()
@@ -19,14 +22,17 @@ nstxu.s141000.logbook()
 
 # BES 1D plot and fft plot
 bes = nstxu.s204620.bes
+bes.ch01[:]
 bes.ch01.plot()
 bes.ch10.plotfft()
 
 # MPTS 2d plot, point-axes for 2d, list signals, list containers, info
 mpts = nstxu.s140000.mpts
+spline = mpts.spline
 mpts.ne.plot()
 b = mpts.ne[0,0:12]
 print(dir(b))
+print(b.axes)
 print(b.point_axes)
 print(mpts.listSignals())
 print(mpts.listContainers())

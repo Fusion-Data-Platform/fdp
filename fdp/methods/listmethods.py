@@ -5,7 +5,7 @@ Created on Wed Jun 22 11:18:01 2016
 @author: drsmith
 """
 
-from fdp.classes.utilities import isSignal, isContainer
+from ..classes.utilities import isSignal, isContainer
 
 
 def listSignals(obj):
