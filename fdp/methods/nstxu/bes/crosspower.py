@@ -19,7 +19,7 @@ def crosssignal(container, sig1name='ch01', sig2name='ch02',
              tmin=0.5, tmax=0.55, window='hann', nperseg=None,
              forcepower2=False, offsetminimum=True, offsetdc=False,
              normalizetodc=True, degrees=True, fmin=None, fmax=None,
-             numfilttaps=None, removesawteeth=False):
+             numfilttaps=None, sawteethtimes=None, sawteethbins=0):
     if not isContainer(container):
         warn("Method valid only at container-level", FdpWarning)
         return
@@ -30,7 +30,7 @@ def crosssignal(container, sig1name='ch01', sig2name='ch02',
                      offsetminimum=offsetminimum, offsetdc=offsetdc,
                      normalizetodc=normalizetodc, degrees=degrees, fmin=fmin,
                      fmax=fmax, numfilttaps=numfilttaps,
-                     removesawteeth=removesawteeth)
+                     sawteethtimes=sawteethtimes, sawteethbins=sawteethbins)
     return cs
 
 
@@ -171,11 +171,7 @@ def plotcoherence(container, *args, **kwargs):
             container._name.upper(),
             cs.signal1name.upper(),
             cs.signal2name.upper()))
-<<<<<<< HEAD
-
-=======
     plt.tight_layout()
->>>>>>> master
     return cs
 
 def plotcorrelation(container, *args, **kwargs):
