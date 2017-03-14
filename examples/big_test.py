@@ -10,7 +10,7 @@ Created on Tue Jul  5 12:11:09 2016
 
 import fdp
 
-nstxu = fdp.nstxu(verbose=True)
+nstxu = fdp.nstxu()
 nstxu.addshot([140000, 141000, 141001, 204620])
 print(dir(nstxu))
 
@@ -32,6 +32,7 @@ spline = mpts.spline
 mpts.ne.plot()
 b = mpts.ne[0,0:12]
 print(dir(b))
+print(b.axes)
 print(b.point_axes)
 print(mpts.listSignals())
 print(mpts.listContainers())

@@ -10,7 +10,9 @@ from .fdp_globals import FDP_DIR, VERBOSE
 
 
 def parse_method(obj, level=None):
-    if VERBOSE: print('Begin parse_method()')
+    def debug(msg=''):
+        if VERBOSE: print('parse_method(): {}'.format(msg))
+    debug('begin')
     if level is 'top':
         # logic for initial parse of fdp/methods
         module = 'methods'
@@ -24,7 +26,7 @@ def parse_method(obj, level=None):
     else:
         # logic for parsing everything below fdp/methods/<machine>
         branch = obj._get_branch()
-        if VERBOSE: print('-> branch {}'.format(branch))
+        debug('branch {}'.format(branch))
         branch_list = branch.split('.')
         module = branch_list.pop()
         machine = obj._root._name
@@ -33,21 +35,21 @@ def parse_method(obj, level=None):
                                    machine,
                                    *branch_list)
         module_chain = '.'.join(['methods', machine, branch])
-    if VERBOSE: print('-> Finding {}'.format(module_chain))
+    debug('finding {}'.format(module_chain))
     if os.path.exists(os.path.join(method_path, module)):
-        if VERBOSE: print('-> Importing {}'.format(module_chain))
+        debug('importing {}'.format(module_chain))
         method_object = __import__(module_chain, globals(), locals(), ['__file__'], 2)
         if hasattr(method_object, '__all__') and method_object.__all__:
-            if VERBOSE: print('-> {}.__all__ exists'.format(module_chain))
+            debug('{}.__all__ exists'.format(module_chain))
             for method in method_object.__all__:
-                if VERBOSE: print('-> Attaching method {}'.format(method))
+                debug('Attaching method {}'.format(method))
                 method_from_object = getattr(method_object, method)
                 setattr(obj, method, method_from_object)
         else:
-            if VERBOSE: print('-> {} has no methods'.format(module_chain))
+            debug('{} has no methods'.format(module_chain))
     else:
-        if VERBOSE: print('-> {} does not exist'.format(module_chain))
-    if VERBOSE: print('End parse_method()')
+        debug('{} does not exist'.format(module_chain))
+    debug('end')
 
 
 def parse_defaults(element):
@@ -81,8 +83,10 @@ def fill_signal_dict(name=None, units=None, axes=None,
             'point_axes': []}
 
 def parse_signal(obj, element):
-    if VERBOSE: print('Begin parse_signal({}, {})'.
-                      format(obj._name, element.get('name')))
+    def debug(msg=''):
+        if VERBOSE: print('parse_signal(): {}'.format(msg))
+    debug('begin with obj {} and element {}'.
+          format(obj._name, element.get('name')))
     units = parse_units(obj, element)
     axes, transpose = parse_axes(obj, element)
     number_range = element.get('range')
@@ -152,8 +156,7 @@ def parse_signal(obj, element):
                                                 transpose=transpose,
                                                 title=title,
                                                 desc=desc))
-    if VERBOSE: print('End parse_signal({}, {})'.
-                      format(obj._name, element.get('name')))
+    debug('end')
     return signal_dict
 
 

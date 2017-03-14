@@ -50,15 +50,6 @@ class Signal(np.ndarray):
     def __init__(self, **kwargs):
         pass
 
-    def print_attr(self):
-        if VERBOSE:
-            print('-> {}.shape is {}'.
-                  format(self._name, getattr(self, 'shape', None)))
-            print('-> {}.axes is {}'.
-                  format(self._name, getattr(self, 'axes', None)))
-            print('-> {}.point_axes is {}'.
-                  format(self._name, getattr(self, 'point_axes', None)))
-
     def __array_finalize__(self, obj):
         """
         see https://docs.scipy.org/doc/numpy/user/basics.subclassing.html
