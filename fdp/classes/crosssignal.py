@@ -69,6 +69,7 @@ class CrossSignal(object):
     sawteethbins : int, optional
         If sawteethtimes is specified this specifies how many additional time 
         bins before and after each sawtooth to remove from the spectral density.
+        Defaults to 0.
     """
 
     def __init__(self, signal1, signal2, tmin=0.2, tmax=1.0, window='hann',
