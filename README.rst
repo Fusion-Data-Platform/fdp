@@ -40,7 +40,7 @@ List diagnostics::
     ['bes', 'chers', 'equilibria', 'filterscopes', 'magnetics', 'mpts', 'mse', 'usxr']
 
 View logbook entries::
-    
+
     >>> nstxu.s141000.logbook()
 
 List signals::
@@ -63,11 +63,11 @@ Load shots for an XP::
 
     >>> xp1013 = nstxu.filter_shots(xp=1013)
     >>> dir(xp1013)
-    ['s141382', 's141383', 's141384', 's141385', 's141386', 's141387', 
-    's141388', 's141389', 's141390', 's141391', 's141392', 's141393', 
-    's141394', 's141395', 's141396', 's141397', 's141398', 's141399', 
-    's141400', 's141401', 's141402', 's141403', 's141404', 's141405', 
-    's141406', 's141407', 's141408', 's141409', 's141410', 's141411', 
+    ['s141382', 's141383', 's141384', 's141385', 's141386', 's141387',
+    's141388', 's141389', 's141390', 's141391', 's141392', 's141393',
+    's141394', 's141395', 's141396', 's141397', 's141398', 's141399',
+    's141400', 's141401', 's141402', 's141403', 's141404', 's141405',
+    's141406', 's141407', 's141408', 's141409', 's141410', 's141411',
     's141412', 's141413', 's141414']
 
 As the examples above illustrate, the FDP data object is organized like this::
@@ -84,5 +84,3 @@ Lead developers
 * David R. Smith, U. Wisconsin-Madison
 * Kevin Tritz, The Johns Hopkins U.
 * Howard Yuh, Nova Photonics
-
-PPPL cluster support from John Schmitt

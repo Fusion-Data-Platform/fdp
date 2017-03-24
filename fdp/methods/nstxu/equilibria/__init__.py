@@ -7,5 +7,6 @@ Created on Tue Dec 01 16:35:32 2015
 
 
 from .utilities import create_efit_objs as _preprocess
+from .bfield import bfield
 
-__all__ = ['_preprocess']
+__all__ = ['_preprocess', 'bfield']
