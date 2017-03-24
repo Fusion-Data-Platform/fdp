@@ -39,7 +39,6 @@ FDP reduces barriers to entry for new users and facilitates collaborative develo
   * Platform-independent: desktop Mac/PC, Linux cluster
   * Command-line tool or import into code
 
-
 Lead developers
 ------------------------------
 

@@ -11,9 +11,12 @@ Created on Thu Oct 29 10:20:43 2015
 from .plot import plot
 from ._netcat import _netcat
 from .listmethods import listSignals, listMethods, listContainers, listAttributes
-from .info import info
+from .info import info, isSignal, isContainer, isAxis
 from .fft import fft, plotfft
+from .timeindex import getTimeIndex
 
 __all__ = ['plot', '_netcat',
            'listSignals', 'listMethods', 'listContainers', 'listAttributes',
-           'info', 'fft', 'plotfft']
+           'info', 'isSignal', 'isContainer', 'isAxis',
+           'fft', 'plotfft',
+           'getTimeIndex']

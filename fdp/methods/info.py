@@ -7,6 +7,14 @@ Created on Thu Jul  7 19:10:56 2016
 
 from  ..classes import utilities
 
+def isSignal(obj):
+    return utilities.isSignal(obj)
+
+def isContainer(obj):
+    return utilities.isContainer(obj)
+
+def isAxis(obj):
+    return utilities.isAxis(obj)
 
 def info(obj, *args, **kwargs):
     if utilities.isSignal(obj):
