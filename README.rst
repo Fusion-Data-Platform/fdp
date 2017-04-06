@@ -3,38 +3,31 @@
 Fusion Data Platform
 ===========================
 
-Fusion Data Platform (FDP) is a Python package and data framework for magnetic fusion experiments.
+Fusion Data Platform (FDP) is a data framework in Python for magnetic fusion experiments. FDP streamlines data discovery, management, analysis methods, and visualization.
 
-* Documentation: http://Fusion-Data-Platform.github.io/
 * Github repository: https://github.com/Fusion-Data-Platform/fdp
+* Documentation: http://Fusion-Data-Platform.github.io/
 * Google group: https://groups.google.com/forum/#!forum/fusion-data-platform
 
 **Description**
 
 * An extensible software layer that unites data access, management, analysis, and visualization in a single data object
-* A descriptive data object that users can easily inspect to find data and analysis methods
-* A data object that handles data access (servers, nodes, trees, tables, etc.) behind the scenes
-* A collaborative platform for development of analysis tools
-* Intelligent multi-dimensional slicing documents singleton dimensions (e.g. a radial profile knows the time slice to which it corresponds)
+* A descriptive data object that users can query to find data and analysis methods
+* A data object that handles data access (servers, trees, nodes, queries) behind the scenes
+* A collaborative development plateform for data analysis tools
 * Built with popular, open-source packages like Numpy and Matplotlib
 
 **Example usage**
 
-    >>> import fdp
-    >>> nstxu = fdp.nstxu()
-    >>> nstxu.s204551.mpts.te.plot()
-    >>> nstxu.s204620.equilibria.efit02.kappa.plot()
-    >>> nstxu.s204670.bes.ch01.plotfft()
-    
-Python's tab-complete feature presents users with data containers like ``mpts`` and ``efit02``, data signals like ``te`` and ``kappa``, and data methods like ``plot()`` and ``plotfft()``.
-
-Exercise: Create 2D plots of electron density for every shot in XP 1013::
+.. code-block:: python
 
     import fdp
     nstxu = fdp.nstxu()
-    xp1013 = nstxu.filter_shots(xp=1013)
-    for shot in xp1013:
-        shot.mpts.ne.plot()
+    nstxu.s204551.mpts.te.plot()
+    nstxu.s204620.equilibria.efit02.kappa.plot()
+    nstxu.s204670.bes.ch01.plotfft()
+    
+Python's tab-complete feature presents users with data containers like ``mpts`` and ``efit02``, data signals like ``te`` and ``kappa``, and data methods like ``plot()`` and ``plotfft()``.
 
 **Lead developers**
 
