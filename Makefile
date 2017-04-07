@@ -85,6 +85,12 @@ authors:  ## create AUTHORS.txt
 	@echo "$$FDF_SHORTLOG" >> AUTHORS.txt
 
 
+.PHONY: bump-minor
+bump-minor: ## bump minor version and push new tag
+	# `bumpversion` creates commit and tag
+	bumpversion minor
+	git push --tags
+
 .PHONY: clean
 clean: clean-pyc clean-docs ## remove all build, docs, and Python artifacts
 
