@@ -3,18 +3,19 @@
 Fusion Data Platform
 ===========================
 
-Fusion Data Platform (FDP) is a data framework in Python for magnetic fusion experiments. FDP streamlines data discovery, management, analysis methods, and visualization.
+Fusion Data Platform (FDP) is a data framework in Python for magnetic fusion experiments.
+FDP streamlines data discovery, management, analysis methods, and visualization.
 
-* Github repository: https://github.com/Fusion-Data-Platform/fdp
+* Github: https://github.com/Fusion-Data-Platform/fdp
 * Documentation: http://Fusion-Data-Platform.github.io/
 * Google group: https://groups.google.com/forum/#!forum/fusion-data-platform
 
-**Description**
+**Description and features**
 
-* An extensible software layer that unites data access, management, analysis, and visualization in a single data object
+* An extensible software layer that unites data access, management, analysis, and visualization
 * A descriptive data object that users can query to find data and analysis methods
-* A data object that handles data access (servers, trees, nodes, queries) behind the scenes
-* A collaborative development plateform for data analysis tools
+* Data access tasks (servers, trees, nodes, queries) are handled behind the scenes
+* A collaborative development platform for data analysis tools
 * Built with popular, open-source packages like Numpy and Matplotlib
 
 **Example usage**
@@ -23,11 +24,15 @@ Fusion Data Platform (FDP) is a data framework in Python for magnetic fusion exp
 
     import fdp
     nstxu = fdp.nstxu()
+    nstxu.s204551.logbook()
     nstxu.s204551.mpts.te.plot()
-    nstxu.s204620.equilibria.efit02.kappa.plot()
-    nstxu.s204670.bes.ch01.plotfft()
+    nstxu.s204551.equilibria.efit02.kappa.plot()
     
-Python's tab-complete feature presents users with data containers like ``mpts`` and ``efit02``, data signals like ``te`` and ``kappa``, and data methods like ``plot()`` and ``plotfft()``.
+``nstxu`` is a data object that abstracts the NSTX-U device with easy access to shots, diagnostics, signals, and data methods.  The typical heirarchy is::
+
+    <machine>.<shot>.<diagnostic container>.[<possible sub-containers>].<signal>.<method>
+
+Users can discover data containers like ``mpts``, data signals like ``te``, and data methods like ``plot()`` with Python's tab-complete functionality.
 
 **Lead developers**
 
