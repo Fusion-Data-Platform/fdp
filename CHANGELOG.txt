@@ -1,3 +1,6 @@
+Release v0.1.2
+
+1db2305 misc
 cc1e355 misc
 8ae14a5 updated CHANGELOG.txt
 cc9f35a updated CHANGELOG.txt
@@ -27,3 +30,5 @@ e44f558 updated CHANGELOG.txt
 5817adf updated CHANGELOG.txt
 2e6f692 updated CHANGELOG.txt
 a16db5c added  recipe in Makefile
+
+
