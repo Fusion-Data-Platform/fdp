@@ -104,14 +104,14 @@ bump-minor: ## bump minor version and push new tag
 
 .PHONY: bump-patch
 bump-patch: ## bump patch version and push new tag
-	#@cp -f CHANGELOG.txt CHANGELOG.copy.txt
+	@cp -f CHANGELOG.txt CHANGELOG.copy.txt
 	@git rm CHANGELOG.txt
 	git log --oneline `git describe --tags --abbrev=0`..HEAD > CHANGELOG.txt
 	#git add -A
 	#git commit -m "updated CHANGELOG.txt"
 	echo nextpatchversion
 	#@git push --tags
-	#@rm -f CHANGELOG.copy.txt
+	@rm -f CHANGELOG.copy.txt
 
 
 .PHONY: clean
