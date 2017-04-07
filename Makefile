@@ -85,6 +85,13 @@ authors:  ## create AUTHORS.txt
 	@echo "$$FDF_SHORTLOG" >> AUTHORS.txt
 
 
+.PHONY: bump-major
+bump-major: ## bump major version and push new tag
+	# `bumpversion` creates commit and tag
+	bumpversion major
+	git push --tags
+
+
 .PHONY: bump-minor
 bump-minor: ## bump minor version and push new tag
 	# `bumpversion` creates commit and tag
