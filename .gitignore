@@ -13,6 +13,7 @@ docs/build/
 anaconda
 .DS_Store
 spyder_crash.log
+CHANGELOG.copy.txt
 
 # Unit test / coverage reports
 htmlcov/
