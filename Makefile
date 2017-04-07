@@ -100,7 +100,7 @@ authors:  ## create AUTHORS.txt
 
 
 .PHONY: bump-major
-bump-major: ## bump major version and push new tag
+bump-major: authors ## bump major version and push new tag
 	@cp -f CHANGELOG.txt CHANGELOG.copy.txt
 	@rm -f CHANGELOG.txt
 	@echo "Release v$(nextmajorversion) -- $(today)\n" > CHANGELOG.txt
@@ -108,14 +108,14 @@ bump-major: ## bump major version and push new tag
 	@echo "\n" >> CHANGELOG.txt
 	@cat CHANGELOG.copy.txt >> CHANGELOG.txt
 	@rm -f CHANGELOG.copy.txt
-	@git add CHANGELOG.txt
-	@git commit -m "updated CHANGELOG.txt"
+	@git add CHANGELOG.txt AUTHORS.txt
+	@git commit -m "updated CHANGELOG.txt and AUTHORS.txt"
 	@bumpversion major # runs 'git commit' and 'git tag'
 	@git push --tags
 
 
 .PHONY: bump-minor
-bump-minor: ## bump minor version and push new tag
+bump-minor: authors ## bump minor version and push new tag
 	@cp -f CHANGELOG.txt CHANGELOG.copy.txt
 	@rm -f CHANGELOG.txt
 	@echo "Release v$(nextminorversion) -- $(today)\n" > CHANGELOG.txt
@@ -123,14 +123,14 @@ bump-minor: ## bump minor version and push new tag
 	@echo "\n" >> CHANGELOG.txt
 	@cat CHANGELOG.copy.txt >> CHANGELOG.txt
 	@rm -f CHANGELOG.copy.txt
-	@git add CHANGELOG.txt
-	@git commit -m "updated CHANGELOG.txt"
+	@git add CHANGELOG.txt AUTHORS.txt
+	@git commit -m "updated CHANGELOG.txt and AUTHORS.txt"
 	@bumpversion minor # runs 'git commit' and 'git tag'
 	@git push --tags
 
 
 .PHONY: bump-patch
-bump-patch: ## bump patch version and push new tag
+bump-patch: authors ## bump patch version and push new tag
 	@cp -f CHANGELOG.txt CHANGELOG.copy.txt
 	@rm -f CHANGELOG.txt
 	@echo "Release v$(nextpatchversion) -- $(today)\n" > CHANGELOG.txt
@@ -138,8 +138,8 @@ bump-patch: ## bump patch version and push new tag
 	@echo "\n" >> CHANGELOG.txt
 	@cat CHANGELOG.copy.txt >> CHANGELOG.txt
 	@rm -f CHANGELOG.copy.txt
-	@git add CHANGELOG.txt
-	@git commit -m "updated CHANGELOG.txt"
+	@git add CHANGELOG.txt AUTHORS.txt
+	@git commit -m "updated CHANGELOG.txt and AUTHORS.txt"
 	@bumpversion patch # runs 'git commit' and 'git tag'
 	@git push --tags
 
