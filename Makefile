@@ -104,7 +104,7 @@ bump-patch: ## bump patch version and push new tag
 	git log --oneline `git describe --tags --abbrev=0`..HEAD > CHANGELOG.txt
 	git add -A
 	git commit -m "updated CHANGELOG.txt"
-	bumpversion --dry-run --list patch | sed -n 's/^new_version=\(.*\)$$/\1/'
+	bumpversion --dry-run --list patch | grep '^new_version=.*$$'
 	#@git push --tags
 	@rm -f CHANGELOG.copy.txt
 
