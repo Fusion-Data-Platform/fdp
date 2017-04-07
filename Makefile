@@ -1,12 +1,19 @@
 .DEFAULT_GOAL := help
 
+today := $(shell date +%F)
 
-nextpatchversion := $(shell bumpversion \
-  --no-commit --no-tag --dry-run --list patch --allow-dirty | \
+nextmajorversion := $(shell bumpversion \
+  --no-commit --no-tag --dry-run --list major | \
   grep "^new_version=.*$$" | \
   grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
-
-today := $(shell date +%F)
+nextminorversion := $(shell bumpversion \
+  --no-commit --no-tag --dry-run --list minor | \
+  grep "^new_version=.*$$" | \
+  grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
+nextpatchversion := $(shell bumpversion \
+  --no-commit --no-tag --dry-run --list patch | \
+  grep "^new_version=.*$$" | \
+  grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
 
 define LEAD_AUTHORS
 Lead developers:
@@ -94,14 +101,32 @@ authors:  ## create AUTHORS.txt
 
 .PHONY: bump-major
 bump-major: ## bump major version and push new tag
-	bumpversion major # runs 'git commit' and 'git tag
-	git push --tags
+	@cp -f CHANGELOG.txt CHANGELOG.copy.txt
+	@rm -f CHANGELOG.txt
+	@echo "Release v$(nextmajorversion) -- $(today)\n" > CHANGELOG.txt
+	@git log --oneline `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.txt
+	@echo "\n" >> CHANGELOG.txt
+	@cat CHANGELOG.copy.txt >> CHANGELOG.txt
+	@rm -f CHANGELOG.copy.txt
+	@git add CHANGELOG.txt
+	@git commit -m "updated CHANGELOG.txt"
+	@bumpversion major # runs 'git commit' and 'git tag'
+	@git push --tags
 
 
 .PHONY: bump-minor
 bump-minor: ## bump minor version and push new tag
-	bumpversion minor # runs 'git commit' and 'git tag
-	git push --tags
+	@cp -f CHANGELOG.txt CHANGELOG.copy.txt
+	@rm -f CHANGELOG.txt
+	@echo "Release v$(nextminorversion) -- $(today)\n" > CHANGELOG.txt
+	@git log --oneline `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.txt
+	@echo "\n" >> CHANGELOG.txt
+	@cat CHANGELOG.copy.txt >> CHANGELOG.txt
+	@rm -f CHANGELOG.copy.txt
+	@git add CHANGELOG.txt
+	@git commit -m "updated CHANGELOG.txt"
+	@bumpversion minor # runs 'git commit' and 'git tag'
+	@git push --tags
 
 
 .PHONY: bump-patch
@@ -113,9 +138,9 @@ bump-patch: ## bump patch version and push new tag
 	@echo "\n" >> CHANGELOG.txt
 	@cat CHANGELOG.copy.txt >> CHANGELOG.txt
 	@rm -f CHANGELOG.copy.txt
-	@git add -A
+	@git add CHANGELOG.txt
 	@git commit -m "updated CHANGELOG.txt"
-	@bumpversion patch
+	@bumpversion patch # runs 'git commit' and 'git tag'
 	@git push --tags
 
 
