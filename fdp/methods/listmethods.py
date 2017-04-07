@@ -17,6 +17,7 @@ def listSignals(obj):
             signals.append(attrname)
     return signals
 
+
 def listContainers(obj):
     attrnames = dir(obj)
     containers = []
@@ -25,6 +26,7 @@ def listContainers(obj):
         if isContainer(attr):
             containers.append(attrname)
     return containers
+
 
 def listMethods(obj):
     methods = []
@@ -41,14 +43,14 @@ def listMethods(obj):
             break
     return methods
 
+
 def listAttributes(obj):
     attrnames = dir(obj)
     attributes = []
     for attrname in attrnames:
         attr = getattr(obj, attrname)
         if not isContainer(attr) and \
-            not isSignal(attr) and \
-            not hasattr(attr, '__func__'):
-                attributes.append(attrname)
+                not isSignal(attr) and \
+                not hasattr(attr, '__func__'):
+            attributes.append(attrname)
     return attributes
-

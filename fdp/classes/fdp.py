@@ -15,9 +15,11 @@ class Fdp(object):
     """
     The primary data object in FDP and the top-level container for machines.
     """
+
     def __getattr__(self, attribute):
-        if VERBOSE: print('{}.__getattr__({})'.
-                          format(self.__class__, attribute))
+        if VERBOSE:
+            print('{}.__getattr__({})'.
+                  format(self.__class__, attribute))
         machine_name = machineAlias(attribute)
         if machine_name not in MACHINES:
             raise FdpError('Invalid machine name')

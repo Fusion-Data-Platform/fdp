@@ -39,12 +39,14 @@ class Machine(MutableMapping):
         self._shots = {}  # shot dictionary with shot number (int) keys
         self._classlist = {}
         self._name = machineAlias(name)
-        if VERBOSE: print('{}.__init__'.format(self._name))
+        if VERBOSE:
+            print('{}.__init__'.format(self._name))
         self._logbook = Logbook(name=self._name, root=self)
         self._eventConnection = mds.Connection(EVENT_SERVERS[self._name])
         if len(self._connections) is 0:
-            if VERBOSE: print('{}.__init__  Precaching MDS connections...'.
-                              format(self._name))
+            if VERBOSE:
+                print('{}.__init__  Precaching MDS connections...'.
+                      format(self._name))
             for _ in range(2):
                 try:
                     connection = mds.Connection(MDS_SERVERS[self._name])
@@ -54,21 +56,24 @@ class Machine(MutableMapping):
                     msg = 'MDSplus connection to {} failed'.format(
                         MDS_SERVERS[self._name])
                     raise FdpError(msg)
-            if VERBOSE: print('{}.__init__  Finished MDS'.format(self._name))
+            if VERBOSE:
+                print('{}.__init__  Finished MDS'.format(self._name))
         self.s0 = Shot(0, root=self, parent=self)
         if shotlist or xp or date:
             self.addshot(shotlist=shotlist, xp=xp, date=date)
 
     def __getattr__(self, name):
-        if VERBOSE: print('{}.__getattr__({})'.format(self._name, name))
+        if VERBOSE:
+            print('{}.__getattr__({})'.format(self._name, name))
         try:
             shot = int(name.split('s')[1])
         except:
             raise AttributeError("'{}' object has no attribute '{}'".format(
                                  type(self), name))
         if (shot not in self._shots):
-            if VERBOSE: print('{}.__getattr__: loading shot {}'.
-                              format(self._name, shot))
+            if VERBOSE:
+                print('{}.__getattr__: loading shot {}'.
+                      format(self._name, shot))
             self._shots[shot] = Shot(shot, root=self, parent=self)
         return self._shots[shot]
 
@@ -88,7 +93,8 @@ class Machine(MutableMapping):
         self._shots.__delitem__(item)
 
     def __getitem__(self, item):
-        if VERBOSE: print('{}.__getitem__({})'.format(self._name, item))
+        if VERBOSE:
+            print('{}.__getitem__({})'.format(self._name, item))
         if item == 0:
             return self.s0
         return self._shots[item]
@@ -98,7 +104,8 @@ class Machine(MutableMapping):
 
     def __dir__(self):
         shotlist = ['s0']
-        shotlist.extend(['s{}'.format(shot) for shot in self._shots.iterkeys()])
+        shotlist.extend(['s{}'.format(shot)
+                         for shot in self._shots.iterkeys()])
         return shotlist
 
     def _get_connection(self, shot, tree):
@@ -176,14 +183,16 @@ class Machine(MutableMapping):
         return data
 
     def _get_modules(self):
-        if VERBOSE: print('{}._get_modules()'.format(self._name))
+        if VERBOSE:
+            print('{}._get_modules()'.format(self._name))
         if self._modules is None:
-            if VERBOSE: print('{}._get_modules() Surveying diagnostic modules'.
-                              format(self._name))
+            if VERBOSE:
+                print('{}._get_modules() Surveying diagnostic modules'.
+                      format(self._name))
             module_dir = os.path.join(FDP_DIR, 'modules', self._name)
             self._modules = [module for module in os.listdir(module_dir)
-                        if os.path.isdir(os.path.join(module_dir, module)) and
-                        module[0] is not '_']
+                             if os.path.isdir(os.path.join(module_dir, module)) and
+                             module[0] is not '_']
         return self._modules
 
     def addshot(self, shotlist=None, date=None, xp=None, verbose=False):
@@ -274,7 +283,7 @@ class Machine(MutableMapping):
                         for signal in container._signals.values():
                             if signal._contains(tag):
                                 branch_str = '.'.join([signal._get_branch(),
-                                                      signal._name])
+                                                       signal._name])
                                 find_list.add(branch_str)
                     if obj is None or obj.lower() == 'axis':
                         for signal in container._signals.values():
@@ -282,7 +291,7 @@ class Machine(MutableMapping):
                                 axis = getattr(signal, axis_str)
                                 if axis._contains(tag):
                                     branch_str = '.'.join([signal._get_branch(),
-                                                     signal._name, axis._name])
+                                                           signal._name, axis._name])
                                     find_list.add(branch_str)
                     if obj is None or obj.lower() == 'container':
                         if container._contains(tag):

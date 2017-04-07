@@ -14,7 +14,7 @@ from ....classes.container import Container, _tree_dict, init_class
 
 def create_efit_objs(self):
     for efit in self.check_efit():
-        ContainerClassName = 'Container'+efit.capitalize()
+        ContainerClassName = 'Container' + efit.capitalize()
         branch = '.'.join(['equilibria', efit])
         # ContainerClassName = ''.join(['Equilibria', efit.capitalize()])
         if branch not in _tree_dict:

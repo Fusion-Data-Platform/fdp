@@ -12,6 +12,7 @@ VERBOSE = False
 TKROOT = None
 FDP_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
 class FdpError(Exception):
     """
     Error class for FDF package
@@ -21,11 +22,13 @@ class FdpError(Exception):
         raise FdfError('error message')
 
     """
+
     def __init__(self, message=''):
         self.message = message
 
     def __str__(self):
         return self.message
+
 
 class FdpWarning(Warning):
     """
@@ -36,9 +39,9 @@ class FdpWarning(Warning):
         warnings.warn("message", FdpWarning)
 
     """
+
     def __init__(self, message=''):
         self.message = message
 
     def __str__(self):
         return self.message
-

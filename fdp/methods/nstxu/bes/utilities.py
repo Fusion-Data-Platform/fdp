@@ -8,6 +8,7 @@ Created on Fri Apr 15 15:33:23 2016
 from ....classes.fdp_globals import FdpError
 from ....classes.utilities import isSignal, isContainer
 
+
 def get_signals_in_container(container):
     """Return list of attribute names corresponding to valid signals"""
     if not isContainer(container):
@@ -23,4 +24,3 @@ def get_signals_in_container(container):
             except:
                 print('{} is empty, ignoring'.format(attrname))
     return valid_signals
-

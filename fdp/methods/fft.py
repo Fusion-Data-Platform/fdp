@@ -14,6 +14,7 @@ from ..classes.fdp_globals import FdpWarning
 from ..classes.fft import Fft
 from .listmethods import listSignals
 
+
 def fft(obj, *args, **kwargs):
     """
     Calculate FFT(s) for signal or container.
@@ -30,6 +31,7 @@ def fft(obj, *args, **kwargs):
             ffts.append(Fft(signal, *args, **kwargs))
         return ffts
 
+
 def plotfft(signal, fmax=None, *args, **kwargs):
     """
     Plot spectrogram
@@ -39,24 +41,24 @@ def plotfft(signal, fmax=None, *args, **kwargs):
         return
     sigfft = fft(signal, *args, **kwargs)
     fig = plt.figure()
-    ax = fig.add_subplot(1,1,1)
+    ax = fig.add_subplot(1, 1, 1)
     pcm = ax.pcolormesh(sigfft.time,
                         sigfft.freq,
                         sigfft.logpsd.transpose(),
                         cmap=plt.cm.YlGnBu)
-    pcm.set_clim([sigfft.logpsd.max()-100, sigfft.logpsd.max()-20])
+    pcm.set_clim([sigfft.logpsd.max() - 100, sigfft.logpsd.max() - 20])
     cb = plt.colorbar(pcm, ax=ax)
     cb.set_label(r'$10\,\log_{10}(|FFT|^2)$ $(V^2/Hz)$')
     ax.set_xlabel('Time (s)')
     ax.set_ylabel('Frequency (kHz)')
     tmin = kwargs.get('tmin', 0)
     tmax = kwargs.get('tmax', 2)
-    ax.set_xlim([tmin,tmax])
+    ax.set_xlim([tmin, tmax])
     if fmax:
         if sigfft.iscomplexsignal:
-            ax.set_ylim([-fmax,fmax])
+            ax.set_ylim([-fmax, fmax])
         else:
-            ax.set_ylim([0,fmax])
+            ax.set_ylim([0, fmax])
     ax.set_title('{} | {} | {}'.format(
                  sigfft.shot,
                  sigfft.parentname.upper(),

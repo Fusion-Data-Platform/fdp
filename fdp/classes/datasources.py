@@ -32,6 +32,7 @@ LOGBOOK_CREDENTIALS = {
     }
 }
 
+
 def machineAlias(machine):
 
     aliases = {

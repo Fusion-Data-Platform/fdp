@@ -59,7 +59,8 @@ class Logbook(object):
                     port=self._credentials['port'],
                     as_dict=True)
             except:
-                txt = '{} logbook connection failed. '.format(self._name.upper())
+                txt = '{} logbook connection failed. '.format(
+                    self._name.upper())
                 txt = txt + 'Server credentials:'
                 for key in self._credentials:
                     txt = txt + '  {0}:{1}'.format(key, self._credentials[key])
@@ -127,14 +128,14 @@ class Logbook(object):
                 print('   {shot} in XP {xp}'.format(**row))
         # add shots to shotlist
         shotlist.extend([row['shot'] for row in rows
-                        if row['shot'] is not None])
+                         if row['shot'] is not None])
 
         cursor.close()
         return np.unique(shotlist)
 
     def get_entries(self, shot=None, date=None, xp=None):
         # return list of lobgook entries (dictionaries) for shot(s)
-        shotlist=[]
+        shotlist = []
         if shot and not isinstance(shot, list):
             shot = [shot]
         if shot:

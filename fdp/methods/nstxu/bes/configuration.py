@@ -13,28 +13,30 @@ from ....classes.fdp_globals import FdpError
 from ....classes.utilities import isContainer
 from ....classes.fdp_globals import FdpWarning
 
+
 def loadConfig(container=None):
     """
     """
     if not isContainer(container):
-        raise FdpError("loadConfig() is a BES container method, not signal method")
+        raise FdpError(
+            "loadConfig() is a BES container method, not signal method")
     config_file = os.path.join(os.path.dirname(__file__), 'configuration.xml')
     tree = ET.parse(config_file)
     root = tree.getroot()
     shot = container.shot
     configname = None
     for shotrange in root:
-        if shotrange.tag=='shotrange':
+        if shotrange.tag == 'shotrange':
             start = int(shotrange.attrib['start'])
             stop = int(shotrange.attrib['stop'])
-            if shot>=start and shot<=stop:
+            if shot >= start and shot <= stop:
                 configname = shotrange.attrib['config']
                 break
     if configname is None:
         warn("Invalid shot for configuration", FdpWarning)
         return
     for config in root:
-        if config.tag=='config' and config.attrib['name']==configname:
+        if config.tag == 'config' and config.attrib['name'] == configname:
             for channel in config:
                 signal = getattr(container, channel.attrib['name'])
                 signal.row = int(channel.attrib['row'])

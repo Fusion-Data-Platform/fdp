@@ -13,6 +13,7 @@ class Node(object):
     """
     Node class
     """
+
     def __init__(self, element, parent=None):
         self._parent = parent
         self._name = element.get('name')

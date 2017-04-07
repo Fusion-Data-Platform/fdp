@@ -11,13 +11,13 @@ from warnings import warn
 import numpy as np
 import numba as nb
 #import matplotlib as mpl
-#mpl.use('TkAgg')
+# mpl.use('TkAgg')
 import matplotlib.pyplot as plt
 #import pyqtgraph as pg
 
 from ..classes.fdp_globals import FdpWarning
 
-#pg.mkQApp()
+# pg.mkQApp()
 
 
 def plot1d(signal, tmin=0.0, tmax=None, **kwargs):
@@ -64,6 +64,7 @@ def plot2d(signal, tmin=0.0, tmax=None, **kwargs):
         cbar = plt.colorbar(artist, format='%.1e')
         cbar.set_label(signal.units, rotation=270)
 
+
 def set_range(data, default_min, default_max):
     max_range = np.array(data).max()
     min_range = np.array(data).min()
@@ -77,15 +78,17 @@ def set_range(data, default_min, default_max):
     if default_min > 0.0:
         min_index = np.where(cumulative > default_min * cumulative[-1])[0][0]
         min_range = hist_data[1][min_index]
-        min_range -= 0.15*abs(min_range)
+        min_range -= 0.15 * abs(min_range)
     return min_range, max_range
 
 
 def plot3d(data, xaxis, yaxis, zaxis, **kwargs):
     print('3D')
 
+
 def update3d(value):
     pass
+
 
 def plot4d(data, xaxis, yaxis, zaxis, taxis, **kwargs):
     print('4D')
@@ -125,9 +128,9 @@ def plot(signal, fig=None, ax=None, **kwargs):
     if ax is None:
         ax = fig.add_subplot(111)
 
-    if 1: # dims > 1:
+    if 1:  # dims > 1:
         plot_methods[dims](signal, axes=ax, **defaults)
-        #fig.show()
+        # fig.show()
     else:
         if not len(fig.axes):
             ax = PlotAxes(plot_methods[dims], fig, [0.1, 0.1, 0.8, 0.8])
@@ -177,9 +180,9 @@ def plot_container(container, **kwargs):
     if plot_sigs is not None:
         plot_sigs = plot_sigs.split(',')
     vstack, hstack = tuple(map(int, stack.split(',')))
-    num = hstack*vstack
+    num = hstack * vstack
     index = 0
-    fig = plt.figure(figsize=(2+3*hstack, 4+2*vstack))
+    fig = plt.figure(figsize=(2 + 3 * hstack, 4 + 2 * vstack))
     # title = container._get_branch().upper()
     # plt.suptitle('Shot #{} {}'.format(container.shot, title),
     #              x=0.5, y=1.00, fontsize=20, horizontalalignment='center')
@@ -212,9 +215,10 @@ class PlotAxes(plt.Axes):
         index_list = []
         stride = kwargs.get('stride', 0)
         if stride:
-            stride_levels = np.floor(np.log(signal.size/3000)/np.log(stride))
+            stride_levels = np.floor(
+                np.log(signal.size / 3000) / np.log(stride))
             index_list = [numba_decimate_stride(signal, int(level))
-                          for level in np.arange(stride_levels)+1]
+                          for level in np.arange(stride_levels) + 1]
         myplot = signal, index_list, args, kwargs
         self._plot_objects.append(myplot)
         self._update_plot(myplot)
@@ -248,15 +252,16 @@ class PlotAxes(plt.Axes):
         ymin, ymax = self.get_ylim()
 
         ixmin = np.searchsorted(x, xmin, side='left')
-        ixmax = np.searchsorted(x, xmax*1.1, side='right')
+        ixmax = np.searchsorted(x, xmax * 1.1, side='right')
         stride = kwargs.pop('stride', 0)
         kwargs.pop('type', None)
         kwargs.pop('stack', None)
         stride_level = 0
         if stride:
-            stride_level = int(np.floor(np.log((ixmax-ixmin)/nx)/np.log(stride)))
+            stride_level = int(
+                np.floor(np.log((ixmax - ixmin) / nx) / np.log(stride)))
             if stride_level:
-                dec_index = index_list[stride_level-1]
+                dec_index = index_list[stride_level - 1]
                 dec_min = np.searchsorted(dec_index, ixmin, side='left')
                 dec_max = np.searchsorted(dec_index, ixmax, side='right')
                 index = dec_index[dec_min:dec_max]
@@ -269,7 +274,8 @@ class PlotAxes(plt.Axes):
             dec_index = numba_decimate(ydata)
         else:
             dec_index = decimate_plot(ydata)
-        super(PlotAxes, self).plot(xdata[dec_index], ydata[dec_index], *args, **kwargs)
+        super(PlotAxes, self).plot(
+            xdata[dec_index], ydata[dec_index], *args, **kwargs)
 
     def _set_limits(self, signal):
         if len(signal.axes) > 1:
@@ -296,7 +302,7 @@ class PlotAxes(plt.Axes):
         self.limits = ((xmin, xmax), (ymin, ymax))
 
 
-#class PyQTPlot(pg.PlotCurveItem):
+# class PyQTPlot(pg.PlotCurveItem):
 #    def __init__(self, *args, **kwds):
 #        self.hdf5 = None
 #        self.limit = 10000  # maximum number of samples to be plotted
@@ -368,20 +374,20 @@ class PlotAxes(plt.Axes):
 def decimate_plot(data, pixels=2000):
     # returns a decimated indices array to visually approximate a plot with
     # points >> pixels
-    if data.size <= pixels*2:
+    if data.size <= pixels * 2:
         return np.arange(data.size)
-    stride = (data.size-2)/(pixels-1)
-    endpoint = (pixels-1)*stride+1
-    data2D = data[1:endpoint].reshape((pixels-1, stride))
-    column_offset = np.arange(pixels-1)*stride + 1
-    data_min = data2D.argmin(axis=1)+column_offset
-    data_max = data2D.argmax(axis=1)+column_offset
+    stride = (data.size - 2) / (pixels - 1)
+    endpoint = (pixels - 1) * stride + 1
+    data2D = data[1:endpoint].reshape((pixels - 1, stride))
+    column_offset = np.arange(pixels - 1) * stride + 1
+    data_min = data2D.argmin(axis=1) + column_offset
+    data_max = data2D.argmax(axis=1) + column_offset
     data_endmin = data[endpoint:-2].argmin() + endpoint
     data_endmax = data[endpoint:-2].argmax() + endpoint
     decimate_index = np.dstack((data_min, data_max)).flatten()
     decimate_index = np.concatenate(([0], decimate_index,
                                      [data_endmin], [data_endmax],
-                                     [data.size-1]))
+                                     [data.size - 1]))
     return np.sort(decimate_index)
 
 
@@ -389,21 +395,21 @@ def decimate_plot(data, pixels=2000):
 def numba_decimate(data, pixels=2000):
     # returns a decimated indices array to visually approximate a plot with
     # points >> pixels
-    output = np.zeros(2*pixels+2, dtype=np.int64)
-    if data.size <= pixels*2:
+    output = np.zeros(2 * pixels + 2, dtype=np.int64)
+    if data.size <= pixels * 2:
         return np.arange(data.size)
-    stride = (data.size-2)/(pixels-1)
+    stride = (data.size - 2) / (pixels - 1)
     output[0] = 0
-    output[-1] = data.size-1
-    for pixel in range(1, pixels+1):
-        offset = 1 + stride * (pixel-1)
+    output[-1] = data.size - 1
+    for pixel in range(1, pixels + 1):
+        offset = 1 + stride * (pixel - 1)
         arrmin = data[offset]
         arrmax = data[offset]
         minind = offset
         maxind = offset
-        if offset+stride > data.size-1:
-            stride = data.size-offset-1
-        for index in range(offset+1, offset+stride):
+        if offset + stride > data.size - 1:
+            stride = data.size - offset - 1
+        for index in range(offset + 1, offset + stride):
             check = data[index]
             if check < arrmin:
                 minind = index
@@ -413,11 +419,11 @@ def numba_decimate(data, pixels=2000):
                     maxind = index
                     arrmax = check
         if maxind > minind:
-            output[2*pixel-1] = minind
-            output[2*pixel] = maxind
+            output[2 * pixel - 1] = minind
+            output[2 * pixel] = maxind
         else:
-            output[2*pixel-1] = maxind
-            output[2*pixel] = minind
+            output[2 * pixel - 1] = maxind
+            output[2 * pixel] = minind
     return output
 
 
@@ -425,19 +431,19 @@ def numba_decimate(data, pixels=2000):
 def numba_decimate_stride(data, stride):
     # returns a decimated indices array to visually approximate a plot with
     # points >> pixels
-    elements = 2*int((data.size-2)/stride) + 2
+    elements = 2 * int((data.size - 2) / stride) + 2
     output = np.zeros(elements, dtype=np.int64)
     output[0] = 0
-    output[-1] = data.size-1
-    for element in range(1, elements-1, 2):
-        offset = 1 + stride * (element-1)/2
+    output[-1] = data.size - 1
+    for element in range(1, elements - 1, 2):
+        offset = 1 + stride * (element - 1) / 2
         arrmin = data[offset]
         arrmax = data[offset]
         minind = offset
         maxind = offset
-        if offset+stride > data.size-1:
-            stride = data.size-offset-1
-        for index in range(offset+1, offset+stride):
+        if offset + stride > data.size - 1:
+            stride = data.size - offset - 1
+        for index in range(offset + 1, offset + stride):
             check = data[index]
             if check < arrmin:
                 minind = index
@@ -448,8 +454,8 @@ def numba_decimate_stride(data, stride):
                     arrmax = check
         if maxind > minind:
             output[element] = minind
-            output[element+1] = maxind
+            output[element + 1] = maxind
         else:
             output[element] = maxind
-            output[element+1] = minind
+            output[element + 1] = minind
     return output
