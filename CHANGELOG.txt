@@ -1,5 +1,6 @@
-Release v0.1.2
+Release v0.1.2 -- 2017-04-07
 
+5e751ce updated CHANGELOG.txt
 1db2305 misc
 cc1e355 misc
 8ae14a5 updated CHANGELOG.txt

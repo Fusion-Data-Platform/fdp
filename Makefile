@@ -6,6 +6,8 @@ nextpatchversion := $(shell bumpversion \
   grep "^new_version=.*$$" | \
   grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
 
+today := $(shell date +%F)
+
 define LEAD_AUTHORS
 Lead developers:
     David R. Smith
@@ -106,7 +108,7 @@ bump-minor: ## bump minor version and push new tag
 bump-patch: ## bump patch version and push new tag
 	@cp -f CHANGELOG.txt CHANGELOG.copy.txt
 	@rm -f CHANGELOG.txt
-	@echo "Release v$(nextpatchversion)\n" > CHANGELOG.txt
+	@echo "Release v$(nextpatchversion) -- $(today)\n" > CHANGELOG.txt
 	@git log --oneline `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.txt
 	@echo "\n" >> CHANGELOG.txt
 	@git add -A
