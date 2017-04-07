@@ -1,7 +1,26 @@
 .DEFAULT_GOAL := help
 
-DOCDIR = docs
 
+define LEAD_AUTHORS
+Lead developers:
+    David R. Smith
+    Kevin Tritz
+    Howard Yuh
+endef
+export LEAD_AUTHORS
+
+
+define FDF_SHORTLOG
+Commits from obsolete FDF repository:
+   261  David R. Smith
+    41  Kevin Tritz
+    17  ktritz
+    10  Howard Yuh
+     7  John Schmitt
+     4  hyyuh
+     2  jcschmitt
+endef
+export FDF_SHORTLOG
 
 define PRINT_HELP_PYSCRIPT
 import re, sys
@@ -38,13 +57,13 @@ docs: docs-html docs-pdf ## build HTML and PDF documents
 
 .PHONY: docs-html
 docs-html: ## build HTML documents
-	$(MAKE) -C $(DOCDIR) html
+	$(MAKE) -C docs/ html
 	@$(BROWSER) docs/build/html/index.html
 
 
 .PHONY: docs-pdf
 docs-pdf: ## build PDF documents
-	$(MAKE) -C $(DOCDIR) latexpdf
+	$(MAKE) -C docs/ latexpdf
 
 
 .PHONY: lint
@@ -56,6 +75,14 @@ lint:  ## run flake8 for code quality review
 autopep:  ## run autopep8 to fix minor pep8 violations
 	autopep8 --in-place -r fdp/
 	autopep8 --in-place -r test/
+
+
+.PHONY: authors
+authors:  ## create AUTHORS.txt
+	@echo "$$LEAD_AUTHORS" > AUTHORS.txt
+	@echo "Commits from authors:" >> AUTHORS.txt
+	@git shortlog -s -n >> AUTHORS.txt
+	@echo "$$FDF_SHORTLOG" >> AUTHORS.txt
 
 
 .PHONY: clean
