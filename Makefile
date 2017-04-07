@@ -111,6 +111,7 @@ bump-patch: ## bump patch version and push new tag
 	@echo "Release v$(nextpatchversion) -- $(today)\n" > CHANGELOG.txt
 	@git log --oneline `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.txt
 	@echo "\n" >> CHANGELOG.txt
+	@cat CHANGELOG.copy.txt >> CHANGELOG.txt
 	@git add -A
 	@git commit -m "updated CHANGELOG.txt"
 	#@bumpversion patch
