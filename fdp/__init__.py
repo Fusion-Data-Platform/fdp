@@ -7,6 +7,8 @@ Created on Wed Nov 25 19:34:56 2015
 
 from .classes import fdp
 
+__version__ = '0.1.0'
+
 def nstxu():
     return fdp.Fdp().nstxu
 
