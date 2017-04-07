@@ -87,23 +87,25 @@ authors:  ## create AUTHORS.txt
 
 .PHONY: bump-major
 bump-major: ## bump major version and push new tag
-	# `bumpversion` creates commit and tag
-	bumpversion major
+	bumpversion major # runs 'git commit' and 'git tag
 	git push --tags
 
 
 .PHONY: bump-minor
 bump-minor: ## bump minor version and push new tag
-	# `bumpversion` creates commit and tag
-	bumpversion minor
+	bumpversion minor # runs 'git commit' and 'git tag
 	git push --tags
 
 
 .PHONY: bump-patch
 bump-patch: ## bump patch version and push new tag
-	# `bumpversion` creates commit and tag
-	bumpversion patch
-	git push --tags
+	@cp CHANGELOG.txt CHANGELOG.copy.txt
+	git log --oneline `git describe --tags --abbrev=0`..HEAD > CHANGELOG.txt
+	git add CHANGELOG.txt Makefile
+	git commit -m "updated CHANGELOG.txt"
+	bumpversion --dry-run patch # runs 'git commit' and 'git tag
+	#@git push --tags
+	@rm -f CHANGELOG.copy.txt
 
 
 .PHONY: clean
