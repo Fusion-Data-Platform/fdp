@@ -76,9 +76,9 @@ class CrossSignal(object):
     def __init__(self, signal1, signal2, tmin=0.2, tmax=1.0, window='hann',
                  nperseg=None, forcepower2=False, offsetminimum=False,
                  offsetdc=False, normalizetodc=False, degrees=True,
-                 fmin=None, fmax=None, numfilttaps=None, sawteethtimes=None, 
+                 fmin=None, fmax=None, numfilttaps=None, sawteethtimes=None,
                  sawteethbins=0):
-        
+
         self.signal1 = signal1
         self.signal2 = signal2
         self.signal1time = signal1.time
@@ -100,7 +100,7 @@ class CrossSignal(object):
         self.numfilttaps = numfilttaps
         self.sawteethtimes = sawteethtimes
         self.sawteethbins = sawteethbins
-        
+
         if signal1 is signal2:
             self.same_signal = True
         else:
@@ -462,11 +462,11 @@ class CrossSignal(object):
             # Calculate cross-correlation for each segment
             #     The second input is reversed to change the convolution to a
             #     cross-correlation of the form Sum[x[i] * y[i - k]]. The
-            #     output is then reversed to put the cross-correlation into 
+            #     output is then reversed to put the cross-correlation into
             #     the more standard form Sum[x[i] * y[i + k]]
-            xcorr[i,:] = fftconvolve(signal1_seg[i,:],
-                                     signal2_seg[i,::-1])[::-1]
-            
+            xcorr[i, :] = fftconvolve(signal1_seg[i, :],
+                                      signal2_seg[i, ::-1])[::-1]
+
             # Calculate autocorrelations for each segment
             autocorr1[i, :] = fftconvolve(signal1_seg[i, :],
                                           signal1_seg[i, ::-1])[::-1]
@@ -526,21 +526,21 @@ class CrossSignal(object):
         for i in range(len(self.sawteethtimes)):
             t = self.sawteethtimes[i]
             index = np.searchsorted(self.times, t)
-            
+
             # Delete bins before and after the sawtooth crash
-            self.csd = np.delete(self.csd, range(index-self.sawteethbins, 
-                                                 index+self.sawteethbins+1),
+            self.csd = np.delete(self.csd, range(index - self.sawteethbins,
+                                                 index + self.sawteethbins + 1),
                                  axis=-1)
-            self.asd1 = np.delete(self.asd1, range(index-self.sawteethbins, 
-                                                   index+self.sawteethbins+1),
+            self.asd1 = np.delete(self.asd1, range(index - self.sawteethbins,
+                                                   index + self.sawteethbins + 1),
                                   axis=-1)
-            self.asd2 = np.delete(self.asd2, range(index-self.sawteethbins, 
-                                                   index+self.sawteethbins+1),
+            self.asd2 = np.delete(self.asd2, range(index - self.sawteethbins,
+                                                   index + self.sawteethbins + 1),
                                   axis=-1)
-            self.times = np.delete(self.times, range(index-self.sawteethbins,
-                                                     index+self.sawteethbins+1),
+            self.times = np.delete(self.times, range(index - self.sawteethbins,
+                                                     index + self.sawteethbins + 1),
                                    axis=-1)
-    
+
     def phase_slope(self, fstart, fend):
         """
         Calculate the slope of the crossphase over the user given frequency

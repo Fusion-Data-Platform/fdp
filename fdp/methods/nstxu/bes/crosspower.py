@@ -16,10 +16,10 @@ from ....classes.fdp_globals import FdpWarning
 
 
 def crosssignal(container, sig1name='ch01', sig2name='ch02',
-             tmin=0.5, tmax=0.55, window='hann', nperseg=None,
-             forcepower2=False, offsetminimum=True, offsetdc=False,
-             normalizetodc=True, degrees=True, fmin=None, fmax=None,
-             numfilttaps=None, sawteethtimes=None, sawteethbins=0):
+                tmin=0.5, tmax=0.55, window='hann', nperseg=None,
+                forcepower2=False, offsetminimum=True, offsetdc=False,
+                normalizetodc=True, degrees=True, fmin=None, fmax=None,
+                numfilttaps=None, sawteethtimes=None, sawteethbins=0):
     if not isContainer(container):
         warn("Method valid only at container-level", FdpWarning)
         return
@@ -169,10 +169,10 @@ def plotcoherence(container, *args, **kwargs):
     ax.set_ylim([0, 1])
     ax.set_xlabel('Frequency (kHz)')
     ax.set_title('{} -- {} -- {}/{} -- Coherence'.format(
-            container.shot,
-            container._name.upper(),
-            cs.signal1name.upper(),
-            cs.signal2name.upper()))
+        container.shot,
+        container._name.upper(),
+        cs.signal1name.upper(),
+        cs.signal2name.upper()))
     plt.tight_layout()
     return cs
 
