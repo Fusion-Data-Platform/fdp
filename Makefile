@@ -112,11 +112,11 @@ bump-patch: ## bump patch version and push new tag
 	@git log --oneline `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.txt
 	@echo "\n" >> CHANGELOG.txt
 	@cat CHANGELOG.copy.txt >> CHANGELOG.txt
+	@rm -f CHANGELOG.copy.txt
 	@git add -A
 	@git commit -m "updated CHANGELOG.txt"
-	#@bumpversion patch
-	#@git push --tags
-	@rm -f CHANGELOG.copy.txt
+	@bumpversion patch
+	@git push --tags
 
 
 .PHONY: clean

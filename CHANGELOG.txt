@@ -1,41 +1,7 @@
 Release v0.1.2 -- 2017-04-07
 
+40598a3 updated CHANGELOG.txt
 c66e7e6 updated CHANGELOG.txt
-5e751ce updated CHANGELOG.txt
-1db2305 misc
-cc1e355 misc
-8ae14a5 updated CHANGELOG.txt
-cc9f35a updated CHANGELOG.txt
-4bbe780 updated CHANGELOG.txt
-81a4c5b updated CHANGELOG.txt
-67bc6f1 updated CHANGELOG.txt
-e0693ed updated CHANGELOG.txt
-a379761 updated CHANGELOG.txt
-28ad5d5 updated CHANGELOG.txt
-7d00add updated CHANGELOG.txt
-4ba1ffe updated CHANGELOG.txt
-5784200 updated CHANGELOG.txt
-0166cba updated CHANGELOG.txt
-17c067b updated CHANGELOG.txt
-a262803 updated CHANGELOG.txt
-de02021 updated CHANGELOG.txt
-730c737 updated CHANGELOG.txt
-ec4cc44 updated CHANGELOG.txt
-179b44d updated CHANGELOG.txt
-d96a74a updated CHANGELOG.txt
-f50fb46 updated CHANGELOG.txt
-d2085a7 updated CHANGELOG.txt
-cdf3789 updated CHANGELOG.txt
-21489ba updated CHANGELOG.txt
-e44f558 updated CHANGELOG.txt
-7061e58 updated CHANGELOG.txt
-5817adf updated CHANGELOG.txt
-2e6f692 updated CHANGELOG.txt
-a16db5c added  recipe in Makefile
-
-
-Release v0.1.2 -- 2017-04-07
-
 5e751ce updated CHANGELOG.txt
 1db2305 misc
 cc1e355 misc
