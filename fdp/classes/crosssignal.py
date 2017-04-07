@@ -45,8 +45,7 @@ class CrossSignal(object):
         False.
     offsetminimum : bool, optional
         Offsets the signals so that the beginning of the data is near the zero
-        level. Useful for diagnostics where zero input signal leads to nonzero
-        output signal. Defaults to False.
+        level. Defaults to False.
     offsetdc : bool, optional
         Offsets each segment of the input signals so that they have zero mean.
         Cannot be used with offsetminimum or normalizetodc. Defaults to False.
@@ -65,16 +64,21 @@ class CrossSignal(object):
     numfilttaps : int, optional
         Number of FIR filter taps to use. Should be an odd number to avoid 
         phase shifting the data. Defaults to 501.
-    removesawteeth : bool, optional
-        If True, throw away time bins of cross spectral density that contain
-        sawteeth events. Defaults to False.
+    sawteethtimes : array_like, optional
+        Array of sawteeth times to be removed from cross spectral density. 
+        Defaults to not removing anything.
+    sawteethbins : int, optional
+        If sawteethtimes is specified this specifies how many additional time 
+        bins before and after each sawtooth to remove from the spectral density.
+        Defaults to 0.
     """
 
     def __init__(self, signal1, signal2, tmin=0.2, tmax=1.0, window='hann',
                  nperseg=None, forcepower2=False, offsetminimum=False,
                  offsetdc=False, normalizetodc=False, degrees=True,
-                 fmin=None, fmax=None, numfilttaps=None, removesawteeth=False):
-
+                 fmin=None, fmax=None, numfilttaps=None, sawteethtimes=None, 
+                 sawteethbins=0):
+        
         self.signal1 = signal1
         self.signal2 = signal2
         self.signal1time = signal1.time
@@ -94,8 +98,9 @@ class CrossSignal(object):
         self.fmin = fmin
         self.fmax = fmax
         self.numfilttaps = numfilttaps
-        self.removesawteeth = removesawteeth
-
+        self.sawteethtimes = sawteethtimes
+        self.sawteethbins = sawteethbins
+        
         if signal1 is signal2:
             self.same_signal = True
         else:
@@ -123,7 +128,7 @@ class CrossSignal(object):
             self.apply_normalize_to_dc()
 
         # Calculate correlations
-#        self.calc_correlation_fft()
+        self.calc_correlation_fft()
 
     def load_signals(self):
         """
@@ -320,7 +325,7 @@ class CrossSignal(object):
         self.times += (self.signal1time[0] + self.signal2time[0]) / 2
 
         # Remove bins with sawtooth crashes
-        if self.removesawteeth:
+        if self.sawteethtimes is not None:
             self.remove_sawteeth()
 
         # Record number of bins (aka # segments or # realizations) in the ffts
@@ -457,11 +462,11 @@ class CrossSignal(object):
             # Calculate cross-correlation for each segment
             #     The second input is reversed to change the convolution to a
             #     cross-correlation of the form Sum[x[i] * y[i - k]]. The
-            #     output is then reversed to put the cross-correlation into
-            #     the more standard form Sum[x[i] * y[i +k]]
-            xcorr[i, :] = fftconvolve(signal1_seg[i, :],
-                                      signal2_seg[i, ::-1])[::-1]
-
+            #     output is then reversed to put the cross-correlation into 
+            #     the more standard form Sum[x[i] * y[i + k]]
+            xcorr[i,:] = fftconvolve(signal1_seg[i,:],
+                                     signal2_seg[i,::-1])[::-1]
+            
             # Calculate autocorrelations for each segment
             autocorr1[i, :] = fftconvolve(signal1_seg[i, :],
                                           signal1_seg[i, ::-1])[::-1]
@@ -516,34 +521,26 @@ class CrossSignal(object):
 
     def remove_sawteeth(self):
         """
-        Somehow remove time bins that contain sawteeth events.
-        Note: Currently hardcoded to work only for shot 204551 with time 
-        window 0.9 - 1.2 s. In future an automatic sawteeth detection scheme 
-        using frequency domain characteristics may be implemented.
+        Remove time bins that contain sawteeth events.
         """
-
-        # Shot 204551
-        sawtooth_times = np.array([0.921, 0.944, 0.967, 0.989, 1.011, 1.036, 1.058,
-                                   1.081, 1.106, 1.127, 1.150, 1.171, 1.193])
-
-        # Shot 204963
-#        sawtooth_times = np.array([0.920,0.941,0.961,0.982,1.001,1.022,1.042,
-#                                   1.064,1.085,1.107,1.129,1.151,1.173,1.198])
-
-        for i in range(len(sawtooth_times)):
-            t = sawtooth_times[i]
+        for i in range(len(self.sawteethtimes)):
+            t = self.sawteethtimes[i]
             index = np.searchsorted(self.times, t)
-
-            # Delete 4 bins surrounding the sawtooth crash
-            self.csd = np.delete(self.csd, range(
-                index - 2, index + 3), axis=-1)
-            self.asd1 = np.delete(self.asd1, range(
-                index - 2, index + 3), axis=-1)
-            self.asd2 = np.delete(self.asd2, range(
-                index - 2, index + 3), axis=-1)
-            self.times = np.delete(self.times, range(
-                index - 2, index + 3), axis=-1)
-
+            
+            # Delete bins before and after the sawtooth crash
+            self.csd = np.delete(self.csd, range(index-self.sawteethbins, 
+                                                 index+self.sawteethbins+1),
+                                 axis=-1)
+            self.asd1 = np.delete(self.asd1, range(index-self.sawteethbins, 
+                                                   index+self.sawteethbins+1),
+                                  axis=-1)
+            self.asd2 = np.delete(self.asd2, range(index-self.sawteethbins, 
+                                                   index+self.sawteethbins+1),
+                                  axis=-1)
+            self.times = np.delete(self.times, range(index-self.sawteethbins,
+                                                     index+self.sawteethbins+1),
+                                   axis=-1)
+    
     def phase_slope(self, fstart, fend):
         """
         Calculate the slope of the crossphase over the user given frequency
