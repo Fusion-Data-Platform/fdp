@@ -12,8 +12,9 @@ from setup import SetupNstxu
 
 print('running tests in {}'.format(__file__))
 
+
 class TestNstxuDiagnostics(SetupNstxu):
-    
+
     def testSignalAxes(self, container=None):
         """
         Recursively parse tree
@@ -28,7 +29,8 @@ class TestNstxuDiagnostics(SetupNstxu):
             if isinstance(container._parent, fdp.classes.shot.Shot):
                 print('Parsing {}'.format(container._name))
             else:
-                print('Parsing {}.{}'.format(container._parent._name, container._name))
+                print('Parsing {}.{}'.format(
+                    container._parent._name, container._name))
         for attrname in dir(container):
             attr = getattr(container, attrname)
             if isContainer(attr):
@@ -51,9 +53,9 @@ class TestNstxuDiagnostics(SetupNstxu):
                 for sigattrname in dir(attr):
                     sigattr = getattr(attr, sigattrname)
                     if isAxis(sigattr):
-                        self.assertIn(sigattrname, attr.axes, 
+                        self.assertIn(sigattrname, attr.axes,
                                       "{} is axis but not in 'axes' attr for signal {}".format(
-                                      sigattrname, attr._name))
+                                          sigattrname, attr._name))
 
 
 if __name__ == '__main__':

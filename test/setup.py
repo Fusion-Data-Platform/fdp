@@ -21,4 +21,4 @@ class SetupNstxu(unittest.TestCase):
         """
         self.nstxu = fdp.nstx()
         self.shotnumber = shotnumber
-        self.shot = getattr(self.nstxu, 's'+repr(self.shotnumber))
+        self.shot = getattr(self.nstxu, 's' + repr(self.shotnumber))

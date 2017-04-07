@@ -11,17 +11,19 @@ from setup import SetupNstxu
 
 print('running tests in {}'.format(__file__))
 
+
 class TestBes(SetupNstxu):
-    
+
     def testContainerClass(self):
         self.assertTrue(hasattr(self.shot, 'bes'))
         self.assertTrue(isinstance(self.shot.bes,
                                    fdp.classes.container.Container))
-                                   
+
     def testSignalClass(self):
         self.assertTrue(hasattr(self.shot.bes, 'ch01'))
         self.assertTrue(isinstance(self.shot.bes.ch01,
                                    fdp.classes.fdpsignal.Signal))
+
 
 if __name__ == '__main__':
     unittest.main()

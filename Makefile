@@ -49,7 +49,14 @@ docs-pdf: ## build PDF documents
 
 .PHONY: lint
 lint:  ## run flake8 for code quality review
-	flake8 --exit-zero fdp/
+	flake8 --exit-zero fdp/ test/
+
+
+.PHONY: autopep
+autopep:  ## run autopep8 to fix minor pep8 violations
+	autopep8 --in-place -r fdp/
+	autopep8 --in-place -r test/
+
 
 .PHONY: clean
 clean: clean-pyc clean-docs ## remove all build, docs, and Python artifacts

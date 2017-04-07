@@ -173,13 +173,7 @@ def plotcoherence(container, *args, **kwargs):
         container._name.upper(),
         cs.signal1name.upper(),
         cs.signal2name.upper()))
-
-
-<< << << < HEAD
-
-== == == =
     plt.tight_layout()
->>>>>> > master
     return cs
 
 

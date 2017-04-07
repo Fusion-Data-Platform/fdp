@@ -15,7 +15,7 @@ print('running tests in {}'.format(__file__))
 
 
 class TestNstxu(SetupNstxu):
-        
+
     def testNstxuMachine(self):
         """
         Assert fdp has 'nstx' and 'nstxu' attributes.
@@ -25,13 +25,13 @@ class TestNstxu(SetupNstxu):
         self.assertTrue(hasattr(fdp, 'nstx'), 'fdp.nstx() missing')
         self.assertTrue(isinstance(self.nstxu, fdp.classes.machine.Machine),
                         'fdp.nstxu() does not return machine.Machine instance')
-                                   
+
     def testS0Attribute(self):
         """
         Assert nstxu has 's0' attribute
         """
         self.assertTrue(hasattr(self.nstxu, 's0'))
-        
+
     def testDiagnosticContainers(self):
         """
         Assert nstxu.s0 has diagnostic attributes
@@ -56,7 +56,7 @@ class TestNstxu(SetupNstxu):
                                        fdp.classes.container.Container),
                             '{} is not container.Container subclass'.format(
                             repr(container)))
-        
+
     def testLogbookConnection(self):
         """
         Assert Logbook object
@@ -68,11 +68,11 @@ class TestNstxu(SetupNstxu):
         logbook._make_logbook_connection()
         self.assertIsNotNone(logbook._logbook_connection,
                              'nstxu._logbook._logbook_connection is None')
-        self.assertTrue(isinstance(logbook._logbook_connection, 
+        self.assertTrue(isinstance(logbook._logbook_connection,
                                    pymssql.Connection),
                         'nstxu._logbook._logbook_connection \
                         is not pymssql.Connection instance')
-    
+
     def testMdsConnection(self):
         """
         Assert that self._connections is list of mds.Connection objects
@@ -83,6 +83,7 @@ class TestNstxu(SetupNstxu):
                              'nstxu._connections[0].socket is None')
         self.assertIsNotNone(self.nstxu._connections[0].hostspec,
                              'nstxu._connections[0].hostspec is None')
-                                   
+
+
 if __name__ == '__main__':
     unittest.main()
