@@ -106,7 +106,7 @@ bump-patch: ## bump patch version and push new tag
 	git commit -m "updated CHANGELOG.txt"
 	bumpversion --dry-run --list patch | \
 	grep "^new_version=.*$$" | \
-	grep -o "[0-9.]*"
+	grep -o "[0-9.]"
 	#@git push --tags
 	@rm -f CHANGELOG.copy.txt
 
