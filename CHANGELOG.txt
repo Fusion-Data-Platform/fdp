@@ -1,1 +1,2 @@
+2e6f692 updated CHANGELOG.txt
 a16db5c added  recipe in Makefile

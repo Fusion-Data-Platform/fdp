@@ -100,10 +100,11 @@ bump-minor: ## bump minor version and push new tag
 .PHONY: bump-patch
 bump-patch: ## bump patch version and push new tag
 	@cp CHANGELOG.txt CHANGELOG.copy.txt
+	@git rm CHANGELOG.txt
 	git log --oneline `git describe --tags --abbrev=0`..HEAD > CHANGELOG.txt
 	git add CHANGELOG.txt Makefile
 	git commit -m "updated CHANGELOG.txt"
-	bumpversion --dry-run patch # runs 'git commit' and 'git tag
+	bumpversion --dry-run patch # runs 'git commit' and 'git tag'
 	#@git push --tags
 	@rm -f CHANGELOG.copy.txt
 
