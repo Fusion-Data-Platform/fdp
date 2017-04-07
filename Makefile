@@ -1,6 +1,11 @@
 .DEFAULT_GOAL := help
 
 
+nextpatchversion := $(shell bumpversion \
+  --no-commit --no-tag --dry-run --list patch --allow-dirty | \
+  grep "^new_version=.*$$" | \
+  grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
+
 define LEAD_AUTHORS
 Lead developers:
     David R. Smith
@@ -99,17 +104,14 @@ bump-minor: ## bump minor version and push new tag
 
 .PHONY: bump-patch
 bump-patch: ## bump patch version and push new tag
-	@cp -f CHANGELOG.txt CHANGELOG.copy.txt
+	#@cp -f CHANGELOG.txt CHANGELOG.copy.txt
 	@git rm CHANGELOG.txt
 	git log --oneline `git describe --tags --abbrev=0`..HEAD > CHANGELOG.txt
-	git add -A
-	git commit -m "updated CHANGELOG.txt"
-	newversion := $(shell bumpversion --dry-run --list patch | \
-	grep "^new_version=.*$$" | \
-	grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
-	echo newversion
+	#git add -A
+	#git commit -m "updated CHANGELOG.txt"
+	echo nextpatchversion
 	#@git push --tags
-	@rm -f CHANGELOG.copy.txt
+	#@rm -f CHANGELOG.copy.txt
 
 
 .PHONY: clean
