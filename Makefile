@@ -28,15 +28,28 @@ BROWSER := python -c "$$BROWSER_PYSCRIPT"
 
 
 .PHONY: help
-help: ## show help message
+help: ## show this help message
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
 
 .PHONY: docs
-docs: ## build HTML documents
+docs: docs-html docs-pdf ## build HTML and PDF documents
+
+
+.PHONY: docs-html
+docs-html: ## build HTML documents
 	$(MAKE) -C $(DOCDIR) html
 	@$(BROWSER) docs/build/html/index.html
 
+
+.PHONY: docs-pdf
+docs-pdf: ## build PDF documents
+	$(MAKE) -C $(DOCDIR) latexpdf
+
+
+.PHONY: lint
+lint:  ## run flake8 for code quality review
+	flake8 --exit-zero fdp/
 
 .PHONY: clean
 clean: clean-pyc clean-docs ## remove all build, docs, and Python artifacts
