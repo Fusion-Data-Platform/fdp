@@ -1,3 +1,4 @@
+d96a74a updated CHANGELOG.txt
 f50fb46 updated CHANGELOG.txt
 d2085a7 updated CHANGELOG.txt
 cdf3789 updated CHANGELOG.txt
