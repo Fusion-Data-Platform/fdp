@@ -91,6 +91,14 @@ bump-minor: ## bump minor version and push new tag
 	bumpversion minor
 	git push --tags
 
+
+.PHONY: bump-patch
+bump-patch: ## bump patch version and push new tag
+	# `bumpversion` creates commit and tag
+	bumpversion patch
+	git push --tags
+
+
 .PHONY: clean
 clean: clean-pyc clean-docs ## remove all build, docs, and Python artifacts
 
