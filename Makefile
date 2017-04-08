@@ -3,15 +3,15 @@
 today := $(shell date +%F)
 
 nextmajorversion := $(shell bumpversion \
-  --no-commit --no-tag --dry-run --list major | \
+  --no-commit --no-tag --dry-run --list major --allow-dirty | \
   grep "^new_version=.*$$" | \
   grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
 nextminorversion := $(shell bumpversion \
-  --no-commit --no-tag --dry-run --list minor | \
+  --no-commit --no-tag --dry-run --list minor --allow-dirty | \
   grep "^new_version=.*$$" | \
   grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
 nextpatchversion := $(shell bumpversion \
-  --no-commit --no-tag --dry-run --list patch | \
+  --no-commit --no-tag --dry-run --list patch --allow-dirty | \
   grep "^new_version=.*$$" | \
   grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
 
@@ -66,7 +66,7 @@ help: ## show this help message
 
 
 .PHONY: docs
-docs: docs-html docs-pdf ## build HTML and PDF documents
+docs: docs-pdf docs-html ## build HTML and PDF documents
 
 
 .PHONY: docs-html
@@ -92,7 +92,7 @@ autopep:  ## run autopep8 to fix minor pep8 violations
 
 
 .PHONY: authors
-authors:  ## create AUTHORS.txt
+authors:  ## update AUTHORS.txt
 	@echo "$$LEAD_AUTHORS" > AUTHORS.txt
 	@echo "Commits from authors:" >> AUTHORS.txt
 	@git shortlog -s -n >> AUTHORS.txt
@@ -100,7 +100,7 @@ authors:  ## create AUTHORS.txt
 
 
 .PHONY: bump-major
-bump-major: authors ## bump major version, tag, and push
+bump-major: authors ## bump major version and tag
 	@cp -f CHANGELOG.txt tmp.txt
 	@rm -f CHANGELOG.txt
 	@echo "Release v$(nextmajorversion) -- $(today)\n" > CHANGELOG.txt
@@ -114,9 +114,8 @@ bump-major: authors ## bump major version, tag, and push
 
 
 .PHONY: bump-minor
-bump-minor: authors ## bump minor version, tag, and push
-	@cp -f CHANGELOG.txt tmp.txt
-	@rm -f CHANGELOG.txt
+bump-minor: authors ## bump minor version and tag
+	@mv CHANGELOG.txt tmp.txt
 	@echo "Release v$(nextminorversion) -- $(today)\n" > CHANGELOG.txt
 	@git log --oneline `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.txt
 	@echo "\n" >> CHANGELOG.txt
@@ -128,7 +127,7 @@ bump-minor: authors ## bump minor version, tag, and push
 
 
 .PHONY: bump-patch
-bump-patch: authors ## bump patch version, tag, and push
+bump-patch: authors ## bump patch version and tag
 	@cp -f CHANGELOG.txt tmp.txt
 	@rm -f CHANGELOG.txt
 	@echo "Release v$(nextpatchversion) -- $(today)\n" > CHANGELOG.txt
