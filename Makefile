@@ -100,48 +100,45 @@ authors:  ## create AUTHORS.txt
 
 
 .PHONY: bump-major
-bump-major: authors ## bump major version and push new tag
-	@cp -f CHANGELOG.txt CHANGELOG.copy.txt
+bump-major: authors ## bump major version, tag, and push
+	@cp -f CHANGELOG.txt tmp.txt
 	@rm -f CHANGELOG.txt
 	@echo "Release v$(nextmajorversion) -- $(today)\n" > CHANGELOG.txt
 	@git log --oneline `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.txt
 	@echo "\n" >> CHANGELOG.txt
-	@cat CHANGELOG.copy.txt >> CHANGELOG.txt
-	@rm -f CHANGELOG.copy.txt
+	@cat tmp.txt >> CHANGELOG.txt
+	@rm -f tmp.txt
 	@git add CHANGELOG.txt AUTHORS.txt
 	@git commit -m "updated CHANGELOG.txt and AUTHORS.txt"
 	@bumpversion major # runs 'git commit' and 'git tag'
-	@git push --tags
 
 
 .PHONY: bump-minor
-bump-minor: authors ## bump minor version and push new tag
-	@cp -f CHANGELOG.txt CHANGELOG.copy.txt
+bump-minor: authors ## bump minor version, tag, and push
+	@cp -f CHANGELOG.txt tmp.txt
 	@rm -f CHANGELOG.txt
 	@echo "Release v$(nextminorversion) -- $(today)\n" > CHANGELOG.txt
 	@git log --oneline `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.txt
 	@echo "\n" >> CHANGELOG.txt
-	@cat CHANGELOG.copy.txt >> CHANGELOG.txt
-	@rm -f CHANGELOG.copy.txt
+	@cat tmp.txt >> CHANGELOG.txt
+	@rm -f tmp.txt
 	@git add CHANGELOG.txt AUTHORS.txt
 	@git commit -m "updated CHANGELOG.txt and AUTHORS.txt"
 	@bumpversion minor # runs 'git commit' and 'git tag'
-	@git push --tags
 
 
 .PHONY: bump-patch
-bump-patch: authors ## bump patch version and push new tag
-	@cp -f CHANGELOG.txt CHANGELOG.copy.txt
+bump-patch: authors ## bump patch version, tag, and push
+	@cp -f CHANGELOG.txt tmp.txt
 	@rm -f CHANGELOG.txt
 	@echo "Release v$(nextpatchversion) -- $(today)\n" > CHANGELOG.txt
 	@git log --oneline `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.txt
 	@echo "\n" >> CHANGELOG.txt
-	@cat CHANGELOG.copy.txt >> CHANGELOG.txt
-	@rm -f CHANGELOG.copy.txt
+	@cat tmp.txt >> CHANGELOG.txt
+	@rm -f tmp.txt
 	@git add CHANGELOG.txt AUTHORS.txt
 	@git commit -m "updated CHANGELOG.txt and AUTHORS.txt"
 	@bumpversion patch # runs 'git commit' and 'git tag'
-	@git push --tags
 
 
 .PHONY: clean
