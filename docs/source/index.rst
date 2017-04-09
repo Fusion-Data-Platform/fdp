@@ -19,6 +19,7 @@ Fusion Data Platform
     user_guide
     developer_guide
     project_documents
+    Contributing <contributing>
     authors
     changelog
     license

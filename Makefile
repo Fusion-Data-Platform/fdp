@@ -82,7 +82,8 @@ docs-pdf: ## build PDF documents
 
 .PHONY: lint
 lint:  ## run flake8 for code quality review
-	flake8 --exit-zero fdp/ test/
+	@rm -f flake8.output.txt
+	flake8 --exit-zero fdp/
 
 
 .PHONY: autopep
