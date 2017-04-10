@@ -125,7 +125,7 @@ class Fft(object):
         self.nbins = self.time.size
 
     def applyMinimumOffset(self):
-        zerosignal = np.min(self.signal[0:1e4])
+        zerosignal = np.min(self.signal[1000:9000])
         self.fft -= zerosignal
 
     def applyDcOffset(self):
@@ -142,7 +142,7 @@ class Fft(object):
         self.intpower = np.sum(np.square(np.absolute(self.fft)), axis=1)
 
     def calcFft(self):
-        timeint = np.mean(np.diff(self.signal.time[0:1e4]))
+        timeint = np.mean(np.diff(self.signal.time[1000:9000]))
         # complex-valued, double-sided FFT
         self.fft = fftpack.fft(self.fft,
                                n=self.power2,

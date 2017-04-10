@@ -143,6 +143,7 @@ class Machine(MutableMapping):
             msg = 'MDSplus connection error for shot {}, tree {}, and node {}'.format(
                 signal.shot, signal._mdstree, signal._mdsnode)
             warn(msg, FdpWarning)
+            # TODO: return value of failed connection?
             return np.zeros(0)
         try:
             if hasattr(signal, '_raw_of') and signal._raw_of is not None:

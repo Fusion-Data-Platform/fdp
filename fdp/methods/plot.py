@@ -105,10 +105,10 @@ def plot(signal, fig=None, ax=None, **kwargs):
         return
 
     signal[:]
-    if signal.size == 0:
+    if not signal:
         warn("Empty signal {}".format(signal._mdsnode), FdpWarning)
     signal.time[:]
-    if signal.time.size == 0:
+    if not signal.time:
         warn("Empty signal.time {}".format(signal.time._mdsnode), FdpWarning)
 
     dims = signal.ndim
