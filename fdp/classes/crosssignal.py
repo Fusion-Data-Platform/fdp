@@ -161,9 +161,9 @@ class CrossSignal(object):
 
         """
 
-        zerolevel1 = np.mean(self.signal1[1e3:2e3])
+        zerolevel1 = np.mean(self.signal1[1000:2000])
         self.signal1 -= zerolevel1
-        zerolevel2 = np.mean(self.signal2[1e3:2e3])
+        zerolevel2 = np.mean(self.signal2[1000:2000])
         self.signal2 -= zerolevel2
 
     def make_data_window(self):
