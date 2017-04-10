@@ -41,8 +41,8 @@ def machineAlias(machine):
         'cmod': ['cmod', 'c-mod']
     }
 
-    for key, value in aliases.iteritems():
-        if machine.lower() in value:
+    for key in iter(aliases):
+        if machine.lower() in aliases[key]:
             return key
     # invalid machine name
     txt = '"{}" is not a valid machine name\n'.format(machine)

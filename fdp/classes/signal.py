@@ -43,8 +43,8 @@ class Signal(np.ndarray):
                   format(kwargs['_name'], cls))
         # ndarray.view().copy() calls __array_finalize__
         obj = np.asanyarray(input_array).view(cls).copy()
-        for key, value in kwargs.iteritems():
-            setattr(obj, key, value)
+        for key in iter(kwargs):
+            setattr(obj, key, kwargs[key])
         return obj
 
     def __init__(self, **kwargs):
@@ -75,15 +75,15 @@ class Signal(np.ndarray):
             print('          obj.axes is {}'.format(objaxes))
             print('          obj._slic is {}'.format(objslic))
 
-        for key, val in objdict.iteritems():
+        for key in iter(objdict):
             if objaxes and key in objaxes:
                 # skip copy of axis attributes
                 pass
             elif key in ['axes', 'point_axes']:
                 # shallow copy obj.axes and obj.point_axes
-                setattr(self, key, val[:])
+                setattr(self, key, objdict[key][:])
             else:
-                setattr(self, key, val)
+                setattr(self, key, objdict[key])
 
         if objdict.get('_fname') == 'transpose':
             if objaxes is not None:
