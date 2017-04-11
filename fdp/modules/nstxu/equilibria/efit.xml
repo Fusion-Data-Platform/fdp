@@ -2,10 +2,10 @@
 <container name='[efit]'>
     <axis name='time' units='s' mdsnode='\gtime'></axis>
     <axis name='atime' units='s' mdsnode='\atime'></axis>
-    <signal name='ipmeas' title='Stored Energy' units='J' axes='time' mdsnode='\ipmeas'></signal>
-    <signal name='ipmhd' title='Stored Energy' units='J' axes='time' mdsnode='\ipmhd'></signal>
-    <signal name='rmaxis' title='Stored Energy' units='J' axes='time' mdsnode='\rmaxis'></signal>
-    <signal name='zmaxis' title='Stored Energy' units='J' axes='time' mdsnode='\zmaxis'></signal>
+    <signal name='ipmeas' title='Measured plasma current' units='A' axes='time' mdsnode='\ipmeas'></signal>
+    <signal name='ipmhd' title='Fitted plasma current' units='A' axes='time' mdsnode='\ipmhd'></signal>
+    <signal name='rmaxis' title='R of magnetic axis' units='m' axes='time' mdsnode='\rmaxis'></signal>
+    <signal name='zmaxis' title='Z of magnetic axis' units='m' axes='time' mdsnode='\zmaxis'></signal>
     <signal name='bcentr' title='Vacuum toroidal field at RCENTR' units='T' axes='time' mdsnode='\bcentr'></signal>
     <signal name='bt0' title='Toroidal field at magnetic axis' units='T' axes='time' mdsnode='\bt0'></signal>
     <signal name='q0' title='Stored Energy' units='J' axes='time' mdsnode='\q0'></signal>
