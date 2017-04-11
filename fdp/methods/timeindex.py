@@ -8,15 +8,18 @@ Created on Thu Jul  7 19:10:56 2016
 import numpy as np
 
 
-def getTimeIndex(obj, time=0.0):
+def getTimeIndex(obj, time=None):
     """
     Return time index <= input time
     """
     if not obj.isSignal():
         print('getTimeIndex() is only valid for signals, returning')
         return
-    indlist = np.nonzero(obj.time <= time)
+    if time is None:
+        print('getTimeIndex() requires a numeric scalar value')
+        return
+    output = None
+    indlist = np.nonzero(obj.time > time)
     if indlist[0].size > 0:
-        return indlist[0][-1]
-    else:
-        return None
+        output = indlist[0][0]-1
+    return output

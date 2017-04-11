@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 19 15:42:07 2015
-
-@author: ktritz
-"""
 
 import warnings
-
 
 def bfield(obj, radius=None, z=None, time=None):
     # must call from equilibrium container
@@ -32,3 +26,8 @@ def bfield(obj, radius=None, z=None, time=None):
 
     # get time index
     tindex = eqdata.rmaxis.getTimeIndex(time=time)
+
+    if eqdata.mw[tindex] <= 1 or eqdata.mh[tindex] <= 1:
+        warnings.warn(
+            'Invalid reconstruction, returning')
+        return
