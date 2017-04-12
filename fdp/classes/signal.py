@@ -130,7 +130,7 @@ class Signal(np.ndarray):
                             raise FdpError('slic_axis is unexpected type')
                         for axisaxis in obj_axis.axes:
                             if isinstance(objslic[objaxes.index(axisaxis)], (int, long, float, np.generic)):
-                                self.axis.axes.remove(axisaxis)
+                                obj_axis.axes.remove(axisaxis)
                     else:
                         raise FdpError('obj._slic is unexpected type')
                 else:
