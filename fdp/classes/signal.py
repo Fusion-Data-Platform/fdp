@@ -128,9 +128,9 @@ class Signal(np.ndarray):
                             setattr(self, axis, obj_axis[slic_axis])
                         else:
                             raise FdpError('slic_axis is unexpected type')
-                        for axisaxis in obj_axis.axes:
-                            if isinstance(objslic[objaxes.index(axisaxis)], (int, long, float, np.generic)):
-                                obj_axis.axes.remove(axisaxis)
+#                        for axisaxis in obj_axis.axes:
+#                            if isinstance(objslic[objaxes.index(axisaxis)], (int, long, float, np.generic)):
+#                                obj_axis.axes.remove(axisaxis)
                     else:
                         raise FdpError('obj._slic is unexpected type')
                 else:
@@ -139,25 +139,6 @@ class Signal(np.ndarray):
                         print('        {}.__array_finalize__: copying axis {} to self'.
                               format(self._name, axis))
                     setattr(self, axis, getattr(obj, axis, None))
-            # remove all 'point_axes' keys from 'axes' list
-#            point_axes = getattr(self, 'point_axes')
-#            if point_axes:
-#                axes = getattr(self, 'axes')
-#                for pa in point_axes:
-#                    axis = pa['axis']
-#                    if VERBOSE:
-#                        print('        {}.__array_finalize__: Trying to delete {} axis'.
-#                              format(self._name, axis))
-#                    if axis in axes:
-#                        if VERBOSE:
-#                            print('removing "{}" from self.axes'.format(axis))
-#                        axes.remove(axis)
-#                    if hasattr(self, axis):
-#                        if VERBOSE:
-#                            print('deleting attr "{}" from self'.format(axis))
-#                        delattr(self, axis)
-#                setattr(self, 'axes', axes)
-        # end "if objaxes" block
 
         # clean-up temp attributes
         def delattrtry(ob, at):
