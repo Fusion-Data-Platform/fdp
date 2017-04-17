@@ -80,6 +80,14 @@ docs-pdf: ## build PDF documents
 	$(MAKE) -C docs/ latexpdf
 
 
+.PHONY: outdated
+outdated:  # list outdated conda and pip packages
+	@echo "outdated conda packages"
+	@conda update --dry-run --all
+	@echo "outdated pip packages (may be managed by conda)"
+	@pip list --outdated
+
+
 .PHONY: lint
 lint:  ## run flake8 for code quality review
 	@rm -f flake8.output.txt
