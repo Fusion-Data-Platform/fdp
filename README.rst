@@ -27,12 +27,16 @@ FDP streamlines data discovery, management, analysis methods, and visualization.
     nstxu.s204551.logbook()
     nstxu.s204551.mpts.te.plot()
     nstxu.s204551.equilibria.efit02.kappa.plot()
-    
+
 ``nstxu`` is a data object that abstracts the NSTX-U device with easy access to shots, diagnostics, signals, and data methods.  The typical heirarchy is::
 
     <machine>.<shot>.<diagnostic container>.[<possible sub-containers>].<signal>.<method>
 
 Users can discover data containers like ``mpts``, data signals like ``te``, and data methods like ``plot()`` with Python's tab-complete functionality.
+
+**Contributing**
+
+To contribute to the FDP project, see ``CONTRIBUTING.rst`` in the top-level directory or ``Contributing`` in the docs.
 
 **Lead developers**
 

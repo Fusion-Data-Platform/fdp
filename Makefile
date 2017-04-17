@@ -101,7 +101,7 @@ authors:  ## update AUTHORS.txt
 
 
 .PHONY: bump-major
-bump-major: authors ## bump major version and tag
+bump-major: authors ## update AUTHORS and CHANGELOG; bump major version and tag
 	@cp -f CHANGELOG.txt tmp.txt
 	@rm -f CHANGELOG.txt
 	@echo "Release v$(nextmajorversion) -- $(today)\n" > CHANGELOG.txt
@@ -115,7 +115,7 @@ bump-major: authors ## bump major version and tag
 
 
 .PHONY: bump-minor
-bump-minor: authors ## bump minor version and tag
+bump-minor: authors ## update AUTHORS and CHANGELOG; bump minor version and tag
 	@mv CHANGELOG.txt tmp.txt
 	@echo "Release v$(nextminorversion) -- $(today)\n" > CHANGELOG.txt
 	@git log --oneline `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.txt
@@ -128,7 +128,7 @@ bump-minor: authors ## bump minor version and tag
 
 
 .PHONY: bump-patch
-bump-patch: authors ## bump patch version and tag
+bump-patch: authors ## update AUTHORS and CHANGELOG; bump patch version and tag
 	@cp -f CHANGELOG.txt tmp.txt
 	@rm -f CHANGELOG.txt
 	@echo "Release v$(nextpatchversion) -- $(today)\n" > CHANGELOG.txt
