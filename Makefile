@@ -88,6 +88,11 @@ outdated:  # list outdated conda and pip packages
 	@pip list --outdated
 
 
+.PHONY: test
+test: ## run pytest in current Python environment
+	pytest
+
+
 .PHONY: lint
 lint:  ## run flake8 for code quality review
 	@rm -f flake8.output.txt
