@@ -103,7 +103,7 @@ class Shot(MutableMapping):
         return date
 
     def logbook(self):
-        # return a list of logbook entries (dictionaries)
+        # show logbook entries
         if not self._logbook_entries:
             self._logbook_entries = self._logbook.get_entries(shot=self.shot)
         if self._logbook_entries:
@@ -116,6 +116,12 @@ class Shot(MutableMapping):
             print('************************************')
         else:
             print('No logbook entries for {}'.format(self.shot))
+
+    def get_logbook(self):
+        # return a list of logbook entries
+        if not self._logbook_entries:
+            self._logbook_entries = self._logbook.get_entries(shot=self.shot)
+        return self._logbook_entries
 
     def check_efit(self):
         if len(self._efits):

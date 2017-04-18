@@ -93,6 +93,20 @@ test: ## run pytest in current Python environment
 	pytest
 
 
+.PHONY: coverage
+coverage: ## check test coverage and show report in terminal
+	@rm -f .coverage
+	coverage run --module pytest
+	coverage report
+
+
+.PHONY: coverage-html
+coverage-html: coverage ## check test coverage and show report in browser
+	@rm -fr htmlcov/
+	@coverage html
+	@$(BROWSER) htmlcov/index.html
+
+
 .PHONY: lint
 lint:  ## run flake8 for code quality review
 	@rm -f flake8.output.txt

@@ -16,6 +16,10 @@ class Fdp(object):
     The primary data object in FDP and the top-level container for machines.
     """
 
+    def __init__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
+
     def __getattr__(self, attribute):
         if VERBOSE:
             print('{}.__getattr__({})'.
@@ -30,7 +34,7 @@ class Fdp(object):
         # parse fdp/methods and fdp/methods/<machine_name>
         parse_method(MachineClass, level='top')
         parse_method(MachineClass, level=machine_name)
-        return MachineClass(machine_name)
+        return MachineClass(machine_name, *self.args, **self.kwargs)
 
     def __dir__(self):
         return MACHINES

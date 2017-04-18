@@ -28,6 +28,7 @@ The top-level ``Makefile`` contains several utilities for generating docs, code 
     docs                 build HTML and PDF documents
     docs-html            build HTML documents
     docs-pdf             build PDF documents
+    test                 run pytest in current Python environment
     lint                 run flake8 for code quality review
     autopep              run autopep8 to fix minor pep8 violations
     authors              update AUTHORS.txt

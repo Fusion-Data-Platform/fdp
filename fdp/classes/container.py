@@ -246,8 +246,8 @@ class Container(object):
         return path
 
     def __dir__(self):
-        items = self.__dict__.keys()
-        items.extend(self.__class__.__dict__.keys())
+        items = list(self.__dict__.keys())
+        items.extend(list(self.__class__.__dict__.keys()))
         if Signal not in self.__class__.mro():
             items.extend(self._dynamic_containers.keys())
         return [item for item in set(items).difference(self._base_items)

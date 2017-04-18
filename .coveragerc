@@ -1,0 +1,18 @@
+[run]
+source = fdp
+branch = True
+
+[report]
+show_missing = True
+ignore_errors = True
+exclude_lines =
+    pragma: no cover
+    if self.debug:
+    if debug:
+    if self.verbose:
+    if verbose:
+    if VERBOSE:
+    if __name__ == .__main__.:
+
+[html]
+directory = htmlcov

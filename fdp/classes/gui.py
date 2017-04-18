@@ -9,9 +9,10 @@ import sys
 from warnings import warn
 if sys.version_info[0] < 3:
     import Tkinter as tk
+    import ttk
 else:
     import tkinter as tk
-import ttk
+    import tkinter.ttk as ttk
 import threading
 
 import matplotlib as mpl

@@ -99,37 +99,32 @@ class Logbook(object):
         cursor = self._get_cursor()
         rows = []
         shotlist = []   # start with empty shotlist
-
-        if date and not isinstance(date, list):      # if it's just a single date
+        if not date:
+            date = []
+        if not xp:
+            xp = []
+        if date and not isinstance(date, (list,tuple)):      # if it's just a single date
             date = [date]   # put it into a list
         for d in date:
             query = ('{0} and rundate={1} ORDER BY shot ASC'.
                      format(self._shotlist_query_prefix, d))
             cursor.execute(query)
             rows.extend(cursor.fetchall())
-
-        if xp and not isinstance(xp, list):           # if it's just a single xp
+        if xp and not isinstance(xp, (list,tuple)):           # if it's just a single xp
             xp = [xp]             # put it into a list
         for x in xp:
             query = ('{0} and xp={1} ORDER BY shot ASC'.
                      format(self._shotlist_query_prefix, x))
             cursor.execute(query)
             rows.extend(cursor.fetchall())
-
         for row in rows:
             rundate = repr(row['rundate'])
             year = rundate[0:4]
             month = rundate[4:6]
             day = rundate[6:8]
             row['rundate'] = datetime.date(int(year), int(month), int(day))
-        if verbose:
-            print('date {}'.format(rows[0]['rundate']))
-            for row in rows:
-                print('   {shot} in XP {xp}'.format(**row))
         # add shots to shotlist
-        shotlist.extend([row['shot'] for row in rows
-                         if row['shot'] is not None])
-
+        shotlist.extend([row['shot'] for row in rows if row['shot'] is not None])
         cursor.close()
         return np.unique(shotlist)
 

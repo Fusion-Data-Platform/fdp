@@ -10,21 +10,21 @@ from .classes import fdp
 __version__ = '0.1.4'
 
 
-def nstxu():
-    return fdp.Fdp().nstxu
+def nstxu(*args, **kwargs):
+    return fdp.Fdp(*args, **kwargs).nstxu
 
 
-def nstx():
-    return nstxu()
+def nstx(*args, **kwargs):
+    return nstxu(*args, **kwargs)
 
 
-def diiid():
-    return fdp.Fdp().diiid
+def diiid(*args, **kwargs):
+    return fdp.Fdp(*args, **kwargs).diiid
 
 
-def d3d():
-    return diiid()
+def d3d(*args, **kwargs):
+    return diiid(*args, **kwargs)
 
 
-def cmod():
-    return fdp.Fdp().cmod
+def cmod(*args, **kwargs):
+    return fdp.Fdp(*args, **kwargs).cmod
