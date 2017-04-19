@@ -29,17 +29,17 @@ def test_shot_management():
     ishot = 0
     # load shot with machine instantiation
     nstx = fdp.nstx(shotlist=shotlist[ishot])
-    assert shotlist[ishot] in nstx._shots
+    assert shotlist[ishot] in nstx
     assert isinstance(nstx[shotlist[ishot]], fdp.classes.shot.Shot)
     # load shot with adshot() method
     ishot += 1
     nstx.addshot(shotlist=shotlist[ishot])
-    assert shotlist[ishot] in nstx._shots
+    assert shotlist[ishot] in nstx
     assert isinstance(nstx[shotlist[ishot]], fdp.classes.shot.Shot)
     # add shot by attribute reference
     ishot += 1
     shot = getattr(nstx, 's{}'.format(shotlist[ishot]))
-    assert shotlist[ishot] in nstx._shots
+    assert shotlist[ishot] in nstx
     assert isinstance(shot, fdp.classes.shot.Shot)
     # check shotlist
     assert len(dir(nstx)) == 4
@@ -68,7 +68,8 @@ def test_filter_xp(setup_nstx):
     xp1037.logbook()
     xp1037.list_shots()
     dir(xp1037)
-    xp1037._shots[0] in xp1037
+    keys = xp1037._shots.keys()
+    assert keys[0] in xp1037
 
 def test_filter_date(setup_nstx):
     nstx = setup_nstx
