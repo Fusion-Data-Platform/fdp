@@ -19,7 +19,7 @@ import matplotlib as mpl
 # mpl.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from . import fdp_globals
+from .fdp_globals import TKROOT, FdpWarning
 
 
 class BaseGui(threading.Thread):
@@ -44,9 +44,9 @@ class BaseGui(threading.Thread):
         self.start()
 
     def run(self):
-        if not fdp_globals.TKROOT:
+        if not TKROOT:
             self.topwindow = tk.Tk()
-            fdp_globals.TKROOT = self.topwindow
+            TKROOT = self.topwindow
         else:
             self.topwindow = tk.Toplevel()
         self.topwindow.title(self.title)
@@ -106,7 +106,7 @@ class BaseGui(threading.Thread):
         try:
             shot = int(self.shotEntry.get())
         except ValueError:
-            warn('Shot value is invalid', fdp_globals.FdpWarning)
+            warn('Shot value is invalid', FdpWarning)
             return
         with self.machinelock:
             self.machine.addshot(shot)
