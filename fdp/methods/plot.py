@@ -15,7 +15,7 @@ import numba as nb
 import matplotlib.pyplot as plt
 #import pyqtgraph as pg
 
-from ..classes.fdp_globals import FdpWarning
+from ..classes.globals import FdpWarning
 
 # pg.mkQApp()
 

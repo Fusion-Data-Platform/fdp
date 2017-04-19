@@ -10,7 +10,7 @@ from scipy.signal import firwin, filtfilt, fftconvolve, hilbert
 from scipy.signal.spectral import _spectral_helper
 from scipy.stats import linregress
 import numpy as np
-from .fdp_globals import FdpError, FdpWarning
+from .globals import FdpError, FdpWarning
 
 
 class CrossSignal(object):

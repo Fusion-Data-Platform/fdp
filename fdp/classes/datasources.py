@@ -7,7 +7,7 @@ Created on Fri Feb 24 12:49:36 2017
 """
 
 import os
-from .fdp_globals import FdpError
+from .globals import FdpError
 
 
 MACHINES = ['nstxu', 'diiid', 'cmod']

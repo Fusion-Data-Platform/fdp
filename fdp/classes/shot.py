@@ -9,7 +9,7 @@ import types
 import numpy as np
 from collections import MutableMapping
 from . import container
-from .fdp_globals import VERBOSE
+from .globals import VERBOSE
 
 
 class Shot(MutableMapping):

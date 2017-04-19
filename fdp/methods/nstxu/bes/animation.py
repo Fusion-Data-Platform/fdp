@@ -13,7 +13,7 @@ import scipy.interpolate
 from matplotlib import animation
 import matplotlib.pyplot as plt
 
-from ....classes.fdp_globals import FdpError
+from ....classes.globals import FdpError
 from ....classes.utilities import isContainer
 
 

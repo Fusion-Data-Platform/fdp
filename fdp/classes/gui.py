@@ -19,7 +19,7 @@ import matplotlib as mpl
 # mpl.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from .fdp_globals import TKROOT, FdpWarning
+from .globals import TKROOT, FdpWarning
 
 
 class BaseGui(threading.Thread):

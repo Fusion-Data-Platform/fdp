@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 from ....classes.crosssignal import CrossSignal
 from ....classes.utilities import isContainer
-from ....classes.fdp_globals import FdpWarning
+from ....classes.globals import FdpWarning
 
 
 def crosssignal(container, sig1name='ch01', sig2name='ch02',

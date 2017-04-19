@@ -11,7 +11,7 @@ from warnings import warn
 import MDSplus as mds
 from .logbook import Logbook
 from .shot import Shot
-from .fdp_globals import FDP_DIR, FdpError, FdpWarning, VERBOSE
+from .globals import FDP_DIR, FdpError, FdpWarning, VERBOSE
 from .datasources import machineAlias, MDS_SERVERS, EVENT_SERVERS
 
 

@@ -6,7 +6,7 @@ Created on Thu Jun 18 10:38:40 2015
 
 import os
 import numpy as np
-from .fdp_globals import FDP_DIR, VERBOSE
+from .globals import FDP_DIR, VERBOSE
 
 
 def parse_method(obj, level=None):

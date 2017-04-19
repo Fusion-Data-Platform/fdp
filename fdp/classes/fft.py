@@ -7,7 +7,7 @@ Created on Fri Apr 15 21:00:08 2016
 
 import numpy as np
 from scipy import fftpack
-from .fdp_globals import FdpError
+from .globals import FdpError
 
 
 class Fft(object):

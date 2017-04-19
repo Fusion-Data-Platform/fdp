@@ -7,7 +7,7 @@ Created on Wed Nov 25 19:35:36 2015
 
 from .machine import Machine
 from .parse import parse_method
-from .fdp_globals import VERBOSE, FdpError
+from .globals import VERBOSE, FdpError
 from .datasources import machineAlias, MACHINES
 
 

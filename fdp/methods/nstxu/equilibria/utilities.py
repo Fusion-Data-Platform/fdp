@@ -8,7 +8,7 @@ Created on Mon Oct 19 15:42:07 2015
 import xml.etree.ElementTree as ET
 import os
 
-from ....classes.fdp_globals import FDP_DIR
+from ....classes.globals import FDP_DIR
 from ....classes.container import Container, _tree_dict, init_class
 
 

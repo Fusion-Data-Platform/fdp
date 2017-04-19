@@ -10,7 +10,7 @@ from warnings import warn
 import matplotlib.pyplot as plt
 
 from ..classes.utilities import isSignal, isContainer
-from ..classes.fdp_globals import FdpWarning
+from ..classes.globals import FdpWarning
 from ..classes.fft import Fft
 from .listmethods import listSignals
 

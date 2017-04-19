@@ -7,7 +7,7 @@ Created on Wed Nov 25 12:19:00 2015
 import datetime
 import numpy as np
 import pymssql
-from .fdp_globals import FdpError
+from .globals import FdpError
 from .datasources import LOGBOOK_CREDENTIALS
 
 
