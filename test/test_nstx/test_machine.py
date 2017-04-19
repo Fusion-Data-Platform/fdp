@@ -59,7 +59,16 @@ def test_load_date():
 def test_filter_xp(setup_nstx):
     nstx = setup_nstx
     xp1037 = nstx.filter_shots(xp=1038)
+    repr(xp1037)
+    with pytest.raises(AttributeError):
+        xp1037.BadAttribute
     assert len(xp1037) == 24
+    for shot in xp1037:
+        pass
+    xp1037.logbook()
+    xp1037.list_shots()
+    dir(xp1037)
+    xp1037._shots[0] in xp1037
 
 def test_filter_date(setup_nstx):
     nstx = setup_nstx

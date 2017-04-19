@@ -127,16 +127,10 @@ class Machine(MutableMapping):
             warn(msg, FdpWarning)
             # TODO: return value of failed connection?
             return np.zeros(0)
-        try:
-            if hasattr(signal, '_raw_of') and signal._raw_of is not None:
-                data = data.raw_of()
-        except:
-            pass
-        try:
-            if hasattr(signal, '_dim_of') and signal._dim_of is not None:
-                data = data.dim_of()
-        except:
-            pass
+        if getattr(signal, '_raw_of', None) is not None:
+            data = data.raw_of()
+        if getattr(signal, '_dim_of', None) is not None:
+            data = data.dim_of()
         data = data.value_of().value
         if signal._transpose is not None:
             data = data.transpose(signal._transpose)
@@ -289,6 +283,7 @@ class ImmutableMachine(Mapping):
     def __init__(self, xp=None, date=None, parent=None):
         self._shots = {}
         self._parent = parent
+        self._name = self._parent._name
         shotlist = self._parent.get_shotlist(xp=xp, date=date)
         for shot in shotlist:
             self._shots[shot] = getattr(self._parent, 's{}'.format(shot))
