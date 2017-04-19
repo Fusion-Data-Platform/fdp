@@ -40,10 +40,14 @@ class Machine(MutableMapping):
         self._classlist = {}
         self._name = machineAlias(name)
         self._logbook = Logbook(name=self._name, root=self)
-        self._eventConnection = mds.Connection(EVENT_SERVERS[self._name])
+        event_server = EVENT_SERVERS[self._name]
+        self._eventConnection = mds.Connection('{}:{}'.format(event_server['hostname'],
+                                                              event_server['port']))
         if len(self._connections) is 0:
+            mds_server = MDS_SERVERS[self._name]
             for _ in range(2):
-                connection = mds.Connection(MDS_SERVERS[self._name])
+                connection = mds.Connection('{}:{}'.format(mds_server['hostname'],
+                                                           mds_server['port']))
                 connection.tree = None
                 self._connections.append(connection)
         self.s0 = Shot(0, root=self, parent=self)
@@ -76,8 +80,6 @@ class Machine(MutableMapping):
         self._shots.__delitem__(item)
 
     def __getitem__(self, item):
-        if VERBOSE:
-            print('{}.__getitem__({})'.format(self._name, item))
         if item == 0:
             return self.s0
         return self._shots[item]
@@ -301,6 +303,15 @@ class ImmutableMachine(Mapping):
 
     def __repr__(self):
         return '<immutable machine {}>'.format(self._name.upper())
+
+    def __iter__(self):
+        return iter(self._shots.values())
+
+    def __contains__(self, value):
+        return value in self._shots
+
+    def __len__(self):
+        return len(self._shots.keys())
 
     def __delitem__(self, item):
         pass

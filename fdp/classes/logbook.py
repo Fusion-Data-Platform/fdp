@@ -23,7 +23,7 @@ class Logbook(object):
         self._shot_query_prefix = ''
 
         self._logbook_connection = None
-        self._make_logbook_connection()
+        #self._make_logbook_connection()
 
         # dict of cached logbook entries
         # kw is shot, value is list of logbook entries
@@ -67,6 +67,8 @@ class Logbook(object):
                 raise FdpError(txt)
 
     def _get_cursor(self):
+        if not self._logbook_connection:
+            self._make_logbook_connection()
         try:
             cursor = self._logbook_connection.cursor()
             cursor.execute('SET ROWCOUNT 500')
