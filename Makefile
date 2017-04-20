@@ -1,19 +1,21 @@
 .DEFAULT_GOAL := help
 
 today := $(shell date +%F)
+nextversion := void
+versiontype := void
 
-nextmajorversion := $(shell bumpversion \
-  --no-commit --no-tag --dry-run --list major --allow-dirty | \
-  grep "^new_version=.*$$" | \
-  grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
-nextminorversion := $(shell bumpversion \
-  --no-commit --no-tag --dry-run --list minor --allow-dirty | \
-  grep "^new_version=.*$$" | \
-  grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
-nextpatchversion := $(shell bumpversion \
-  --no-commit --no-tag --dry-run --list patch --allow-dirty | \
-  grep "^new_version=.*$$" | \
-  grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
+#nextmajorversion := $(shell bumpversion \
+#  --no-commit --no-tag --dry-run --list --allow-dirty | \
+#  grep "^new_version=.*$$" | \
+# grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
+#nextminorversion := $(shell bumpversion \
+#  --no-commit --no-tag --dry-run --list --allow-dirty | \
+#  grep "^new_version=.*$$" | \
+#  grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
+#nextpatchversion := $(shell bumpversion \
+#  --no-commit --no-tag --dry-run --list --allow-dirty | \
+#  grep "^new_version=.*$$" | \
+#  grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
 
 define LEAD_AUTHORS
 Lead developers:
@@ -121,51 +123,54 @@ autopep:  ## run autopep8 to fix minor pep8 violations
 
 .PHONY: authors
 authors:  ## update AUTHORS.txt
+	@rm -f AUTHORS.txt
 	@echo "$$LEAD_AUTHORS" > AUTHORS.txt
 	@echo "Commits from authors:" >> AUTHORS.txt
 	@git shortlog -s -n >> AUTHORS.txt
 	@echo "$$FDF_SHORTLOG" >> AUTHORS.txt
 
 
-.PHONY: bump-major
-bump-major: authors ## update AUTHORS and CHANGELOG; bump major version and tag
+.PHONY: changelog
+changelog:  ## internal use only
+	$(eval nextversion := $(shell bumpversion \
+	--no-commit --no-tag --dry-run --list --allow-dirty $(versiontype) | \
+	grep "^new_version=.*$$" | \
+	grep -o "[0-9]*\.[0-9]*\.[0-9]*$$"))
 	@cp -f CHANGELOG.rst tmp.rst
 	@rm -f CHANGELOG.rst
-	@echo "Release v$(nextmajorversion) -- $(today)" > CHANGELOG.rst
-	@git log --format=tformat:"  %h  %s" `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.rst
-	@echo "" >> CHANGELOG.rst
+	@printf '%s\n' \
+	"Release v$(nextversion) -- $(today)" \
+	"=========================================" \
+	"" \
+	"::" \
+	"" > CHANGELOG.rst
+	@git log --format="  %h  %s" \
+	`git describe --tags --abbrev=0`..HEAD \
+	>> CHANGELOG.rst
+	@printf '%s\n' "" >> CHANGELOG.rst
 	@cat tmp.rst >> CHANGELOG.rst
 	@rm -f tmp.rst
-	@git add CHANGELOG.rst AUTHORS.txt
-	@git commit -m "updated CHANGELOG.rst and AUTHORS.txt"
-	@bumpversion major # runs 'git commit' and 'git tag'
+
+.PHONY: bumpversion
+bumpversion: authors changelog  ## internal use only
+	#@git add CHANGELOG.rst AUTHORS.txt
+	#@git commit -m "updated CHANGELOG.rst and AUTHORS.txt"
+	#@bumpversion $(versiontype) # runs 'git commit' and 'git tag'
+
+
+.PHONY: bump-major
+bump-major: versiontype = major
+bump-major: bumpversion ## update AUTHORS and CHANGELOG; bump major version and tag
 
 
 .PHONY: bump-minor
-bump-minor: authors ## update AUTHORS and CHANGELOG; bump minor version and tag
-	@mv CHANGELOG.rst tmp.rst
-	@echo "Release v$(nextminorversion) -- $(today)" > CHANGELOG.rst
-	@git log --oneline `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.rst
-	@echo "" >> CHANGELOG.rst
-	@cat tmp.rst >> CHANGELOG.rst
-	@rm -f tmp.rst
-	@git add CHANGELOG.rst AUTHORS.txt
-	@git commit -m "updated CHANGELOG.rst and AUTHORS.txt"
-	@bumpversion minor # runs 'git commit' and 'git tag'
+bump-minor: versiontype = minor
+bump-minor: bumpversion ## update AUTHORS and CHANGELOG; bump minor version and tag
 
 
 .PHONY: bump-patch
-bump-patch: authors ## update AUTHORS and CHANGELOG; bump patch version and tag
-	@cp -f CHANGELOG.rst tmp.rst
-	@rm -f CHANGELOG.rst
-	@echo "Release v$(nextpatchversion) -- $(today)" > CHANGELOG.rst
-	@git log --oneline `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.rst
-	@echo "" >> CHANGELOG.rst
-	@cat tmp.rst >> CHANGELOG.rst
-	@rm -f tmp.rst
-	@git add CHANGELOG.rst AUTHORS.txt
-	@git commit -m "updated CHANGELOG.rst and AUTHORS.txt"
-	@bumpversion patch # runs 'git commit' and 'git tag'
+bump-patch: versiontype = patch
+bump-patch: bumpversion ## update AUTHORS and CHANGELOG; bump patch version and tag
 
 
 .PHONY: clean
