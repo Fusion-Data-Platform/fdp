@@ -124,16 +124,20 @@ autopep:  ## run autopep8 to fix minor pep8 violations
 .PHONY: authors
 authors:  ## update AUTHORS.txt
 	@rm -f AUTHORS.txt
-	@echo "$$LEAD_AUTHORS" > AUTHORS.txt
-	@echo "Commits from authors:" >> AUTHORS.txt
+	@printf "%s\n" \
+	"$$LEAD_AUTHORS" \
+	"" \
+	"Commits from authors:" > AUTHORS.txt
 	@git shortlog -s -n >> AUTHORS.txt
-	@echo "$$FDF_SHORTLOG" >> AUTHORS.txt
+	@printf "%s\n" \
+	"" \
+	"$$FDF_SHORTLOG" >> AUTHORS.txt
 
 
 .PHONY: changelog
 changelog:  ## internal use only
 	$(eval nextversion := $(shell bumpversion \
-	--no-commit --no-tag --dry-run --list $(versiontype) | \
+	--no-commit --no-tag --dry-run --list --allow-dirty $(versiontype) | \
 	grep "^new_version=.*$$" | \
 	grep -o "[0-9]*\.[0-9]*\.[0-9]*$$"))
 	@cp -f CHANGELOG.rst tmp.rst
