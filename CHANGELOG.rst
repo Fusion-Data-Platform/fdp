@@ -1,3 +1,13 @@
+Release v0.2.3 -- 2017-04-20
+=========================================
+
+::
+
+  00e03db  bumpversion, AUTHORS, and Makefile
+  28119ae  Bump version: 0.2.1 → 0.2.2
+  64ee3f5  updated CHANGELOG.rst and AUTHORS.txt
+  c93f1c4  bumpversion and Makefile
+
 Release v0.2.2 -- 2017-04-20
 =========================================
 
