@@ -26,5 +26,5 @@ from .crosspower import crosssignal, plotcorrelation
 __all__ = ['fft', 'plotfft', 'powerspectrum',
            'animate', 'loadConfig', 'movie',
            'gui',
-           'crosssignal','plotcrosspower', 'plotcoherence', 'plotcrossphase',
+           'crosssignal', 'plotcrosspower', 'plotcoherence', 'plotcrossphase',
            'plotcorrelation']

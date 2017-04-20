@@ -9,27 +9,28 @@ import sys
 from warnings import warn
 if sys.version_info[0] < 3:
     import Tkinter as tk
+    import ttk
 else:
     import tkinter as tk
-import ttk
+    import tkinter.ttk as ttk
 import threading
 
 import matplotlib as mpl
-#mpl.use('TkAgg')
+# mpl.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from . import fdp_globals
+from .globals import TKROOT, FdpWarning
 
 
 class BaseGui(threading.Thread):
     """
     Base GUI class for FDP GUIs.
-    
+
     Class attributes enable setting shot/times across all GUIs derived from
     this base class.
     """
 
-    def __init__(self, obj, title='FDP GUI', parent=None, 
+    def __init__(self, obj, title='FDP GUI', parent=None,
                  defaultwidgets=True):
         super(BaseGui, self).__init__()
         self.title = title
@@ -43,38 +44,38 @@ class BaseGui(threading.Thread):
         self.start()
 
     def run(self):
-        if not fdp_globals.TKROOT:
+        if not TKROOT:
             self.topwindow = tk.Tk()
-            fdp_globals.TKROOT = self.topwindow
+            TKROOT = self.topwindow
         else:
             self.topwindow = tk.Toplevel()
         self.topwindow.title(self.title)
-        self.controlframe = ttk.Frame(master=self.topwindow, 
-                                      borderwidth=3, 
-                                      relief='ridge', 
+        self.controlframe = ttk.Frame(master=self.topwindow,
+                                      borderwidth=3,
+                                      relief='ridge',
                                       padding=2)
         self.controlframe.pack(side='left', fill='y')
         # dummy frame to set controlframe width
         controlwidth = ttk.Frame(master=self.controlframe, width=125)
         controlwidth.pack(side='top', fill='x')
-        
+
         if self.defaultwidgets:
             self.addDefaultWidgets()
-        
+
         self.figure = mpl.figure.Figure()
-        self.figureframe = ttk.Frame(master=self.topwindow, 
+        self.figureframe = ttk.Frame(master=self.topwindow,
                                      borderwidth=3,
                                      relief='ridge')
         self.figureframe.pack(side='left', expand=1, fill='both')
-        self.canvas = FigureCanvasTkAgg(self.figure, 
+        self.canvas = FigureCanvasTkAgg(self.figure,
                                         master=self.figureframe)
         self.canvas.get_tk_widget().pack(expand=1, fill='both')
-        
+
         self.plotObject()
-        
+
         self.topwindow.after(5000, self.checkShotKeys)
         self.topwindow.mainloop()
-        
+
     def checkShotKeys(self):
         self.machinelock.acquire()
         with self.machinelock:
@@ -85,7 +86,7 @@ class BaseGui(threading.Thread):
                     self.shotList.insert(i, key)
             self.shotkeys = newkeys
         self.topwindow.after(1000, self.checkShotKeys)
-        
+
     def addDefaultWidgets(self):
         self.shotEntry = self.insertButtonEntry(text='Add shot',
                                                 command=self.addShot)
@@ -93,40 +94,40 @@ class BaseGui(threading.Thread):
         self.insertShotListbox()
         self.tminEntry = self.insertTextEntry(text='Tmin (ms):  ')
         self.tmaxEntry = self.insertTextEntry(text='Tmax (ms):  ')
-        self.closeButton = self.insertButton(text='Close', 
+        self.closeButton = self.insertButton(text='Close',
                                              command=self.topwindow.destroy)
-        self.printButton = self.insertButton(text='Save', 
+        self.printButton = self.insertButton(text='Save',
                                              command=None)
-        
+
     def shotEntryEvent(self, event):
         self.addShot()
-        
+
     def addShot(self):
         try:
             shot = int(self.shotEntry.get())
         except ValueError:
-            warn('Shot value is invalid', fdp_globals.FdpWarning)
+            warn('Shot value is invalid', FdpWarning)
             return
         with self.machinelock:
             self.machine.addshot(shot)
         self.checkShotKeys()
-    
+
     def plotObject(self):
         self.axes = self.figure.add_subplot(111)
         self.obj.plot(fig=self.figure, ax=self.axes)
         self.canvas.show()
-        
+
     def insertButtonEntry(self, text=None, width=8, command=None):
         frame = ttk.Frame(master=self.controlframe, padding=2)
         frame.pack(side='top', fill='x')
-        button = ttk.Button(master=frame, 
+        button = ttk.Button(master=frame,
                             text=text,
                             command=command)
         button.pack(side='left')
         entry = ttk.Entry(master=frame, width=width)
         entry.pack(side='right')
         return entry
-        
+
     def insertTextEntry(self, text=None, width=8):
         frame = ttk.Frame(master=self.controlframe, padding=2)
         frame.pack(side='top', fill='x')
@@ -149,11 +150,11 @@ class BaseGui(threading.Thread):
         for key in self.shotkeys:
             self.shotList.insert(tk.END, key)
         self.shotList.pack(side='right', anchor=tk.N)
-        
+
     def insertButton(self, text=None, width=20, command=None):
         frame = ttk.Frame(master=self.controlframe, padding=2)
         frame.pack(side='bottom', fill='x')
-        button = ttk.Button(master=frame, text=text, 
+        button = ttk.Button(master=frame, text=text,
                             command=command,
                             width=width)
         button.pack(side='left')

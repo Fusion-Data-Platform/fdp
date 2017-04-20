@@ -14,4 +14,3 @@ def change_units(signal, data):
         data *= 1.e6
         signal.units = 'm^-3'
     return data
-    

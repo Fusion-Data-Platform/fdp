@@ -1,88 +1,45 @@
 .. Restructured Text (RST) Syntax Primer: http://sphinx-doc.org/rest.html
 
 Fusion Data Platform
-==============================
+===========================
 
-Fusion Data Platform (FDP) is a data framework in Python for magnetic fusion experiments.  FDP streamlines data discovery, analysis methods, and visualization.
+Fusion Data Platform (FDP) is a data framework in Python for magnetic fusion experiments.
+FDP streamlines data discovery, management, analysis methods, and visualization.
 
-* Github repository: https://github.com/Fusion-Data-Platform/fdp
+* Github: https://github.com/Fusion-Data-Platform/fdp
 * Documentation: http://Fusion-Data-Platform.github.io/
+* Google group: https://groups.google.com/forum/#!forum/fusion-data-platform
 
-Project objectives
-==============================
+**Description and features**
 
-* Integrate data sources, data, and analysis methods in a single, extensible data object
+* An extensible software layer that unites data access, management, analysis, and visualization
+* A descriptive data object that users can query to find data and analysis methods
+* Data access tasks (servers, trees, nodes, queries) are handled behind the scenes
+* A collaborative development platform for data analysis tools
+* Built with popular, open-source packages like Numpy and Matplotlib
 
-  * Streamline data access for multiple facilities, diagnostics, and databases
-  * Organize data and analysis methods in an intuitive object-oriented framework
+**Example usage**
 
-* Promote collaborative code development and reduce inefficient code duplication
+.. code-block:: python
 
-* Reduce barriers to entry for new students and scientists
+    import fdp
+    nstxu = fdp.nstxu()
+    nstxu.s204551.logbook()
+    nstxu.s204551.mpts.te.plot()
+    nstxu.s204551.equilibria.efit02.kappa.plot()
 
-* Free components and flexible usage
+``nstxu`` is a data object that abstracts the NSTX-U device with easy access to shots, diagnostics, signals, and data methods.  The typical heirarchy is::
 
-  * Python, Numpy, Matplotlib, Github, etc.
-  * Platform-independent: desktop Mac/PC, Linux cluster
-  * Command-line tool or import into code
+    <machine>.<shot>.<diagnostic container>.[<possible sub-containers>].<signal>.<method>
 
-Example usage
-==============================
+Users can discover data containers like ``mpts``, data signals like ``te``, and data methods like ``plot()`` with Python's tab-complete functionality.
 
-Initiate an FDP session::
+**Contributing**
 
-    >>> import fdp
-    >>> nstxu = fdp.nstxu()
+To contribute to the FDP project, see ``CONTRIBUTING.rst`` in the top-level directory or ``Contributing`` in the docs.
 
-List diagnostics::
-
-    >>> dir(nstxu.s141000)
-    ['bes', 'chers', 'equilibria', 'filterscopes', 'magnetics', 'mpts', 'mse', 'usxr']
-
-View logbook entries::
-    
-    >>> nstxu.s141000.logbook()
-
-List signals::
-
-    >>> nstxu.s141000.equilibria.efit02.listSignals()
-    ['psirz', 'qpsi', 'shot', 'userid', 'wmhd']
-    >>> nstxu.s204620.chers.listSignals()
-    ['ft', 'nc', 'ti', 'valid', 'vt']
-
-Plot a signal::
-
-    >>> nstxu.s141000.mpts.te.plot()
-
-List methods for a signal::
-
-    >>> nstxu.s141000.bes.d1ch01.listMethods()
-    ['animate', 'fft', 'loadConfig', 'plotfft']
-
-Load shots for an XP::
-
-    >>> xp1013 = nstxu.filter_shots(xp=1013)
-    >>> dir(xp1013)
-    ['s141382', 's141383', 's141384', 's141385', 's141386', 's141387', 
-    's141388', 's141389', 's141390', 's141391', 's141392', 's141393', 
-    's141394', 's141395', 's141396', 's141397', 's141398', 's141399', 
-    's141400', 's141401', 's141402', 's141403', 's141404', 's141405', 
-    's141406', 's141407', 's141408', 's141409', 's141410', 's141411', 
-    's141412', 's141413', 's141414']
-
-As the examples above illustrate, the FDP data object is organized like this::
-
-    <machine>.<shot>.<diagnostic>.<signal>.<method>
-
-or, for diagnostic sub-containers like spline profiles and x-ray arrays::
-
-    <machine>.<shot>.<diagnostic>.<sub-container>.<signal>.<method>
-
-Lead developers
-==============================
+**Lead developers**
 
 * David R. Smith, U. Wisconsin-Madison
 * Kevin Tritz, The Johns Hopkins U.
 * Howard Yuh, Nova Photonics
-
-PPPL cluster support from John Schmitt

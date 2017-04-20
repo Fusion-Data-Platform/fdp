@@ -9,8 +9,9 @@ import fdp
 
 nstx = fdp.nstx()
 
-eq=nstx.s204551.equilibria.efit01
-eq.ipmeas.plot()
+eq=nstx.s204551.equilibria
 
-eq2=nstx.s204551.equilibria.efit02
-eq2.kappa.plot()
+efit02 = eq.efit02
+efit02.ipmeas.plot()
+
+efit02.bfield(radius=145, time=0.6)

@@ -7,17 +7,24 @@ Created on Wed Nov 25 19:34:56 2015
 
 from .classes import fdp
 
-def nstxu():
-    return fdp.Fdp().nstxu
+__version__ = '0.2.0'
 
-def nstx():
-    return nstxu()
 
-def diiid():
-    return fdp.Fdp().diiid
+def nstxu(*args, **kwargs):
+    return fdp.Fdp(*args, **kwargs).nstxu
 
-def d3d():
-    return diiid()
 
-def cmod():
-    return fdp.Fdp().cmod
+def nstx(*args, **kwargs):
+    return nstxu(*args, **kwargs)
+
+
+def diiid(*args, **kwargs):
+    return fdp.Fdp(*args, **kwargs).diiid
+
+
+def d3d(*args, **kwargs):
+    return diiid(*args, **kwargs)
+
+
+def cmod(*args, **kwargs):
+    return fdp.Fdp(*args, **kwargs).cmod

@@ -220,9 +220,9 @@ Class ``Node``
 .. autoclass:: fdp.classes.node.Node
     :members:
 
-Module ``fdp.classes.fdp_globals``
+Module ``fdp.classes.globals``
 ====================================
-.. automodule:: fdp.classes.fdp_globals
+.. automodule:: fdp.classes.globals
     :members:
 
 Module ``fdp.classes.factory``

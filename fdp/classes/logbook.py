@@ -7,7 +7,7 @@ Created on Wed Nov 25 12:19:00 2015
 import datetime
 import numpy as np
 import pymssql
-from .fdp_globals import FdpError
+from .globals import FdpError
 from .datasources import LOGBOOK_CREDENTIALS
 
 
@@ -23,7 +23,7 @@ class Logbook(object):
         self._shot_query_prefix = ''
 
         self._logbook_connection = None
-        self._make_logbook_connection()
+        #self._make_logbook_connection()
 
         # dict of cached logbook entries
         # kw is shot, value is list of logbook entries
@@ -59,13 +59,16 @@ class Logbook(object):
                     port=self._credentials['port'],
                     as_dict=True)
             except:
-                txt = '{} logbook connection failed. '.format(self._name.upper())
+                txt = '{} logbook connection failed. '.format(
+                    self._name.upper())
                 txt = txt + 'Server credentials:'
                 for key in self._credentials:
                     txt = txt + '  {0}:{1}'.format(key, self._credentials[key])
                 raise FdpError(txt)
 
     def _get_cursor(self):
+        if not self._logbook_connection:
+            self._make_logbook_connection()
         try:
             cursor = self._logbook_connection.cursor()
             cursor.execute('SET ROWCOUNT 500')
@@ -98,43 +101,38 @@ class Logbook(object):
         cursor = self._get_cursor()
         rows = []
         shotlist = []   # start with empty shotlist
-
-        if date and not isinstance(date, list):      # if it's just a single date
+        if not date:
+            date = []
+        if not xp:
+            xp = []
+        if date and not isinstance(date, (list,tuple)):      # if it's just a single date
             date = [date]   # put it into a list
         for d in date:
             query = ('{0} and rundate={1} ORDER BY shot ASC'.
                      format(self._shotlist_query_prefix, d))
             cursor.execute(query)
             rows.extend(cursor.fetchall())
-
-        if xp and not isinstance(xp, list):           # if it's just a single xp
+        if xp and not isinstance(xp, (list,tuple)):           # if it's just a single xp
             xp = [xp]             # put it into a list
         for x in xp:
             query = ('{0} and xp={1} ORDER BY shot ASC'.
                      format(self._shotlist_query_prefix, x))
             cursor.execute(query)
             rows.extend(cursor.fetchall())
-
         for row in rows:
             rundate = repr(row['rundate'])
             year = rundate[0:4]
             month = rundate[4:6]
             day = rundate[6:8]
             row['rundate'] = datetime.date(int(year), int(month), int(day))
-        if verbose:
-            print('date {}'.format(rows[0]['rundate']))
-            for row in rows:
-                print('   {shot} in XP {xp}'.format(**row))
         # add shots to shotlist
-        shotlist.extend([row['shot'] for row in rows
-                        if row['shot'] is not None])
-
+        shotlist.extend([row['shot'] for row in rows if row['shot'] is not None])
         cursor.close()
         return np.unique(shotlist)
 
     def get_entries(self, shot=None, date=None, xp=None):
         # return list of lobgook entries (dictionaries) for shot(s)
-        shotlist=[]
+        shotlist = []
         if shot and not isinstance(shot, list):
             shot = [shot]
         if shot:

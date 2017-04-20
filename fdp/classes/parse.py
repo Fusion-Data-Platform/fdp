@@ -6,12 +6,13 @@ Created on Thu Jun 18 10:38:40 2015
 
 import os
 import numpy as np
-from .fdp_globals import FDP_DIR, VERBOSE
+from .globals import FDP_DIR, VERBOSE
 
 
 def parse_method(obj, level=None):
     def debug(msg=''):
-        if VERBOSE: print('parse_method(): {}'.format(msg))
+        if VERBOSE:
+            print('parse_method(): {}'.format(msg))
     debug('begin')
     if level is 'top':
         # logic for initial parse of fdp/methods
@@ -22,7 +23,7 @@ def parse_method(obj, level=None):
         # logic for parsing fdp/methods/<machine>
         module = obj._name
         method_path = os.path.join(FDP_DIR, 'methods')
-        module_chain = 'methods.'+module
+        module_chain = 'methods.' + module
     else:
         # logic for parsing everything below fdp/methods/<machine>
         branch = obj._get_branch()
@@ -38,7 +39,8 @@ def parse_method(obj, level=None):
     debug('finding {}'.format(module_chain))
     if os.path.exists(os.path.join(method_path, module)):
         debug('importing {}'.format(module_chain))
-        method_object = __import__(module_chain, globals(), locals(), ['__file__'], 2)
+        method_object = __import__(
+            module_chain, globals(), locals(), ['__file__'], 2)
         if hasattr(method_object, '__all__') and method_object.__all__:
             debug('{}.__all__ exists'.format(module_chain))
             for method in method_object.__all__:
@@ -82,9 +84,11 @@ def fill_signal_dict(name=None, units=None, axes=None,
             '_empty': True,
             'point_axes': []}
 
+
 def parse_signal(obj, element):
     def debug(msg=''):
-        if VERBOSE: print('parse_signal(): {}'.format(msg))
+        if VERBOSE:
+            print('parse_signal(): {}'.format(msg))
     debug('begin with obj {} and element {}'.
           format(obj._name, element.get('name')))
     units = parse_units(obj, element)
@@ -124,14 +128,14 @@ def parse_signal(obj, element):
             nameend = int(name_list[0])
         else:
             start = int(number_list[0])
-            end = int(number_list[1])+1
+            end = int(number_list[1]) + 1
             namestart = int(name_list[0])
-            nameend = int(name_list[1])+1
+            nameend = int(name_list[1]) + 1
         signal_dict = []
-        if len(name_list)==3:
+        if len(name_list) == 3:
             digits = int(name_list[2])
         else:
-            digits = int(np.ceil(np.log10(end-1)))
+            digits = int(np.ceil(np.log10(end - 1)))
         for i, index in enumerate(range(start, end)):
             nrange = range(namestart, nameend)
             name = element.get('name').format(str(nrange[i]).zfill(digits))

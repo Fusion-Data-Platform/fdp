@@ -1,0 +1,8 @@
+[flake8]
+exclude = docs
+max-line-length = 79
+show-source = True
+statistics = True
+output-file = flake8.output.txt
+tee = True
+max-complexity = 10

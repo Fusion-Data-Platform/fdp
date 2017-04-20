@@ -9,14 +9,15 @@ import types
 import numpy as np
 from collections import MutableMapping
 from . import container
-from .fdp_globals import VERBOSE
+from .globals import VERBOSE
 
 
 class Shot(MutableMapping):
 
     def __init__(self, shot, root=None, parent=None):
         self.shot = shot
-        if VERBOSE: print('  s{}.__init__'.format(self.shot))
+        if VERBOSE:
+            print('  s{}.__init__'.format(self.shot))
         #self._shotobj = self
         self._root = root
         self._parent = parent
@@ -28,11 +29,13 @@ class Shot(MutableMapping):
         self._efits = []
 
     def __getattr__(self, attribute):
-        if VERBOSE: print('  s{}.__getattr__({})'.format(self.shot, attribute))
+        if VERBOSE:
+            print('  s{}.__getattr__({})'.format(self.shot, attribute))
         if attribute in self._modules:
             if self._modules[attribute] is None:
-                if VERBOSE: print('  s{}.__getattr__({}) calling Factory()'.
-                                  format(self.shot, attribute))
+                if VERBOSE:
+                    print('  s{}.__getattr__({}) calling Factory()'.
+                          format(self.shot, attribute))
                 self._modules[attribute] = container.Factory(attribute,
                                                              root=self._root,
                                                              shot=self.shot,
@@ -66,7 +69,8 @@ class Shot(MutableMapping):
         pass
 
     def __getitem__(self, item):
-        if VERBOSE: print('  s{}.__getitem__({})'.format(self.shot, item))
+        if VERBOSE:
+            print('  s{}.__getitem__({})'.format(self.shot, item))
         return self._modules[item]
 
     def __setitem__(self, item, value):
@@ -99,7 +103,7 @@ class Shot(MutableMapping):
         return date
 
     def logbook(self):
-        # return a list of logbook entries (dictionaries)
+        # show logbook entries
         if not self._logbook_entries:
             self._logbook_entries = self._logbook.get_entries(shot=self.shot)
         if self._logbook_entries:
@@ -112,6 +116,12 @@ class Shot(MutableMapping):
             print('************************************')
         else:
             print('No logbook entries for {}'.format(self.shot))
+
+    def get_logbook(self):
+        # return a list of logbook entries
+        if not self._logbook_entries:
+            self._logbook_entries = self._logbook.get_entries(shot=self.shot)
+        return self._logbook_entries
 
     def check_efit(self):
         if len(self._efits):

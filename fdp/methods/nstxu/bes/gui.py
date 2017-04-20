@@ -18,7 +18,7 @@ class BesGui(BaseGui):
         channels = ['ch01', 'ch09', 'ch17',
                     'ch25', 'ch33', 'ch41']
         for i, channel in enumerate(channels):
-            ax = self.figure.add_subplot(2, 3, i+1)
+            ax = self.figure.add_subplot(2, 3, i + 1)
             ch = getattr(self.obj, channel)
             ch.plot(fig=self.figure, ax=ax)
         self.canvas.show()

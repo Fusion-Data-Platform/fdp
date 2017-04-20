@@ -10,5 +10,13 @@ import fdp
 
 nstx = fdp.nstx()
 
-eq = nstx.s204551.equilibria.efit01
-print(eq.psirz)
+psirz = nstx.s204551.equilibria.efit01.psirz
+psirz[:]
+print(psirz.shape, psirz.R.axes, dir(psirz.R))
+print(psirz)
+print(psirz.shape, psirz.R.axes, dir(psirz.R))
+
+b = psirz[0,:,:]
+#print(b.shape, b.R.axes, dir(b.R))
+#print(b)
+#print(b.shape, b.R.axes, dir(b.R))
