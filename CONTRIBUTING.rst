@@ -3,7 +3,7 @@ How to contribute
 ========================
 
 * Github repository: https://github.com/Fusion-Data-Platform/fdp
-* Submit bugs and feature requests as Github issues: https://github.com/Fusion-Data-Platform/fdp/issues
+* Bugs and feature requests: https://github.com/Fusion-Data-Platform/fdp/issues
 * Google group: https://groups.google.com/forum/#!forum/fusion-data-platform
 
 **Code**
@@ -15,7 +15,7 @@ Thank you for your interest in the FDP project.  To contribute to the FDP code b
 
 **Style**
 
-Please try to follow the `PEP8 style guide <https://www.python.org/dev/peps/pep-0008/>`_.  To scan for PEP8 conformance, run ``make lint`` in the top-level directory.
+Try to follow the `PEP8 style guide <https://www.python.org/dev/peps/pep-0008/>`_.  To scan for PEP8 conformance, run ``make lint`` in the top-level directory.
 
 **Makefile utilities**
 
@@ -29,6 +29,8 @@ The top-level ``Makefile`` contains several utilities for generating docs, code 
     docs-html            build HTML documents
     docs-pdf             build PDF documents
     test                 run pytest in current Python environment
+    coverage             check test coverage and show report in terminal
+    coverage-html        check test coverage and show report in browser
     lint                 run flake8 for code quality review
     autopep              run autopep8 to fix minor pep8 violations
     authors              update AUTHORS.txt
@@ -38,4 +40,3 @@ The top-level ``Makefile`` contains several utilities for generating docs, code 
     clean                remove all build, docs, and Python artifacts
     clean-docs           remove docs/build
     clean-pyc            remove Python file artifacts
-

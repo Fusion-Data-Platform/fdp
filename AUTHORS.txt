@@ -2,12 +2,14 @@ Lead developers:
     David R. Smith
     Kevin Tritz
     Howard Yuh
+
 Commits from authors:
-   277	David R. Smith
+   289	David R. Smith
     37	ktritz
     22	dmkriete
      2	hyyuh
      1	Howard Yuh
+
 Commits from obsolete FDF repository:
    261  David R. Smith
     41  Kevin Tritz
