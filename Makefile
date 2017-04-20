@@ -133,7 +133,7 @@ authors:  ## update AUTHORS.txt
 .PHONY: changelog
 changelog:  ## internal use only
 	$(eval nextversion := $(shell bumpversion \
-	--no-commit --no-tag --dry-run --list --allow-dirty $(versiontype) | \
+	--no-commit --no-tag --dry-run --list $(versiontype) | \
 	grep "^new_version=.*$$" | \
 	grep -o "[0-9]*\.[0-9]*\.[0-9]*$$"))
 	@cp -f CHANGELOG.rst tmp.rst
@@ -153,24 +153,24 @@ changelog:  ## internal use only
 
 .PHONY: bumpversion
 bumpversion: authors changelog  ## internal use only
-	#@git add CHANGELOG.rst AUTHORS.txt
-	#@git commit -m "updated CHANGELOG.rst and AUTHORS.txt"
-	#@bumpversion $(versiontype) # runs 'git commit' and 'git tag'
+	@git add CHANGELOG.rst AUTHORS.txt
+	@git commit -m "updated CHANGELOG.rst and AUTHORS.txt"
+	@bumpversion $(versiontype) # runs 'git commit'
 
 
 .PHONY: bump-major
 bump-major: versiontype = major
-bump-major: bumpversion ## update AUTHORS and CHANGELOG; bump major version and tag
+bump-major: bumpversion ## update AUTHORS and CHANGELOG; bump major version and commit
 
 
 .PHONY: bump-minor
 bump-minor: versiontype = minor
-bump-minor: bumpversion ## update AUTHORS and CHANGELOG; bump minor version and tag
+bump-minor: bumpversion ## update AUTHORS and CHANGELOG; bump minor version and commit
 
 
 .PHONY: bump-patch
 bump-patch: versiontype = patch
-bump-patch: bumpversion ## update AUTHORS and CHANGELOG; bump patch version and tag
+bump-patch: bumpversion ## update AUTHORS and CHANGELOG; bump patch version and commit
 
 
 .PHONY: clean
