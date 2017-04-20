@@ -3,7 +3,7 @@ Lead developers:
     Kevin Tritz
     Howard Yuh
 Commits from authors:
-   204	David R. Smith
+   277	David R. Smith
     37	ktritz
     22	dmkriete
      2	hyyuh
