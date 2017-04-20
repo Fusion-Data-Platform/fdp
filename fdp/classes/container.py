@@ -184,14 +184,9 @@ class Container(object):
             print('    {}.__init__() End module parsing'.format(self._name))
 
     def __getattr__(self, attribute):
-        if VERBOSE:
-            print('    {}.__getattr__({})'.format(self._name, attribute))
         try:
             if self._dynamic_containers[attribute] is None:
                 branch_path = '.'.join([self._get_branch(), attribute])
-                if VERBOSE:
-                    print('    {}.__getattr__({}) calling Factory()'.
-                          format(self._name, attribute))
                 self._dynamic_containers[attribute] = \
                     Factory(branch_path, root=self._root,
                             shot=self.shot, parent=self)
@@ -199,28 +194,19 @@ class Container(object):
             return self._dynamic_containers[attribute]
         except KeyError:
             pass
-
         if not hasattr(self, '_parent') or self._parent is None:
             raise AttributeError("Attribute '{}' not found".format(attribute))
-
         if hasattr(self._parent, '_signals') and \
                 attribute in self._parent._signals:
             raise AttributeError("Attribute '{}' not found".format(attribute))
-
         attr = getattr(self._parent, attribute)
         if 'Shot' in str(type(attr)):
             raise AttributeError("Attribute '{}' not found".format(attribute))
         if Container in attr.__class__.mro() and attribute[0] is not '_':
             raise AttributeError("Attribute '{}' not found".format(attribute))
         if inspect.ismethod(attr):
-            if VERBOSE:
-                print('    {}.__getattr__({}) returning parent method'.
-                      format(self._name, attribute))
             return types.MethodType(attr.__func__, self)
         else:
-            if VERBOSE:
-                print('    {}.__getattr__({}) returning parent attr'.
-                      format(self._name, attribute))
             return attr
 
     def _get_dynamic_containers(self):

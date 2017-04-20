@@ -319,8 +319,6 @@ class Signal(np.ndarray):
         return self.__getitem__(slice(start, stop))
 
     def __call__(self, **kwargs):
-        if VERBOSE:
-            print('      {}.__call__ BEGIN'.format(self._name))
         try:
             slc = [slice(None)] * len(self.axes)
         except TypeError:

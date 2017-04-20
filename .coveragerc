@@ -1,6 +1,6 @@
 [run]
 source = fdp
-branch = True
+branch = False
 
 [report]
 show_missing = True
