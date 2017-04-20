@@ -129,42 +129,42 @@ authors:  ## update AUTHORS.txt
 
 .PHONY: bump-major
 bump-major: authors ## update AUTHORS and CHANGELOG; bump major version and tag
-	@cp -f CHANGELOG.txt tmp.txt
-	@rm -f CHANGELOG.txt
-	@echo "Release v$(nextmajorversion) -- $(today)\n" > CHANGELOG.txt
-	@git log --oneline `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.txt
-	@echo "\n" >> CHANGELOG.txt
-	@cat tmp.txt >> CHANGELOG.txt
-	@rm -f tmp.txt
-	@git add CHANGELOG.txt AUTHORS.txt
-	@git commit -m "updated CHANGELOG.txt and AUTHORS.txt"
+	@cp -f CHANGELOG.rst tmp.rst
+	@rm -f CHANGELOG.rst
+	@echo "Release v$(nextmajorversion) -- $(today)" > CHANGELOG.rst
+	@git log --format=tformat:"  %h  %s" `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.rst
+	@echo "" >> CHANGELOG.rst
+	@cat tmp.rst >> CHANGELOG.rst
+	@rm -f tmp.rst
+	@git add CHANGELOG.rst AUTHORS.txt
+	@git commit -m "updated CHANGELOG.rst and AUTHORS.txt"
 	@bumpversion major # runs 'git commit' and 'git tag'
 
 
 .PHONY: bump-minor
 bump-minor: authors ## update AUTHORS and CHANGELOG; bump minor version and tag
-	@mv CHANGELOG.txt tmp.txt
-	@echo "Release v$(nextminorversion) -- $(today)\n" > CHANGELOG.txt
-	@git log --oneline `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.txt
-	@echo "\n" >> CHANGELOG.txt
-	@cat tmp.txt >> CHANGELOG.txt
-	@rm -f tmp.txt
-	@git add CHANGELOG.txt AUTHORS.txt
-	@git commit -m "updated CHANGELOG.txt and AUTHORS.txt"
+	@mv CHANGELOG.rst tmp.rst
+	@echo "Release v$(nextminorversion) -- $(today)" > CHANGELOG.rst
+	@git log --oneline `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.rst
+	@echo "" >> CHANGELOG.rst
+	@cat tmp.rst >> CHANGELOG.rst
+	@rm -f tmp.rst
+	@git add CHANGELOG.rst AUTHORS.txt
+	@git commit -m "updated CHANGELOG.rst and AUTHORS.txt"
 	@bumpversion minor # runs 'git commit' and 'git tag'
 
 
 .PHONY: bump-patch
 bump-patch: authors ## update AUTHORS and CHANGELOG; bump patch version and tag
-	@cp -f CHANGELOG.txt tmp.txt
-	@rm -f CHANGELOG.txt
-	@echo "Release v$(nextpatchversion) -- $(today)\n" > CHANGELOG.txt
-	@git log --oneline `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.txt
-	@echo "\n" >> CHANGELOG.txt
-	@cat tmp.txt >> CHANGELOG.txt
-	@rm -f tmp.txt
-	@git add CHANGELOG.txt AUTHORS.txt
-	@git commit -m "updated CHANGELOG.txt and AUTHORS.txt"
+	@cp -f CHANGELOG.rst tmp.rst
+	@rm -f CHANGELOG.rst
+	@echo "Release v$(nextpatchversion) -- $(today)" > CHANGELOG.rst
+	@git log --oneline `git describe --tags --abbrev=0`..HEAD >> CHANGELOG.rst
+	@echo "" >> CHANGELOG.rst
+	@cat tmp.rst >> CHANGELOG.rst
+	@rm -f tmp.rst
+	@git add CHANGELOG.rst AUTHORS.txt
+	@git commit -m "updated CHANGELOG.rst and AUTHORS.txt"
 	@bumpversion patch # runs 'git commit' and 'git tag'
 
 
