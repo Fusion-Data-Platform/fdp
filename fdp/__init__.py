@@ -7,7 +7,7 @@ Created on Wed Nov 25 19:34:56 2015
 
 from .classes import fdp
 
-__version__ = '0.1.4'
+__version__ = '0.2.0'
 
 
 def nstxu(*args, **kwargs):
