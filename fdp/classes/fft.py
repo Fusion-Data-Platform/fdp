@@ -102,7 +102,8 @@ class Fft(object):
         self.time = []
         self.fft = []
         time_indices = np.where(np.logical_and(self.signal.time >= self.tmin,
-                                               self.signal.time <= self.tmax))[0]
+                                               self.signal.time <= self.tmax
+                                               ))[0]
         istart = time_indices[0]
         istop = time_indices[time_indices.size - 1]
         if self.power2 is None:

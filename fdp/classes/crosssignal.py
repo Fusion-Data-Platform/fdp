@@ -62,14 +62,14 @@ class CrossSignal(object):
         Higher cutoff frequency in kHz for band pass filter applied to data.
         Defaults to Nyquist frequency.
     numfilttaps : int, optional
-        Number of FIR filter taps to use. Should be an odd number to avoid 
+        Number of FIR filter taps to use. Should be an odd number to avoid
         phase shifting the data. Defaults to 501.
     sawteethtimes : array_like, optional
-        Array of sawteeth times to be removed from cross spectral density. 
+        Array of sawteeth times to be removed from cross spectral density.
         Defaults to not removing anything.
     sawteethbins : int, optional
-        If sawteethtimes is specified this specifies how many additional time 
-        bins before and after each sawtooth to remove from the spectral density.
+        If sawteethtimes is specified this specifies how many additional time
+        bins before and after each sawtooth to remove from the spectral density
         Defaults to 0.
     """
 
@@ -153,10 +153,10 @@ class CrossSignal(object):
 
     def apply_offset_minimum(self):
         """
-        Get zero signal level by averaging 1000 points near beginning of shot 
+        Get zero signal level by averaging 1000 points near beginning of shot
         together, then use this to offset signal.
 
-        For BES, first 20 points exhibit turn on transient effects so second 
+        For BES, first 20 points exhibit turn on transient effects so second
         group of 1000 points is used.
 
         """
@@ -260,8 +260,8 @@ class CrossSignal(object):
         Calculate the cross spectral density using Scipy csd function.
 
         csd utilizes Welch's method to estimate spectral density. Data is
-        split into overlapping segments. Each segment is windowed, then the 
-        cross spectral density is calculated using Fourier transforms. The 
+        split into overlapping segments. Each segment is windowed, then the
+        cross spectral density is calculated using Fourier transforms. The
         results from all windows are averaged together to produce a lower
         variance estimate of the spectral density.
 
@@ -404,7 +404,8 @@ class CrossSignal(object):
 
         # Crossphase error: Bendat & Piersol eq 11.62
         self.crossphase_error = (np.sqrt(1. - self.mscoherence)
-                                 / (self.coherence * np.sqrt(2 * self.numbins)))
+                                 / (self.coherence * np.sqrt(2 * self.numbins))
+                                 )
         if self.degrees:
             self.crossphase_error = np.rad2deg(self.crossphase_error)
 
@@ -429,12 +430,12 @@ class CrossSignal(object):
 
     def calc_correlation_fft(self):
         """
-        Calculate cross correlation of fluctuation component of input signals 
-        using the fft method to perform the convolution. This is faster than 
+        Calculate cross correlation of fluctuation component of input signals
+        using the fft method to perform the convolution. This is faster than
         the integral definition method.
 
         Returns R(tau), where R(-tau) = F^-1[F[x(t)] * F[y(-t)]] and F[]
-        denotes the Fourier transform. This calculation is equivalent to 
+        denotes the Fourier transform. This calculation is equivalent to
         R[k] = Sum_i[x[i] * y[i + k]]
         """
 
@@ -475,7 +476,8 @@ class CrossSignal(object):
 
             # Calculate correlation coefficient
             xcorr_coef[i, :] = xcorr[i, :] / np.sqrt(
-                autocorr1[i, self.nperseg - 1] * autocorr2[i, self.nperseg - 1])
+                autocorr1[i, self.nperseg - 1]
+                * autocorr2[i, self.nperseg - 1])
 
             # Average over all segments
             self.crosscorrelation = np.mean(xcorr, axis=0)
@@ -494,8 +496,8 @@ class CrossSignal(object):
 
     def calc_correlation(self):
         """
-        Calculate cross correlation of the fluctuating parts of input signals. 
-        Warning: this method is slow, calc_correlation_fft is a faster 
+        Calculate cross correlation of the fluctuating parts of input signals.
+        Warning: this method is slow, calc_correlation_fft is a faster
         alternative.
         """
 
@@ -529,17 +531,13 @@ class CrossSignal(object):
 
             # Delete bins before and after the sawtooth crash
             self.csd = np.delete(self.csd, range(index - self.sawteethbins,
-                                                 index + self.sawteethbins + 1),
-                                 axis=-1)
+                                 index + self.sawteethbins + 1), axis=-1)
             self.asd1 = np.delete(self.asd1, range(index - self.sawteethbins,
-                                                   index + self.sawteethbins + 1),
-                                  axis=-1)
+                                  index + self.sawteethbins + 1), axis=-1)
             self.asd2 = np.delete(self.asd2, range(index - self.sawteethbins,
-                                                   index + self.sawteethbins + 1),
-                                  axis=-1)
+                                  index + self.sawteethbins + 1), axis=-1)
             self.times = np.delete(self.times, range(index - self.sawteethbins,
-                                                     index + self.sawteethbins + 1),
-                                   axis=-1)
+                                   index + self.sawteethbins + 1), axis=-1)
 
     def phase_slope(self, fstart, fend):
         """
@@ -547,12 +545,12 @@ class CrossSignal(object):
         range using linear regression. The slope is returned in units of
         rad/Hz.
 
-        To calculate the propagation from the crossphase slope use 
+        To calculate the propagation from the crossphase slope use
         c = (2 * pi * d) / slope, where c is the propagation velocity, d is the
-        distance between channels used in the crossphase, and slope is the 
+        distance between channels used in the crossphase, and slope is the
         crossphase slope returned by this function.
 
-        Positive slope implies signal 2 leads signal 1 and negative slope 
+        Positive slope implies signal 2 leads signal 1 and negative slope
         implies signal 1 leads signal 2.
         """
 
@@ -561,8 +559,8 @@ class CrossSignal(object):
         iend = np.searchsorted(self.freqs, fend)
 
         # Calculate crossphase slope over specified frequency range
-        slope, intercept, _, _, _ = linregress(self.freqs[istart:iend + 1] * 1000,
-                                               self.crossphase_binavg[istart:iend + 1])
+        slope, intercept, _, _, _ = linregress(self.freqs[istart:iend + 1] 
+            * 1000, self.crossphase_binavg[istart:iend + 1])
 
         # Convert slope units to rad/Hz and return
         if self.degrees:
