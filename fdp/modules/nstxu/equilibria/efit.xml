@@ -3,39 +3,39 @@
     <axis name='time' units='s' mdsnode='\gtime'></axis>
     <axis name='atime' units='s' mdsnode='\atime'></axis>
 
-    <signal name='ipmeas' title='Measured plasma current' units='A' axes='time' mdsnode='\ipmeas'></signal>
-    <signal name='ipmhd' title='Fitted plasma current' units='A' axes='time' mdsnode='\ipmhd'></signal>
-    <signal name='rmaxis' title='R of magnetic axis' units='m' axes='time' mdsnode='\rmaxis'></signal>
-    <signal name='zmaxis' title='Z of magnetic axis' units='m' axes='time' mdsnode='\zmaxis'></signal>
-    <signal name='bcentr' title='Vacuum toroidal field at RCENTR' units='T' axes='time' mdsnode='\bcentr'></signal>
+    <signal name='ipmeas' title='Plasma current (measured)' units='A' axes='time' mdsnode='\ipmeas'></signal>
+    <signal name='ipmhd' title='Plasma current (computed)' units='A' axes='time' mdsnode='\ipmhd'></signal>
+    <signal name='rmaxis' title='Major radius of magnetic axis' units='m' axes='time' mdsnode='\rmaxis'></signal>
+    <signal name='zmaxis' title='Vertical position of magnetic axis' units='m' axes='time' mdsnode='\zmaxis'></signal>
+    <signal name='bcentr' title='Vacuum toroidal field at RBCENT' units='T' axes='time' mdsnode='\bcentr'></signal>
     <signal name='bt0' title='Toroidal field at magnetic axis' units='T' axes='time' mdsnode='\bt0'></signal>
-    <signal name='q0' title='Stored Energy' units='J' axes='time' mdsnode='\q0'></signal>
-    <signal name='q95' title='Stored Energy' units='J' axes='time' mdsnode='\q95'></signal>
-    <signal name='kappa' title='Stored Energy' units='J' axes='time' mdsnode='\kappa'></signal>
-    <signal name='tritop' title='Stored Energy' units='J' axes='time' mdsnode='\tritop'></signal>
-    <signal name='tribot' title='Stored Energy' units='J' axes='time' mdsnode='\tribot'></signal>
-    <signal name='drsep' title='Stored Energy' units='J' axes='time' mdsnode='\drsep'></signal>
-    <signal name='li' title='Stored Energy' units='J' axes='time' mdsnode='\li'></signal>
-    <signal name='rmidin' title='Stored Energy' units='J' axes='time' mdsnode='\rmidin'></signal>
-    <signal name='rmidout' title='Stored Energy' units='J' axes='time' mdsnode='\rmidout'></signal>
-    <signal name='wmhd' title='Stored Energy' units='J' axes='time' mdsnode='\wmhd'></signal>
-    <signal name='wdia' title='Stored Energy' units='J' axes='time' mdsnode='\wdia'></signal>
-    <signal name='wbdot' title='Stored Energy' units='J' axes='time' mdsnode='\wbdot'></signal>
-    <signal name='taumhd' title='Stored Energy' units='J' axes='time' mdsnode='\taumhd'></signal>
-    <signal name='psi0' title='Stored Energy' units='J' axes='time' mdsnode='\psi0'></signal>
-    <signal name='psibdy' title='Stored Energy' units='J' axes='time' mdsnode='\psibdy'></signal>
+    <signal name='q0' title='Safety factor at magnetic axis' units='' axes='time' mdsnode='\q0'></signal>
+    <signal name='q95' title='Safety factor at 95% poloidal flux' units='' axes='time' mdsnode='\q95'></signal>
+    <signal name='kappa' title='Plasma elongation' units='' axes='time' mdsnode='\kappa'></signal>
+    <signal name='tritop' title='Upper triangularity' units='' axes='time' mdsnode='\tritop'></signal>
+    <signal name='tribot' title='Lower triangularity' units='' axes='time' mdsnode='\tribot'></signal>
+    <signal name='drsep' title='Outboard radial gap to 2nd exter X pt' units='m' axes='time' mdsnode='\drsep'></signal>
+    <signal name='li' title='Normalized internal inductance' units='' axes='time' mdsnode='\li'></signal>
+    <signal name='rmidin' title='Major radius of plasma inner midplane' units='m' axes='time' mdsnode='\rmidin'></signal>
+    <signal name='rmidout' title='Major radius of plasma outer midplane' units='m' axes='time' mdsnode='\rmidout'></signal>
+    <signal name='wmhd' title='Plasma total stored energy' units='J' axes='time' mdsnode='\wmhd'></signal>
+    <signal name='wdia' title='Plasma diamagnetic stored energy' units='J' axes='time' mdsnode='\wdia'></signal>
+    <signal name='wbdot' title='d/dt(Poloidal field energy)' units='W' axes='time' mdsnode='\wbdot'></signal>
+    <signal name='taumhd' title='Energy confinement time' units='s' axes='time' mdsnode='\taumhd'></signal>
+    <signal name='psi0' title='Poloidal flux fn at magnetic axis' units='Wb/rad' axes='time' mdsnode='\psi0'></signal>
+    <signal name='psibdy' title='Poloidal flux fn at plasma boundary' units='Wb/rad' axes='time' mdsnode='\psibdy'></signal>
 
     <axis name='R' axes='time' units='m' mdsnode='\R'></axis>
     <axis name='z' axes='time' units='m' mdsnode='\z'></axis>
-    <signal name='psirz' axes = 'time, R, z' title='Psi (R, z)' units='' mdsnode='\psirz'>
+    <signal name='psirz' axes = 'time, R, z' title='Poloidal flux fn' units='Wb/rad' mdsnode='\psirz'>
         <defaults method='plot' type='contour' nlevels='50'></defaults>
     </signal>
 
-    <axis name='psin' axes='time' title='Psi_N' mdsnode='\psin'></axis>
-    <signal name='qpsi' axes='time, psin' title='Q_psi' mdsnode='\qpsi'></signal>
-    <signal name='brz0' axes='time, R' title='Radial magnetic field on midplane' units='T' mdsnode='\brz0'></signal>
-    <signal name='btz0' axes='time, R' title='Toroidal magnetic field on midplane' units='T' mdsnode='\btz0'></signal>
-    <signal name='bzz0' axes='time, R' title='Vertical magnetic field on midplane' units='T' mdsnode='\bzz0'></signal>
+    <axis name='psin' axes='time' title='Poloidal flux (normalized)' mdsnode='\psin'></axis>
+    <signal name='qpsi' axes='time, psin' title='Safety factor' units='' mdsnode='\qpsi'></signal>
+    <signal name='brz0' axes='time, R' title='Major radial magnetic field at Z=0' units='T' mdsnode='\brz0'></signal>
+    <signal name='btz0' axes='time, R' title='Toroidal magnetic field at Z=0' units='T' mdsnode='\btz0'></signal>
+    <signal name='bzz0' axes='time, R' title='Vertical magnetic field at Z=0' units='T' mdsnode='\bzz0'></signal>
 
     <node name='userid' mdsnode='\[efit]::userid'></node>
 </container>
