@@ -2,6 +2,7 @@
 
 import warnings
 
+
 def bfield(obj, radius=None, z=None, time=None):
     # must call from equilibrium container
     if not obj.isContainer():

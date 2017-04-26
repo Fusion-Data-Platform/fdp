@@ -13,25 +13,28 @@ from .globals import FdpError
 MACHINES = ['nstxu', 'diiid', 'cmod']
 
 MDS_SERVERS = {
-    'nstxu': {'hostname':'skylark.pppl.gov',
-              'port':'8501'}
+    'nstxu': {'hostname': 'skylark.pppl.gov',
+              'port': '8501'}
 }
 
 EVENT_SERVERS = {
-    'nstxu': {'hostname':'skylark.pppl.gov',
-              'port':'8501'},
-    'ltx': {'hostname':'lithos.pppl.gov',
-            'port':'8000'}
+    'nstxu': {'hostname': 'skylark.pppl.gov',
+              'port': '8501'},
+    'ltx': {'hostname': 'lithos.pppl.gov',
+            'port': '8000'}
 }
 
 LOGBOOK_CREDENTIALS = {
-    'nstxu': {'hostname': 'sql2008.pppl.gov',
-              'server': 'sql2008.pppl.gov\sql2008',
-              'username': os.getenv('USER') or os.getenv('USERNAME'),
-              'password': 'pfcworld',
-              'database': 'nstxlogs',
+    'nstxu': {'server': 'sql2008.pppl.gov',
+              'instance': None,
+              'username': None,
+              'password': None,
+              'database': None,
               'port': '62917',
-              'table': 'entries'}
+              'table': 'entries',
+              'loginfile': os.path.join(os.getenv('HOME'),
+                                        'nstxlogs.sybase_login')
+    }
 }
 
 

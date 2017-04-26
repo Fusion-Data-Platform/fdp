@@ -10,10 +10,6 @@ from .globals import FDP_DIR, VERBOSE
 
 
 def parse_method(obj, level=None):
-    def debug(msg=''):
-        if VERBOSE:
-            print('parse_method(): {}'.format(msg))
-    debug('begin')
     if level is 'top':
         # logic for initial parse of fdp/methods
         module = 'methods'
@@ -27,7 +23,6 @@ def parse_method(obj, level=None):
     else:
         # logic for parsing everything below fdp/methods/<machine>
         branch = obj._get_branch()
-        debug('branch {}'.format(branch))
         branch_list = branch.split('.')
         module = branch_list.pop()
         machine = obj._root._name
@@ -36,22 +31,13 @@ def parse_method(obj, level=None):
                                    machine,
                                    *branch_list)
         module_chain = '.'.join(['methods', machine, branch])
-    debug('finding {}'.format(module_chain))
     if os.path.exists(os.path.join(method_path, module)):
-        debug('importing {}'.format(module_chain))
         method_object = __import__(
             module_chain, globals(), locals(), ['__file__'], 2)
-        if hasattr(method_object, '__all__') and method_object.__all__:
-            debug('{}.__all__ exists'.format(module_chain))
+        if getattr(method_object, '__all__', None):
             for method in method_object.__all__:
-                debug('Attaching method {}'.format(method))
                 method_from_object = getattr(method_object, method)
                 setattr(obj, method, method_from_object)
-        else:
-            debug('{} has no methods'.format(module_chain))
-    else:
-        debug('{} does not exist'.format(module_chain))
-    debug('end')
 
 
 def parse_defaults(element):

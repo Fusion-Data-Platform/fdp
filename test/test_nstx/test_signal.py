@@ -18,7 +18,8 @@ def test_1d_signals(setup_shot):
         signal.plot()
         print(signal[0:9])
         signal.axes
-        signal(time=[0.1,0.2])
+        signal(time=[0.1, 0.2])
+
 
 def test_2d_signals(setup_shot):
     shot = setup_shot
@@ -27,4 +28,4 @@ def test_2d_signals(setup_shot):
     for signal in signals:
         signal[:]
         signal.plot()
-        signal[0,0:9]
+        signal[0, 0:9]

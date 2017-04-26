@@ -4,19 +4,6 @@ today := $(shell date +%F)
 nextversion := void
 versiontype := void
 
-#nextmajorversion := $(shell bumpversion \
-#  --no-commit --no-tag --dry-run --list --allow-dirty | \
-#  grep "^new_version=.*$$" | \
-# grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
-#nextminorversion := $(shell bumpversion \
-#  --no-commit --no-tag --dry-run --list --allow-dirty | \
-#  grep "^new_version=.*$$" | \
-#  grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
-#nextpatchversion := $(shell bumpversion \
-#  --no-commit --no-tag --dry-run --list --allow-dirty | \
-#  grep "^new_version=.*$$" | \
-#  grep -o "[0-9]*\.[0-9]*\.[0-9]*$$")
-
 define LEAD_AUTHORS
 Lead developers:
     David R. Smith

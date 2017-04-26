@@ -21,5 +21,5 @@ def getTimeIndex(obj, time=None):
     output = None
     indlist = np.nonzero(obj.time > time)
     if indlist[0].size > 0:
-        output = indlist[0][0]-1
+        output = indlist[0][0] - 1
     return output

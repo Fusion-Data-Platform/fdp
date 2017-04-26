@@ -11,6 +11,7 @@ import fdp
 
 from . import shotlist
 
+
 def test_no_connection(setup_nstx):
     nstx = setup_nstx
     with pytest.raises(AttributeError):
@@ -24,6 +25,7 @@ def test_no_connection(setup_nstx):
         pass
     shotlist[0] in nstx
     nstx.__delitem__(shotlist[0])
+
 
 def test_shot_management():
     ishot = 0
@@ -46,15 +48,18 @@ def test_shot_management():
     assert len(nstx) == 3
     nstx.listshot()
 
+
 def test_load_xp():
     nstx = fdp.nstx()
     nstx.addxp(xp=1038)
     assert len(nstx) == 24
 
+
 def test_load_date():
     nstx = fdp.nstx()
     nstx.adddate(date='20160506')
     assert len(nstx) == 30
+
 
 def test_filter_xp(setup_nstx):
     nstx = setup_nstx
@@ -70,6 +75,7 @@ def test_filter_xp(setup_nstx):
     dir(xp1037)
     keys = xp1037._shots.keys()
     assert keys[0] in xp1037
+
 
 def test_filter_date(setup_nstx):
     nstx = setup_nstx

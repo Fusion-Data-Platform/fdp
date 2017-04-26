@@ -8,7 +8,6 @@ import datetime
 import numpy as np
 import pymssql
 from .globals import FdpError
-from .datasources import LOGBOOK_CREDENTIALS
 
 
 class Logbook(object):
@@ -18,53 +17,38 @@ class Logbook(object):
         self._root = root
 
         self._credentials = {}
-        self._table = ''
         self._shotlist_query_prefix = ''
         self._shot_query_prefix = ''
 
         self._logbook_connection = None
-        #self._make_logbook_connection()
-
-        # dict of cached logbook entries
-        # kw is shot, value is list of logbook entries
         self.logbook = {}
 
     def _make_logbook_connection(self):
-        self._credentials = LOGBOOK_CREDENTIALS[self._name]
-        self._table = self._credentials['table']
-
+        self._credentials = self._root._get_logbook_credentials()
         self._shotlist_query_prefix = (
             'SELECT DISTINCT rundate, shot, xp, voided '
-            'FROM {} WHERE voided IS null').format(self._table)
+            'FROM {} WHERE voided IS null').format(self._credentials['table'])
         self._shot_query_prefix = (
             'SELECT dbkey, username, rundate, shot, xp, topic, text, entered, '
-            'voided FROM {} WHERE voided IS null').format(self._table)
-
+            'voided FROM {} WHERE voided IS null').format(self._credentials['table'])
+        url = "\\".join([self._credentials['server'],
+                        self._credentials['instance']])
         try:
             self._logbook_connection = pymssql.connect(
-                server=self._credentials['server'],
+                server=url,
                 user=self._credentials['username'],
                 password=self._credentials['password'],
                 database=self._credentials['database'],
                 port=self._credentials['port'],
                 as_dict=True)
         except:
-            print('Attempting logbook server connection as drsmith')
-            try:
-                self._logbook_connection = pymssql.connect(
-                    server=self._credentials['server'],
-                    user='drsmith',
-                    password=self._credentials['password'],
-                    database=self._credentials['database'],
-                    port=self._credentials['port'],
-                    as_dict=True)
-            except:
-                txt = '{} logbook connection failed. '.format(
-                    self._name.upper())
-                txt = txt + 'Server credentials:'
-                for key in self._credentials:
-                    txt = txt + '  {0}:{1}'.format(key, self._credentials[key])
-                raise FdpError(txt)
+            raise
+            txt = '{} logbook connection failed. '.format(
+                self._name.upper())
+            txt = txt + 'Server credentials:'
+            for key in self._credentials:
+                txt = txt + '  {0}:{1}'.format(key, self._credentials[key])
+            raise FdpError(txt)
 
     def _get_cursor(self):
         if not self._logbook_connection:
@@ -105,14 +89,16 @@ class Logbook(object):
             date = []
         if not xp:
             xp = []
-        if date and not isinstance(date, (list,tuple)):      # if it's just a single date
+        # if it's just a single date
+        if date and not isinstance(date, (list, tuple)):
             date = [date]   # put it into a list
         for d in date:
             query = ('{0} and rundate={1} ORDER BY shot ASC'.
                      format(self._shotlist_query_prefix, d))
             cursor.execute(query)
             rows.extend(cursor.fetchall())
-        if xp and not isinstance(xp, (list,tuple)):           # if it's just a single xp
+        # if it's just a single xp
+        if xp and not isinstance(xp, (list, tuple)):
             xp = [xp]             # put it into a list
         for x in xp:
             query = ('{0} and xp={1} ORDER BY shot ASC'.
@@ -126,7 +112,8 @@ class Logbook(object):
             day = rundate[6:8]
             row['rundate'] = datetime.date(int(year), int(month), int(day))
         # add shots to shotlist
-        shotlist.extend([row['shot'] for row in rows if row['shot'] is not None])
+        shotlist.extend([row['shot']
+                         for row in rows if row['shot'] is not None])
         cursor.close()
         return np.unique(shotlist)
 

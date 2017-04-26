@@ -6,6 +6,7 @@ Created on Mon Apr 17 21:28:09 2017
 @author: drsmith
 """
 
+
 def test_logbook(setup_nstx):
     nstx = setup_nstx
     shots = dir(nstx)
@@ -19,4 +20,3 @@ def test_logbook(setup_nstx):
     assert isinstance(shot.get_logbook(), list)
     assert len(shot.get_logbook()) == 0
     shot.logbook()
-

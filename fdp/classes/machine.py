@@ -93,6 +93,10 @@ class Machine(MutableMapping):
                          for shot in iter(self._shots.keys())])
         return shotlist
 
+    def _get_logbook_credentials(self):
+        # override with methods/<machine>/_get_logbook_credentials.py
+        pass
+
     def _get_connection(self, shot, tree):
         for connection in self._connections:
             if connection.tree == (tree, shot):
@@ -160,15 +164,15 @@ class Machine(MutableMapping):
         """
         shots = []
         if shotlist:
-            if not isinstance(shotlist, (list,tuple)):
+            if not isinstance(shotlist, (list, tuple)):
                 shotlist = [shotlist]
             shots.extend(list(shotlist))
         if date:
-            if not isinstance(date, (list,tuple)):
+            if not isinstance(date, (list, tuple)):
                 date = [date]
             shots.extend(self._logbook.get_shotlist(date=list(date)))
         if xp:
-            if not isinstance(xp, (list,tuple)):
+            if not isinstance(xp, (list, tuple)):
                 xp = [xp]
             shots.extend(self._logbook.get_shotlist(xp=list(xp)))
         for shot in np.unique(shots):
