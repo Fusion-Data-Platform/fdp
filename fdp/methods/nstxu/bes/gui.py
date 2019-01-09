@@ -5,8 +5,8 @@ Created on Tue Jul 19 14:30:04 2016
 @author: drsmith
 """
 
-from ....classes.gui import BaseGui
-from ....classes.utilities import isSignal, isContainer
+from ....gui.gui import BaseGui
+from ....lib.utilities import isSignal, isContainer
 
 
 class BesGui(BaseGui):

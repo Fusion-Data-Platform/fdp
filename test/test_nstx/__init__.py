@@ -1,14 +1,15 @@
+from __future__ import print_function
 import socket
-from fdp.classes import datasources as ds
+from fdp.lib import datasources
 
 # some valid shots for testing
-shotlist = [204620, 204551, 141000, 204670, 204956, 204990]
+shotlist = [204620, 204551, 142301, 204670, 204956, 204990]
 
 
 def server_connection():
-    machine = ds.machineAlias('nstx')
-    servers = [ds.MDS_SERVERS[machine],
-               ds.LOGBOOK_CREDENTIALS[machine]]
+    machine = datasources.canonicalMachineName('nstx')
+    servers = [datasources.MDS_SERVERS[machine],
+               datasources.LOGBOOK_CREDENTIALS[machine]]
     for server in servers:
         hostname = server['hostname']
         port = server['port']

@@ -1,0 +1,19 @@
+<?xml version='1.0'?>
+<container name='magnetics' mdstree='ptdata'>
+
+    <axis name='time1' mdsnode='ip' units='ms'></axis>
+    <signal name='ip' mdsnode='ip' units='MA' axes='time' axes_refs='time1'></signal>
+
+    <axis name='time3' mdsnode='vloop' units='ms'></axis>
+    <signal name='vloop' mdsnode='vloop' units='V' axes='time' axes_refs='time3'></signal>
+
+    <axis name='time4' mdsnode='diamag3' units='ms'></axis>
+    <signal name='diamag3' mdsnode='diamag3' units='mV-s' axes='time' axes_refs='time4'></signal>
+
+    <axis name='time5' mdsnode='ecoila' units='ms'></axis>
+    <signal name='ecoila' mdsnode='ecoila' units='kA' axes='time' axes_refs='time5'></signal>
+
+    <axis name='time6' mdsnode='bcoil' units='ms'></axis>
+    <signal name='bcoil' mdsnode='bcoil' units='kA' axes='time' axes_refs='time6'></signal>
+
+</container>

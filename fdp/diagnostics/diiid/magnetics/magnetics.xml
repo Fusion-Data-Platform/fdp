@@ -1,0 +1,7 @@
+<?xml version='1.0'?>
+<container name='magnetics' mdstree='ptdata'>
+
+    <axis name='time1' mdsnode='ip' units='ms'></axis>
+    <signal name='ip' mdsnode='ip' units='MA' axes='time' axes_refs='time1'></signal>
+
+</container>

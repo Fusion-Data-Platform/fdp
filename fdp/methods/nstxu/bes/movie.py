@@ -4,7 +4,12 @@ Created on Wed Oct  5 18:27:32 2016
 
 @author: dkriete
 """
+from __future__ import print_function
+from __future__ import division
 
+from builtins import range
+from builtins import object
+from past.utils import old_div
 import gc
 
 import numpy as np
@@ -13,8 +18,8 @@ import scipy.interpolate
 from matplotlib import animation
 import matplotlib.pyplot as plt
 
-from ....classes.globals import FdpError
-from ....classes.utilities import isContainer
+from ....lib.globals import FdpError
+from ....lib.utilities import isContainer
 from . import utilities as UT
 
 
@@ -37,8 +42,8 @@ class Movie(object):
         self.container = container
         if tmax > 10:
             # if tmax large, assume ms input and convert to s
-            tmin = tmin / 1e3
-            tmax = tmax / 1e3
+            tmin = old_div(tmin, 1e3)
+            tmax = old_div(tmax, 1e3)
         self.tmin = tmin
         self.tmax = tmax
         self.hightimeres = hightimeres
@@ -118,7 +123,7 @@ class Movie(object):
             if not rowmask.any():
                 continue
             self.colcal[col] = np.mean(
-                self.data[rowmask.nonzero(), col, 0:self.ntime / 20])
+                self.data[rowmask.nonzero(), col, 0:old_div(self.ntime, 20)])
 
         # boxcar filter column-wise normalization factor
         tmp = self.colcal.copy()
@@ -137,7 +142,7 @@ class Movie(object):
                 if self.datamask[row, col]:
                     self.data[row, col, :] = self.data[row, col, :] * \
                         self.colcal[col] / \
-                        np.mean(self.data[row, col, 0:self.ntime / 20])
+                        np.mean(self.data[row, col, 0:old_div(self.ntime, 20)])
 
     def filterData(self):
         nrow, ncol, _ = self.data.shape
@@ -187,7 +192,7 @@ class Movie(object):
             frameint = 2
         else:
             frameint = 40
-        nframes = np.int(self.ftime.size / frameint)
+        nframes = np.int(old_div(self.ftime.size, frameint))
 
         self.fig = plt.figure(figsize=(6.4, 7))
         ax1 = self.fig.add_subplot(1, 1, 1)

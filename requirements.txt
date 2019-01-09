@@ -1,0 +1,9 @@
+# python packages needed by all FDP users
+
+future
+numpy
+scipy
+numba
+matplotlib
+pymssql
+MDSplus

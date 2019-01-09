@@ -1,0 +1,13 @@
+<?xml version='1.0'?>
+<container name='nbi' mdstree='nb'>
+    <axis name='time' mdsnode='\top:timebase' units='ms'></axis>
+    <signal name='pinj' mdsnode='\pinj' axes='time' units='MW'></signal>
+    <signal name='pinj_15l' mdsnode='\pinj_15l' axes='time' units='MW'></signal>
+    <signal name='pinj_15r' mdsnode='\pinj_15r' axes='time' units='MW'></signal>
+    <signal name='pinj_21l' mdsnode='\pinj_21l' axes='time' units='MW'></signal>
+    <signal name='pinj_21r' mdsnode='\pinj_21r' axes='time' units='MW'></signal>
+    <signal name='pinj_30l' mdsnode='\pinj_30l' axes='time' units='MW'></signal>
+    <signal name='pinj_30r' mdsnode='\pinj_30r' axes='time' units='MW'></signal>
+    <signal name='pinj_33l' mdsnode='\pinj_33l' axes='time' units='MW'></signal>
+    <signal name='pinj_33r' mdsnode='\pinj_33r' axes='time' units='MW'></signal>
+</container>

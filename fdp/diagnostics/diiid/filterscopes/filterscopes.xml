@@ -1,0 +1,24 @@
+<?xml version='1.0'?>
+<container name='filterscopes' mdstree='spectroscopy'>
+    <axis name='time' mdsnode='\top.filterscope:timebase' units='ms'></axis>
+
+    <container name='dalpha'>
+        <signal name='fs{}lower' mdsnode='\fs{}' axes='time' units='ph/cm**2/ster/s' desc='lower, D-alpha, 656 nm' range='0,8,2'></signal>
+        <signal name='fs{}upper' mdsnode='\fs{}up' axes='time' units='ph/cm**2/ster/s' desc='upper, D-alpha, 656 nm' range='0,4,2'></signal>
+    </container>
+
+    <container name='carbonii'>
+        <signal name='fs01lower' mdsnode='\fs01c2' axes='time' units='ph/cm**2/ster/s' desc='lower, C-II, 515 nm'></signal>
+        <signal name='fs03lower' mdsnode='\fs03c2' axes='time' units='ph/cm**2/ster/s' desc='lower, C-II, 515 nm'></signal>
+        <signal name='fs05lower' mdsnode='\fs05c2' axes='time' units='ph/cm**2/ster/s' desc='lower, C-II, 515 nm'></signal>
+        <signal name='fs02upper' mdsnode='\fs02upc2' axes='time' units='ph/cm**2/ster/s' desc='upper, C-II, 515 nm'></signal>
+        <signal name='fs04upper' mdsnode='\fs04upc2' axes='time' units='ph/cm**2/ster/s' desc='upper, C-II, 515 nm'></signal>
+        <signal name='fs11upper' mdsnode='\fs11upc2' axes='time' units='ph/cm**2/ster/s' desc='upper, C-II, 515 nm'></signal>
+    </container>
+
+    <container name='carboniii'>
+        <signal name='fs{}lower' mdsnode='\fs{}c3' axes='time' units='ph/cm**2/ster/s' desc='lower, C-III, 465 nm' range='1,6,2'></signal>
+        <signal name='fs{}upper' mdsnode='\fs{}upc3' axes='time' units='ph/cm**2/ster/s' desc='upper, C-III, 465 nm' range='0,4,2'></signal>
+        <signal name='fs11upper' mdsnode='\fs11upc3' axes='time' units='ph/cm**2/ster/s' desc='upper, C-III, 465 nm'></signal>
+    </container>
+</container>

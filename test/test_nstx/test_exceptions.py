@@ -1,7 +1,7 @@
 
 from warnings import warn
 import pytest
-from fdp.classes.globals import FdpError, FdpWarning
+from fdp.lib.globals import FdpError, FdpWarning
 
 
 def test_exceptions():

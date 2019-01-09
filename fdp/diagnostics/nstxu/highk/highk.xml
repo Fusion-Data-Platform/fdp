@@ -1,0 +1,6 @@
+<?xml version='1.0'?>
+<container name='highk' mdstree='microwav_raw'>
+    <axis name='time' units='s' mdsnode='dim_of(\TOP.HIGHK.RAWDATA:HK_DT216_1:INPUT_01)'></axis>
+    <signal name='ch{}_inphase' units='V' axes='time' mdsnode='\TOP.HIGHK.RAWDATA:HK_DT216_1:INPUT_{}' range='1,5,2'></signal>
+    <signal name='ch{}_quad' units='V' axes='time' mdsnode='\TOP.HIGHK.RAWDATA:HK_DT216_1:INPUT_{}' range='6,10,2' namerange='1,5,2'></signal>
+</container>

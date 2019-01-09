@@ -61,7 +61,7 @@ docs: docs-pdf docs-html ## build HTML and PDF documents
 .PHONY: docs-html
 docs-html: ## build HTML documents
 	$(MAKE) -C docs/ html
-	@$(BROWSER) docs/build/html/index.html
+	#@$(BROWSER) docs/build/html/index.html
 
 
 .PHONY: docs-pdf
@@ -79,7 +79,7 @@ outdated:  # list outdated conda and pip packages
 
 .PHONY: test
 test: ## run pytest in current Python environment
-	pytest
+	pytest test/
 
 
 .PHONY: coverage

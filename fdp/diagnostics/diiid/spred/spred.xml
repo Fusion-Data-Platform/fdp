@@ -1,0 +1,8 @@
+<?xml version='1.0'?>
+<container name='spred' mdstree='spectroscopy'>
+    <axis name='time' mdsnode='dim_of(\cvi_182)' units='ms'></axis>
+    <signal name='cvi_182' mdsnode='\cvi_182' axes='time' units='ph/cm**2/s/ster'></signal>
+    <signal name='civ_384' mdsnode='\civ_384' axes='time' units='ph/cm**2/s/ster'></signal>
+    <signal name='ciii_977' mdsnode='\ciii_977' axes='time' units='ph/cm**2/s/ster'></signal>
+    <signal name='cii_904' mdsnode='\cii_904' axes='time' units='ph/cm**2/s/ster'></signal>
+</container>

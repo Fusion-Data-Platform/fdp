@@ -17,12 +17,16 @@ FDP streamlines data discovery, management, analysis methods, and visualization.
 **Description and features**
 
 * An extensible software layer that unites data access, management, analysis, and visualization
-* A descriptive data object that users can query to find data and analysis methods
+* A hierarchical data object with discoverable data and analysis methods
 * Data access tasks (servers, trees, nodes, queries) are handled behind the scenes
 * A collaborative development platform for data analysis tools
 * Built with popular, open-source packages like Numpy and Matplotlib
 
 **Example usage**
+
+A user guide is available in the online documentation at http://fdp.readthedocs.io/
+
+FDP in action:
 
 .. code-block:: python
 
@@ -32,15 +36,15 @@ FDP streamlines data discovery, management, analysis methods, and visualization.
     nstxu.s204551.mpts.te.plot()
     nstxu.s204551.equilibria.efit02.kappa.plot()
 
-``nstxu`` is a data object that abstracts the NSTX-U device with easy access to shots, diagnostics, signals, and data methods.  The typical heirarchy is::
+``nstxu`` is a hierarchical data object that abstracts the NSTX-U machine with easy access to shots, diagnostics, signals, and data methods.  The typical heirarchy is::
 
-    <machine>.<shot>.<diagnostic container>.[<possible sub-containers>].<signal>.<method>
+    <machine>.<shot>.<diagnostic container>.<signal>.<method>
 
-Users can discover data containers like ``mpts``, data signals like ``te``, and data methods like ``plot()`` with Python's tab-complete functionality.
+Shots and signals are auto-loaded when referenced.  Diagnsotics and signals are discoverable using Python's tab-complete functionality or the built-in function ``dir()``.
 
 **Contributing**
 
-To contribute to the FDP project, see ``CONTRIBUTING.rst`` in the top-level directory or ``Contributing`` in the docs.
+To contribute to the FDP project, see `the docs.<http://fdp.readthedocs.io/en/latest/contributing.html>`_
 
 **Lead developers**
 

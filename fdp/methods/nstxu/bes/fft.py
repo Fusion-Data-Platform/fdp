@@ -5,9 +5,9 @@ from warnings import warn
 import numpy as np
 import matplotlib.pyplot as plt
 
-from ....classes.utilities import isSignal, isContainer
-from ....classes.globals import FdpWarning
-from ....classes.fft import Fft
+from ....lib.utilities import isSignal, isContainer
+from ....lib.globals import FdpWarning
+from ...fft import Fft
 
 
 def fft(obj, *args, **kwargs):

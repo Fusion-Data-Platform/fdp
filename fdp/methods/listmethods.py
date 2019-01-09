@@ -5,7 +5,7 @@ Created on Wed Jun 22 11:18:01 2016
 @author: drsmith
 """
 
-from ..classes.utilities import isSignal, isContainer
+from ..lib.utilities import isSignal, isContainer
 
 
 def listSignals(obj):

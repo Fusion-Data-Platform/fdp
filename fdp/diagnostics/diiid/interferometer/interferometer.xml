@@ -1,0 +1,48 @@
+<?xml version='1.0'?>
+<container name='interferometer' mdstree='bci'>
+
+    <axis name='time1' mdsnode='dim_of(\denr0s)' units='ms'></axis>
+    <signal name='denr0slow' mdsnode='\denr0s' axes='time' axes_refs='time1' units='m/cm**3'></signal>
+    <signal name='denv{}slow' mdsnode='\denv{}s' axes='time' axes_refs='time1' units='m/cm**3' range='1,3'></signal>
+
+    <axis name='time2' mdsnode='dim_of(\denr0f)' units='ms'></axis>
+    <signal name='denr0fast' mdsnode='\denr0f' axes='time' axes_refs='time2' units='m/cm**3'></signal>
+    <signal name='denv{}fast' mdsnode='\denv{}f' axes='time' axes_refs='time2' units='m/cm**3' range='1,3'></signal>
+
+    <axis name='time4' mdsnode='dim_of(\denr0_uf_1)' units='ms'></axis>
+    <signal name='denr0_uf_1' mdsnode='\denr0_uf_1' axes='time' axes_refs='time4' units='m/cm**3'></signal>
+    <signal name='denv{}_uf_1' mdsnode='\denv{}_uf_1' axes='time' axes_refs='time4' units='m/cm**3' range='1,3'></signal>
+
+    <axis name='time5' mdsnode='dim_of(\denr0_uf_2)' units='ms'></axis>
+    <signal name='denr0_uf_2' mdsnode='\denr0_uf_2' axes='time' axes_refs='time5' units='m/cm**3'></signal>
+    <signal name='denv{}_uf_2' mdsnode='\denv{}_uf_2' axes='time' axes_refs='time5' units='m/cm**3' range='1,3'></signal>
+
+    <axis name='time6' mdsnode='dim_of(\denr0_uf_3)' units='ms'></axis>
+    <signal name='denr0_uf_3' mdsnode='\denr0_uf_3' axes='time' axes_refs='time6' units='m/cm**3'></signal>
+    <signal name='denv{}_uf_3' mdsnode='\denv{}_uf_3' axes='time' axes_refs='time6' units='m/cm**3' range='1,3'></signal>
+
+    <axis name='time7' mdsnode='dim_of(\denr0_uf_4)' units='ms'></axis>
+    <signal name='denr0_uf_4' mdsnode='\denr0_uf_4' axes='time' axes_refs='time7' units='m/cm**3'></signal>
+    <signal name='denv{}_uf_4' mdsnode='\denv{}_uf_4' axes='time' axes_refs='time7' units='m/cm**3' range='1,3'></signal>
+
+    <axis name='time8' mdsnode='dim_of(\denr0_uf_5)' units='ms'></axis>
+    <signal name='denr0_uf_5' mdsnode='\denr0_uf_5' axes='time' axes_refs='time8' units='m/cm**3'></signal>
+    <signal name='denv{}_uf_5' mdsnode='\denv{}_uf_5' axes='time' axes_refs='time8' units='m/cm**3' range='1,3'></signal>
+
+    <axis name='time9' mdsnode='dim_of(\denr0_uf_6)' units='ms'></axis>
+    <signal name='denr0_uf_6' mdsnode='\denr0_uf_6' axes='time' axes_refs='time9' units='m/cm**3'></signal>
+    <signal name='denv{}_uf_6' mdsnode='\denv{}_uf_6' axes='time' axes_refs='time9' units='m/cm**3' range='1,3'></signal>
+
+    <axis name='time10' mdsnode='dim_of(\denr0_uf_7)' units='ms'></axis>
+    <signal name='denr0_uf_7' mdsnode='\denr0_uf_7' axes='time' axes_refs='time10' units='m/cm**3'></signal>
+    <signal name='denv{}_uf_7' mdsnode='\denv{}_uf_7' axes='time' axes_refs='time10' units='m/cm**3' range='1,3'></signal>
+
+    <axis name='time11' mdsnode='dim_of(\denr0_uf_8)' units='ms'></axis>
+    <signal name='denr0_uf_8' mdsnode='\denr0_uf_8' axes='time' axes_refs='time11' units='m/cm**3'></signal>
+    <signal name='denv{}_uf_8' mdsnode='\denv{}_uf_8' axes='time' axes_refs='time11' units='m/cm**3' range='1,3'></signal>
+
+    <axis name='time12' mdsnode='dim_of(\denr0_uf_9)' units='ms'></axis>
+    <signal name='denr0_uf_9' mdsnode='\denr0_uf_9' axes='time' axes_refs='time12' units='m/cm**3'></signal>
+    <signal name='denv{}_uf_9' mdsnode='\denv{}_uf_9' axes='time' axes_refs='time12' units='m/cm**3' range='1,3'></signal>
+
+</container>

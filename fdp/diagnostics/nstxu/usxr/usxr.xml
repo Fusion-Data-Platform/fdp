@@ -1,0 +1,16 @@
+<?xml version='1.0'?>
+<container name='usxr' mdstree='usxr' title='USXR'>
+    <defaults method='plot' stack='8,2'></defaults>
+    <container name='vtop' title='Vertical Top'>
+        <axis name='time' units='s' mdsnode='dim_of(\usxr_vtop_00.raw)'></axis>
+        <signal name='ch{}' title='Vertical Top Channel {}' units='DN' axes='time' mdsnode='\usxr_vtop_{}.raw' range='16'></signal>
+    </container>
+    <container name='hup' title='Horizontal Up'>
+        <axis name='time' units='s' mdsnode='dim_of(\usxr_hup_00.raw)'></axis>
+        <signal name='ch{}' title='Channel {}' units='DN' axes='time' mdsnode='\usxr_hup_{}.raw' range='16'></signal>
+    </container>
+    <container name='hdown' title='Horizontal Down'>
+        <axis name='time' units='s' mdsnode='dim_of(\usxr_hdown_00.raw)'></axis>
+        <signal name='ch{}' title='Channel {}' units='DN' axes='time' mdsnode='\usxr_hdown_{}.raw' range='16'></signal>
+    </container>
+</container>

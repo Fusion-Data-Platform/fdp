@@ -10,7 +10,7 @@ from . import shotlist
 
 @pytest.fixture(scope="module")
 def setup_nstx():
-    nstx = fdp.nstx()
+    nstx = fdp.Nstxu()
     nstx.addshot(shotlist=shotlist)
     return nstx
 
@@ -18,4 +18,4 @@ def setup_nstx():
 @pytest.fixture(scope="module")
 def setup_shot(setup_nstx):
     nstx = setup_nstx
-    return nstx.s141000
+    return nstx.s142301

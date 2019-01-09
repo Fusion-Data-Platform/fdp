@@ -10,9 +10,9 @@ from warnings import warn
 import numpy as np
 import matplotlib.pyplot as plt
 
-from ....classes.crosssignal import CrossSignal
-from ....classes.utilities import isContainer
-from ....classes.globals import FdpWarning
+from ...crosssignal import CrossSignal
+from ....lib.utilities import isContainer
+from ....lib.globals import FdpWarning
 
 
 def crosssignal(container, sig1name='ch01', sig2name='ch02',

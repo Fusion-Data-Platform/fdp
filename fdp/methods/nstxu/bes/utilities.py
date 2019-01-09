@@ -4,9 +4,10 @@ Created on Fri Apr 15 15:33:23 2016
 
 @author: drsmith
 """
+from __future__ import print_function
 
-from ....classes.globals import FdpError
-from ....classes.utilities import isSignal, isContainer
+from ....lib.globals import FdpError
+from ....lib.utilities import isSignal, isContainer
 
 
 def get_signals_in_container(container):

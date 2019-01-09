@@ -17,13 +17,11 @@ Fusion Data Platform
   **Contents**
 
 .. toctree::
-  :maxdepth: 1
+  :maxdepth: 2
 
   Overview <overview>
   user_guide
-  developer_guide
-  project_documents
   Contributing <contributing>
-  changelog
+  project_documents
   authors
   license

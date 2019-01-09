@@ -4,7 +4,12 @@ Created on Thu Oct 29 10:20:43 2015
 
 @author: ktritz
 """
+from __future__ import print_function
+from __future__ import division
 
+from builtins import map
+from builtins import range
+#from past.utils import old_div
 from warnings import warn
 #import time
 
@@ -15,19 +20,21 @@ import numba as nb
 import matplotlib.pyplot as plt
 #import pyqtgraph as pg
 
-from ..classes.globals import FdpWarning
+from ..lib.globals import FdpWarning
 
 # pg.mkQApp()
 
 
-def plot1d(signal, tmin=0.0, tmax=None, **kwargs):
+
+
+def plot1d(signal, time=None, tmin=0.0, tmax=None, **kwargs):
     xaxis = getattr(signal, signal.axes[0])
     kwargs.pop('stack', None)
     kwargs.pop('signals', None)
     kwargs.pop('maxrange', None)
     kwargs.pop('minrange', None)
     ax = kwargs.pop('axes', None)
-    ax.plot(xaxis, signal, **kwargs)
+    ax.plot(xaxis, signal, label=signal._name, **kwargs)
     ax.set_ylabel('{} ({})'.format(signal._name, signal.units))
     ax.set_xlabel('{} ({})'.format(xaxis._name, xaxis.units))
     ax.set_title('{} -- {} -- {}'.format(signal._parent._name.upper(),
@@ -35,6 +42,15 @@ def plot1d(signal, tmin=0.0, tmax=None, **kwargs):
                                          signal.shot))
     if tmax is not None:
         ax.set_xlim(tmin, tmax)
+    if time is not None and signal.axes[0]=='time':
+        if hasattr(time, '__iter__'):
+            if len(time)>1:
+                ax.set_xlim(time[0], time[1])
+            else:
+                ax.set_xlim(-100,time[0])
+        else:
+            ax.set_xlim(-100,time)
+
 
 
 def plot2d(signal, tmin=0.0, tmax=None, **kwargs):
@@ -97,50 +113,49 @@ def plot4d(data, xaxis, yaxis, zaxis, taxis, **kwargs):
 plot_methods = [None, plot1d, plot2d, plot3d, plot4d]
 
 
-def plot(signal, fig=None, ax=None, **kwargs):
+def plot(signal, fig=None, axes=None, **kwargs):
     defaults = getattr(signal, '_plot_defaults', {})
-    defaults.update(kwargs)
+    kwargs.update(defaults)
     if signal._is_container():
-        plot_container(signal, **defaults)
+        plot_container(signal, **kwargs)
         return
 
     signal[:]
-    if not signal:
-        warn("Empty signal {}".format(signal._mdsnode), FdpWarning)
+    if signal.size==0:
+        warn("Empty signal {}".format(signal.mdsnode), FdpWarning)
     signal.time[:]
-    if not signal.time:
-        warn("Empty signal.time {}".format(signal.time._mdsnode), FdpWarning)
+    if signal.time.size==0:
+        warn("Empty signal.time {}".format(signal.time.mdsnode), FdpWarning)
 
     dims = signal.ndim
-    multi_axis = defaults.get('multi', None)
+    multi_axis = kwargs.get('multi', None)
     if multi_axis is 'shot':
-        #plot_multishot(signal, **defaults)
+        #plot_multishot(signal, **kwargs)
         #plt.title(signal._name, fontsize=20)
         return
     if multi_axis in signal.axes and dims > 1:
-        plot_multi(signal, ax=ax, **defaults)
+        plot_multi(signal, ax=axes, **kwargs)
         plt.title(signal._name, fontsize=20)
         return
 
-    if fig is None:
-        fig = plt.figure()
-
-    if ax is None:
-        ax = fig.add_subplot(111)
+    if axes is None:
+        if fig is None:
+            fig = plt.figure()
+        axes = fig.add_subplot(111)
 
     if 1:  # dims > 1:
-        plot_methods[dims](signal, axes=ax, **defaults)
+        plot_methods[dims](signal, axes=axes, **kwargs)
         # fig.show()
     else:
         if not len(fig.axes):
-            ax = PlotAxes(plot_methods[dims], fig, [0.1, 0.1, 0.8, 0.8])
+            axes = PlotAxes(plot_methods[dims], fig, [0.1, 0.1, 0.8, 0.8])
         else:
-            ax = fig.axes[0]
-        ax.callbacks.connect('xlim_changed', ax._update_all_plots)
-        fig.add_axes(ax)
-        ax.plot(signal, **defaults)
+            axes = fig.axes[0]
+        axes.callbacks.connect('xlim_changed', axes._update_all_plots)
+        fig.add_axes(axes)
+        axes.plot(signal, **kwargs)
         fig.canvas.draw()
-        fig.canvas.mpl_connect('resize_event', ax._update_all_plots)
+        fig.canvas.mpl_connect('resize_event', axes._update_all_plots)
     # return fig
 
 
@@ -186,7 +201,7 @@ def plot_container(container, **kwargs):
     # title = container._get_branch().upper()
     # plt.suptitle('Shot #{} {}'.format(container.shot, title),
     #              x=0.5, y=1.00, fontsize=20, horizontalalignment='center')
-    for signal in container._signals.values():
+    for signal in list(container._signals.values()):
         if plot_sigs:
             if signal._name not in plot_sigs:
                 continue
@@ -215,8 +230,8 @@ class PlotAxes(plt.Axes):
         index_list = []
         stride = kwargs.get('stride', 0)
         if stride:
-            stride_levels = np.floor(
-                np.log(signal.size / 3000) / np.log(stride))
+            stride_levels = np.floor(np.log(signal.size // 3000) // 
+                                     np.log(stride))
             index_list = [numba_decimate_stride(signal, int(level))
                           for level in np.arange(stride_levels) + 1]
         myplot = signal, index_list, args, kwargs
@@ -258,8 +273,8 @@ class PlotAxes(plt.Axes):
         kwargs.pop('stack', None)
         stride_level = 0
         if stride:
-            stride_level = int(
-                np.floor(np.log((ixmax - ixmin) / nx) / np.log(stride)))
+            stride_level = int(np.floor(np.log((ixmax - ixmin) // nx) 
+                // np.log(stride)))
             if stride_level:
                 dec_index = index_list[stride_level - 1]
                 dec_min = np.searchsorted(dec_index, ixmin, side='left')
@@ -376,7 +391,7 @@ def decimate_plot(data, pixels=2000):
     # points >> pixels
     if data.size <= pixels * 2:
         return np.arange(data.size)
-    stride = (data.size - 2) / (pixels - 1)
+    stride = (data.size - 2) // (pixels - 1)
     endpoint = (pixels - 1) * stride + 1
     data2D = data[1:endpoint].reshape((pixels - 1, stride))
     column_offset = np.arange(pixels - 1) * stride + 1
@@ -398,7 +413,7 @@ def numba_decimate(data, pixels=2000):
     output = np.zeros(2 * pixels + 2, dtype=np.int64)
     if data.size <= pixels * 2:
         return np.arange(data.size)
-    stride = (data.size - 2) / (pixels - 1)
+    stride = (data.size - 2) // (pixels - 1)
     output[0] = 0
     output[-1] = data.size - 1
     for pixel in range(1, pixels + 1):
@@ -431,7 +446,7 @@ def numba_decimate(data, pixels=2000):
 def numba_decimate_stride(data, stride):
     # returns a decimated indices array to visually approximate a plot with
     # points >> pixels
-    elements = 2 * int((data.size - 2) / stride) + 2
+    elements = 2 * (data.size - 2) // stride + 2
     output = np.zeros(elements, dtype=np.int64)
     output[0] = 0
     output[-1] = data.size - 1

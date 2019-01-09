@@ -4,8 +4,9 @@ Created on Thu Jul  7 19:10:56 2016
 
 @author: drsmith
 """
+from __future__ import print_function
 
-from ..classes import utilities
+from ..lib import utilities
 
 
 def isSignal(obj):
@@ -37,8 +38,8 @@ def infoSignal(obj, verbose=False, *args, **kwargs):
         print('  Shot:  {}'.format(obj.shot))
         print('  Description:  {}'.format(obj._desc))
         print('  Title:  {}'.format(obj._title))
-        print('  MDS node:  {}'.format(obj._mdsnode))
-        print('  MDS tree:  {}'.format(obj._mdstree))
+        print('  MDS node:  {}'.format(obj.mdsnode))
+        print('  MDS tree:  {}'.format(obj.mdstree))
         print('  Shape:  {}'.format(obj.shape))
         for attrname in obj.listAttributes():
             attr = getattr(obj, attrname)

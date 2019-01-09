@@ -1,0 +1,40 @@
+
+machine.py:46(__init__)
+    self._make_server_connections (2000 ms)
+    self._set_modules (4 ms)
+machine.py(_set_modules)
+    os.path.isdir (2.5 ms)
+    os.listdir() (1 ms)
+machine.py(__getattr__)
+    self._validate_shot() (0.4 ms)
+
+
+shot.py:55(__getattr__)
+    container_factory (9 ms)
+    getattr(self._machine, attr_name) (0.6 ms)
+shot.py(__init__)
+    self._logbook.get_entries() (0.3 ms)
+
+
+container.py:268(container_factory)
+    Container() (10 ms)
+    init_class (6.5 ms)
+    ET.parse (1.5 ms)
+container.py:27(init_class)
+    parse_submachine (6.5 ms)
+container.py:51(__init__)
+    parse_signal (3 ms)
+    Signal() (3 ms)
+    self._set_dynamics_containers() (0.5 ms)
+container.py(_set_dynamic_containers
+    os.listdir() (0.3 ms)
+
+
+parse.py(parse_submachine)
+    parse_methods() (6.5 ms)
+parse.py(parse_signal)
+    parse_mdspath() (1.5 ms)
+parse.py(parse_methods)
+    __import__() (21 ms)
+parse.py(parse_mdspath)
+    obj.mdspath (0.7 ms)

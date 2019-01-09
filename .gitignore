@@ -1,21 +1,28 @@
 #
-# exclusions
+# GIT repo exclusions
 #
 
+### python-generated file exclusions
 *~
 *.py[cod]
-__pycache__/
+*.py.bak
 *$py.class
-docs/build/
-*.ipynb
-.ipynb_checkpoints
-.spyderproject
-anaconda
-.DS_Store
-spyder_crash.log
-CHANGELOG.copy.txt
+__pycache__/
+.ipynb_checkpoints/
 
-# Unit test / coverage reports
+### OS exclusions
+*.DS_Store
+
+### documenation build exclusion
+docs/build/
+
+### IDE exclusions
+.spyderproject
+spyder_crash.log
+.spyproject
+.idea
+
+### Test/coverage/CI report exclusion
 htmlcov/
 .tox/
 .coverage
@@ -24,11 +31,3 @@ htmlcov/
 nosetests.xml
 coverage.xml
 flake8.output.txt
-
-
-#
-# exceptions
-#
-
-# ipython/jupyter notebooks in examples/
-!examples/*.ipynb

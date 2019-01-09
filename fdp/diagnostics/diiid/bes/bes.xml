@@ -1,0 +1,11 @@
+<?xml version='1.0'?>
+<container name='bes' mdstree='ptdata'>
+    <container name="slow">
+        <axis name='time' units='ms' mdsnode='bessu01'></axis>
+        <signal name='ch{}' units='V' axes='time' mdsnode='bessu{}' range='1, 64, 2'></signal>
+    </container>
+    <container name="fast">
+        <axis name='time' units='ms' mdsnode='besfu01'></axis>
+        <signal name='ch{}' units='V' axes='time' mdsnode='besfu{}' range='1, 64, 2'></signal>
+    </container>
+</container>
