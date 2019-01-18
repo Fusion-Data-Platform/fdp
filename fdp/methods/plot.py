@@ -27,13 +27,13 @@ from ..lib.globals import FdpWarning
 
 
 
-def plot1d(signal, time=None, tmin=0.0, tmax=None, **kwargs):
+def plot1d(signal, time=None, tmin=0.0, tmax=None, axes=None, **kwargs):
     xaxis = getattr(signal, signal.axes[0])
     kwargs.pop('stack', None)
     kwargs.pop('signals', None)
     kwargs.pop('maxrange', None)
     kwargs.pop('minrange', None)
-    ax = kwargs.pop('axes', None)
+    ax = axes
     ax.plot(xaxis, signal, label=signal._name, **kwargs)
     ax.set_ylabel('{} ({})'.format(signal._name, signal.units))
     ax.set_xlabel('{} ({})'.format(xaxis._name, xaxis.units))
@@ -53,7 +53,7 @@ def plot1d(signal, time=None, tmin=0.0, tmax=None, **kwargs):
 
 
 
-def plot2d(signal, tmin=0.0, tmax=None, **kwargs):
+def plot2d(signal, tmin=0.0, tmax=None, axes=None, **kwargs):
     plot_type = kwargs.pop('type', 'contourf')
     nlevels = int(kwargs.pop('nlevels', 100))
     default_min = float(kwargs.pop('minrange', 0.))
@@ -68,6 +68,7 @@ def plot2d(signal, tmin=0.0, tmax=None, **kwargs):
         tmax = yaxis[-1]  # this should be yaxis.max() when fixed
     plot_range = set_range(signal, default_min, default_max)
     levels = np.linspace(plot_range[0], plot_range[1], nlevels)
+    plt.sca(axes)
     artist = plot_func(np.array(xaxis), np.array(yaxis), np.array(signal),
                        levels=levels, **kwargs)
     plt.ylabel('{} ({})'.format(yaxis._name, yaxis.units))

@@ -16,7 +16,7 @@ from .container import containerClassFactory
 
 class Shot(MutableMapping):
 
-    _modules = None
+#    _modules = None
     _logbook = None
     _machine = None
 
@@ -27,13 +27,14 @@ class Shot(MutableMapping):
         cls = self.__class__
         if cls._machine is None:
             cls._machine = machine
-        if cls._modules is None:
-            cls._modules = {module: None for module in self._machine._modules}
+#        if cls._modules is None:
+#            cls._modules = {module: None for module in self._machine._modules}
         if cls._logbook is None:
             cls._logbook = self._machine._logbook
 
         self._logbook_entries = self._logbook.get_entries(shot=self.shot)
         self._efits = []
+        self._modules = {module: None for module in self._machine._modules}
         self.xp = self._get_xp()
         self.date = self._get_date()
 
