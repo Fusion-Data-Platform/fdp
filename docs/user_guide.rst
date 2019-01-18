@@ -97,7 +97,7 @@ Initiate a machine instance
 
 **Define** a NSTX machine instance::
 
-    >>> nstxu = fdp.nstxu
+    >>> nstxu = fdp.Nstxu()
 
 Shots are added as referenced.  For instance, without previous reference to 139980, you can enter::
 

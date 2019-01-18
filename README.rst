@@ -31,7 +31,7 @@ FDP in action:
 .. code-block:: python
 
     import fdp
-    nstxu = fdp.nstxu()
+    nstxu = fdp.Nstxu()
     nstxu.s204551.logbook()
     nstxu.s204551.mpts.te.plot()
     nstxu.s204551.equilibria.efit02.kappa.plot()
